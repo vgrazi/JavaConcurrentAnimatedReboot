@@ -4,30 +4,33 @@ import com.vgrazi.jca.states.State;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
+ * A ThreadSprite represents one thread, and retains all of the state related to that thread,
+ * including the thread itself, the shape, position, and the targetState, which is called by
+ * the used to change the state
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
- * running flag. So construct the sprite, then
+ * running flag. So construct the sprite, then add the Runnable.
  */
 public class ThreadSprite {
     private Thread thread;
     private int position;
     private int ID = IDGenerator.next();
-    private SetState setState = SetState.none;
+    private TargetState targetState = TargetState.no_change;
 
     /**
-     * In order to change the thread state, call setSetState() passing in appropriate state.
+     * In order to change the thread state, call setTargetState() passing in appropriate state.
      * The runnable must be written such that it recognizes the state and responds appropriately
      */
-    public enum SetState {
-        none, waiting, notifying, release
+    public enum TargetState {
+        no_change, waiting, notifying, release
 
     }
 
-    public SetState getSetState() {
-        return setState;
+    public TargetState getTargetState() {
+        return targetState;
     }
 
-    public void setSetState(SetState setState) {
-        this.setState = setState;
+    public void setTargetState(TargetState targetState) {
+        this.targetState = targetState;
     }
 
     private boolean running = true;

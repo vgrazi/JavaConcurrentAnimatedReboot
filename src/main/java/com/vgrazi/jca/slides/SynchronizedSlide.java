@@ -30,15 +30,15 @@ public class SynchronizedSlide implements Slide {
         sleep("Added second runnable " + sprite2);
 
         ThreadSprite runningSprite = threadContext.getRunningThread();
-        runningSprite.setSetState(ThreadSprite.SetState.waiting);
+        runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
         sleep("Set waiting on " + runningSprite);
 
         runningSprite = threadContext.getRunningThread();
-        runningSprite.setSetState(ThreadSprite.SetState.notifying);
+        runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
         sleep("Set notifying on " + runningSprite);
 
         runningSprite = threadContext.getRunningThread();
-        runningSprite.setSetState(ThreadSprite.SetState.release);
+        runningSprite.setTargetState(ThreadSprite.TargetState.release);
         sleep("Set release on " + runningSprite);
 //        System.out.println("1. Running:" + runningThreads);
 //        threadContext.stopThread(runningSprite);
@@ -58,19 +58,19 @@ public class SynchronizedSlide implements Slide {
             try {
                 synchronized (mutex) {
                     while (sprite.isRunning()) {
-                        if(sprite.getSetState() == ThreadSprite.SetState.release) {
+                        if(sprite.getTargetState() == ThreadSprite.TargetState.release) {
                             break;
                         }
-                        switch (sprite.getSetState()) {
+                        switch (sprite.getTargetState()) {
                             case waiting:
                                 mutex.wait();
-                                sprite.setSetState(ThreadSprite.SetState.none);
+                                sprite.setTargetState(ThreadSprite.TargetState.no_change);
                                 break;
                             case notifying:
                                 mutex.notify();
-                                sprite.setSetState(ThreadSprite.SetState.none);
+                                sprite.setTargetState(ThreadSprite.TargetState.no_change);
                                 break;
-                            case none:
+                            case no_change:
                                 Thread.yield();
                                 break;
                         }
