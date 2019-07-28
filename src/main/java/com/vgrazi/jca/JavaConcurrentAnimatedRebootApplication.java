@@ -1,7 +1,9 @@
 package com.vgrazi.jca;
 
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
-import com.vgrazi.jca.slides.SynchronizedSlide;
+import com.vgrazi.jca.states.Blocked;
+import com.vgrazi.jca.states.Running;
+import com.vgrazi.jca.states.Terminated;
+import com.vgrazi.jca.states.Waiting;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +20,24 @@ public class JavaConcurrentAnimatedRebootApplication {
     @Scope("prototype")
     ThreadSprite threadSprite() {
         return new ThreadSprite();
+    }
+
+    @Bean
+    public Blocked blocked() {
+        return new Blocked();
+    }
+    @Bean
+    public Running running() {
+        return new Running();
+    }
+
+    @Bean
+    public Terminated terminated() {
+        return new Terminated();
+    }
+
+    @Bean
+    public Waiting waiting () {
+        return new Waiting();
     }
 }

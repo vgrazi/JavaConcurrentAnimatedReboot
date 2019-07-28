@@ -4,12 +4,12 @@ import com.vgrazi.jca.ThreadContext;
 import com.vgrazi.jca.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Stopped extends State {
+public class Terminated extends State {
     @Autowired
     ThreadContext threadContext;
 
     @Override
-    public int storeNextPosition(ThreadSprite thread) {
-        return 0;
+    public void advancePosition(ThreadSprite thread) {
+        thread.setPosition(thread.getPosition() + threadContext.pixelsPerStep);
     }
 }

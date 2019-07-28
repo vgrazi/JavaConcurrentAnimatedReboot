@@ -2,6 +2,7 @@ package com.vgrazi.jca;
 
 import com.vgrazi.jca.states.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
@@ -15,6 +16,50 @@ public class ThreadSprite {
     private int position;
     private int ID = IDGenerator.next();
     private TargetState targetState = TargetState.no_change;
+    private Direction direction = Direction.right;
+    @Value("${monolith-left-border}")
+    private int monolithLeftBorder;
+    @Value("${monolith-right-border}")
+    private int monolithRightBorder;
+    @Value("${pixels-per-step}")
+    private int pixelsPerStep;
+
+    private boolean running = true;
+
+    @Autowired
+    private ThreadContext threadContext;
+
+    public RelativePosition getRelativePosition() {
+        int position = getPosition();
+        if(position < monolithLeftBorder - pixelsPerStep) {
+            return RelativePosition.Before;
+        }
+        else if (position > monolithLeftBorder - pixelsPerStep && position <= monolithLeftBorder) {
+            return RelativePosition.At;
+        }
+        else if (position > monolithLeftBorder && position < monolithRightBorder) {
+            return RelativePosition.In;
+        }
+        else {
+            return RelativePosition.After;
+        }
+    }
+
+    void setNextPosition() {
+        getState().advancePosition(this);
+    }
+
+    public enum Direction {
+        right, down, left, up
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
     /**
      * In order to change the thread state, call setTargetState() passing in appropriate state.
@@ -33,16 +78,8 @@ public class ThreadSprite {
         this.targetState = targetState;
     }
 
-    private boolean running = true;
-
-    @Autowired
-    private ThreadContext threadContext;
-    private boolean waitingSet;
-
     /**
      * Create the thread associated with this runnable, and starts it
-     *
-     * @param runnable
      */
     public void setRunnable(Runnable runnable) {
         thread = new Thread(runnable);
@@ -53,22 +90,22 @@ public class ThreadSprite {
         return running;
     }
 
-    public void setRunning(boolean running) {
+    void setRunning(boolean running) {
         this.running = running;
     }
 
-    public State getState() {
+    State getState() {
         switch (thread.getState()) {
             case NEW:
             case RUNNABLE:
-                return State.runnable;
+                return threadContext.runnable;
             case WAITING:
             case TIMED_WAITING:
-                return State.waiting;
+                return threadContext.waiting;
             case BLOCKED:
-                return State.blocked;
+                return threadContext.blocked;
             case TERMINATED:
-                return State.terminated;
+                return threadContext.terminated;
             default:
                 throw new IllegalArgumentException("Unknown thread state " + thread.getState());
         }
@@ -91,7 +128,9 @@ public class ThreadSprite {
         return "ThreadSprite{" +
                 "ID=" + ID +
                 ", position=" + position +
+                ", relative_position=" + getRelativePosition() +
                 ", state=" + getState() +
+                ", " + super.toString() +
                 '}';
     }
 }

@@ -1,13 +1,28 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.ThreadContext;
+import com.vgrazi.jca.RelativePosition;
 import com.vgrazi.jca.ThreadSprite;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class Blocked extends State {
 
     @Override
-    public int storeNextPosition(ThreadSprite thread) {
-        return 0;
+    public void advancePosition(ThreadSprite sprite) {
+        int position = sprite.getPosition();
+        RelativePosition relativePosition = sprite.getRelativePosition();
+        switch (relativePosition) {
+            case Before:
+                position += threadContext.pixelsPerStep;
+                if(position > threadContext.monolithLeftBorder) {
+                    position = threadContext.monolithLeftBorder;
+                }
+                sprite.setPosition(position);
+                break;
+            case At:
+                break;
+            case In:
+                break;
+            case After:
+                break;
+        }
     }
 }

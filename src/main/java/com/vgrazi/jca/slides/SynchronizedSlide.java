@@ -25,7 +25,7 @@ public class SynchronizedSlide implements Slide {
         addYieldRunnable(mutex, sprite1);
         sleep("Added first runnable " + sprite1);
 
-        ThreadSprite sprite2 = new ThreadSprite();
+        ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite2);
         sleep("Added second runnable " + sprite2);
 
@@ -53,12 +53,13 @@ public class SynchronizedSlide implements Slide {
 
     }
 
-    private void addYieldRunnable(Object mutex, ThreadSprite sprite) throws InterruptedException {
+    private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
         sprite.setRunnable(() -> {
             try {
                 synchronized (mutex) {
                     while (sprite.isRunning()) {
                         if(sprite.getTargetState() == ThreadSprite.TargetState.release) {
+                            threadContext.stopThread(sprite);
                             break;
                         }
                         switch (sprite.getTargetState()) {

@@ -1,5 +1,6 @@
 package com.vgrazi.jca.states;
 
+import com.vgrazi.jca.RelativePosition;
 import com.vgrazi.jca.ThreadContext;
 import com.vgrazi.jca.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,22 @@ public class Running extends State {
     ThreadContext threadContext;
 
     @Override
-    public int storeNextPosition(ThreadSprite thread) {
-        return 0;
+    public void advancePosition(ThreadSprite sprite) {
+        RelativePosition relativePosition = sprite.getRelativePosition();
+//        System.out.println(sprite + " " + relativePosition);
+        switch (relativePosition) {
+            case Before:
+                calculateNextPositionBefore(sprite);
+                break;
+            case At:
+                break;
+            case In:
+                calculateNextPositionIn(sprite);
+                break;
+            case After:
+                calculateNextPositionAfter(sprite);
+                break;
+        }
     }
+
 }

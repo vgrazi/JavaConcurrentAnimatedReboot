@@ -22,14 +22,11 @@ public class Main implements CommandLineRunner {
     ApplicationContext applicationContext;
     @Override
     public void run(String... args) throws InterruptedException {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    threadContext.run();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+        new Thread(() -> {
+            try {
+                threadContext.run();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }).start();
         synchronizedSlide.run();
