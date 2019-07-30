@@ -117,6 +117,9 @@ public class ThreadSprite implements InitializingBean {
     }
 
     State getState() {
+        if(thread == null) {
+            return null;
+        }
         switch (thread.getState()) {
             case NEW:
             case RUNNABLE:

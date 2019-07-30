@@ -1,6 +1,7 @@
 package com.vgrazi.jca;
 
 import com.vgrazi.jca.states.*;
+import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,7 @@ public class ThreadContext implements InitializingBean {
     ApplicationContext context;
 
     @Autowired
-    JFrame frame = new JFrame();
+    JFrame frame;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -62,11 +63,7 @@ public class ThreadContext implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    public ThreadContext() throws InterruptedException {
-//        JFrame jFrame = new JFrame("Java Concurrent Animated - Reboot");
-//        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        jFrame.setBounds(30, 30, 1200, 600);
-//        jFrame.setVisible(true);
+    public ThreadContext() {
     }
 
     private void render() {
@@ -78,7 +75,7 @@ public class ThreadContext implements InitializingBean {
                     frame.addNotify();
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -109,7 +106,7 @@ public class ThreadContext implements InitializingBean {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while(true) {
-            threads.forEach(System.out::println);
+            threads.forEach(thread -> Logging.sleepAndLog(0,"", thread));
             Thread.sleep(1000);
         }
     }
@@ -166,21 +163,17 @@ public class ThreadContext implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        frame.getContentPane().setLayout(new BorderLayout());
+
         JPanel panel = new JPanel() {
 
             @Override
             protected void paintComponent(Graphics g) {
                 setOpaque(true);
-//                Toolkit.getDefaultToolkit().beep();
-                super.paintComponent(g);
-//                setBackground(Color.black);
-                System.out.println("repainting");
-                Graphics graphics = getGraphics();
+                Graphics2D graphics = (Graphics2D) g;
+                super.paintComponent(graphics);
                 graphics.setColor(Color.black);
-                graphics.fillRect(0, 0, 10000, 10000);
+                graphics.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
                 graphics.setColor(Color.white);
-                graphics.drawLine(0, 0, 1000, 1000);
                 threads.forEach(sprite -> render(sprite, graphics));
                 graphics.dispose();
             }
@@ -191,7 +184,8 @@ public class ThreadContext implements InitializingBean {
 
             }
         };
-        frame.getContentPane().add("Center", panel);
+        frame.getContentPane().add(panel);
+        frame.setBounds(0, 0, 500, 500);
         frame.setVisible(true);
         render();
     }

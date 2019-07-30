@@ -2,57 +2,55 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.ThreadContext;
 import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
 import java.util.concurrent.Phaser;
 
 @Component
-public class PhaserSlide implements Slide {
+public class PhaserSlide extends Slide {
 
     @Autowired
     ApplicationContext applicationContext;
 
     @Autowired
     ThreadContext threadContext;
-    private long stepDelay = 2000;
 
     public void run() throws InterruptedException {
         Phaser phaser = new Phaser(4);
-        sleep("Created Phaser");
+        Logging.sleepAndLog(0, "Creating Phaser");
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+        Logging.sleepAndLog("Adding first await ", sprite1);
         addRunnable(phaser, sprite1);
-        sleep("Added first await " + sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite2.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+        Logging.sleepAndLog("Adding second await ",sprite2);
         addRunnable(phaser, sprite2);
-        sleep("Added second await " + sprite2);
 
         ThreadSprite arriveSprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite1.setTargetState(ThreadSprite.TargetState.arrive);
+        Logging.sleepAndLog("Arriving ", arriveSprite1);
         addRunnable(phaser, arriveSprite1);
-        sleep("Arrive " + arriveSprite1);
 
         ThreadSprite arriveSprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite2.setTargetState(ThreadSprite.TargetState.arrive);
+        Logging.sleepAndLog("Arriving ", arriveSprite2);
         addRunnable(phaser, arriveSprite2);
-        sleep("Arrive " + arriveSprite2);
 
         ThreadSprite arriveSprite3 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite3.setTargetState(ThreadSprite.TargetState.arrive);
+        Logging.sleepAndLog("Arriving ", arriveSprite3);
         addRunnable(phaser, arriveSprite3);
-        sleep("Arrive " + arriveSprite3);
 
         ThreadSprite arriveSprite4 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite4.setTargetState(ThreadSprite.TargetState.arrive);
+        Logging.sleepAndLog("Arriving ", arriveSprite4);
         addRunnable(phaser, arriveSprite4);
-        sleep("Arrive " + arriveSprite4);
 
-        System.exit(0);
 
     }
 
@@ -82,14 +80,5 @@ public class PhaserSlide implements Slide {
             System.out.println(sprite + " exiting");
         });
         threadContext.addThread(sprite);
-    }
-
-    private void sleep(String message) throws InterruptedException {
-        sleep(message, stepDelay);
-    }
-
-    private void sleep(String message, long delay) throws InterruptedException {
-        System.out.println(LocalTime.now() + " " + message);
-        Thread.sleep(delay);
     }
 }

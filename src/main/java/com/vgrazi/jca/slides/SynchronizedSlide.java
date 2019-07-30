@@ -2,55 +2,51 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.ThreadContext;
 import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
-
 @Component
-public class SynchronizedSlide implements Slide {
+public class SynchronizedSlide extends Slide {
 
     @Autowired
     ApplicationContext applicationContext;
 
     @Autowired
     ThreadContext threadContext;
-    private long stepDelay = 2000;
 
     public void run() throws InterruptedException {
         Object mutex = new Object();
-        sleep("Created mutex");
+        Logging.sleepAndLog("Created mutex");
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite1);
-        sleep("Added first runnable " + sprite1);
+        Logging.sleepAndLog("Added first runnable " + sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite2);
-        sleep("Added second runnable " + sprite2);
+        Logging.sleepAndLog("Added second runnable " + sprite2);
 
         ThreadSprite runningSprite = threadContext.getRunningThread();
         runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
-        sleep("Set waiting on " + runningSprite);
+        Logging.sleepAndLog("Set waiting on " + runningSprite);
 
         runningSprite = threadContext.getRunningThread();
         runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
-        sleep("Set notifying on " + runningSprite);
+        Logging.sleepAndLog("Set notifying on " + runningSprite);
 
         runningSprite = threadContext.getRunningThread();
         runningSprite.setTargetState(ThreadSprite.TargetState.release);
-        sleep("Set release on " + runningSprite);
+        Logging.sleepAndLog("Set release on " + runningSprite);
 //        System.out.println("1. Running:" + runningThreads);
 //        threadContext.stopThread(runningSprite);
-//        sleep(runningSprite + " done");
+//        sleepAndLog(runningSprite + " done");
 //
 //        runningThreads = threadContext.getRunningThreads();
 //        System.out.println("2. Running:" + runningThreads);
 //        runningSprite = runningThreads.get(0);
 //        threadContext.stopThread(runningSprite);
-//        sleep(runningSprite + " done", 10000);
-        System.exit(0);
-
+//        sleepAndLog(runningSprite + " done", 10000);
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
@@ -83,14 +79,5 @@ public class SynchronizedSlide implements Slide {
             }
         });
         threadContext.addThread(sprite);
-    }
-
-    private void sleep(String message) throws InterruptedException {
-        sleep(message, stepDelay);
-    }
-
-    private void sleep(String message, long delay) throws InterruptedException {
-        System.out.println(LocalTime.now() + " " + message);
-        Thread.sleep(delay);
     }
 }

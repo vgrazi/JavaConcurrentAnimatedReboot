@@ -1,7 +1,14 @@
 package com.vgrazi.jca.slides;
 
+import com.vgrazi.jca.ThreadSprite;
+
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * All slides implement this interface
+ * All slides extend this class
  */
-public interface Slide {
+public class Slide {
+
 }
