@@ -7,7 +7,7 @@ public class Blocked extends State {
 
     @Override
     public void advancePosition(ThreadSprite sprite) {
-        int position = sprite.getPosition();
+        int position = sprite.getXPosition();
         RelativePosition relativePosition = sprite.getRelativePosition();
         switch (relativePosition) {
             case Before:
@@ -15,7 +15,7 @@ public class Blocked extends State {
                 if(position > threadContext.monolithLeftBorder) {
                     position = threadContext.monolithLeftBorder;
                 }
-                sprite.setPosition(position);
+                sprite.setXPosition(position);
                 break;
             case At:
                 break;

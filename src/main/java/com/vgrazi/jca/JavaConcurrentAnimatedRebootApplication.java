@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
+import javax.swing.*;
+
 @SpringBootApplication
 public class JavaConcurrentAnimatedRebootApplication {
 
@@ -39,5 +41,13 @@ public class JavaConcurrentAnimatedRebootApplication {
     @Bean
     public Waiting waiting () {
         return new Waiting();
+    }
+
+    @Bean
+    JFrame frame() {
+        JFrame jFrame = new JFrame("Java Concurrent Animated - Reboot");
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setBounds(30, 30, 1200, 600);
+        return jFrame;
     }
 }

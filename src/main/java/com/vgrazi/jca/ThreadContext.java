@@ -1,11 +1,14 @@
 package com.vgrazi.jca;
 
 import com.vgrazi.jca.states.*;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -19,7 +22,8 @@ import java.util.stream.Collectors;
  * for all of the threads of a specific state (for example, getRunningThreads)
  */
 @Component
-public class ThreadContext  {
+//@Scope("prototype")
+public class ThreadContext implements InitializingBean {
     @Autowired
     Blocked blocked;
     @Autowired
@@ -29,9 +33,21 @@ public class ThreadContext  {
     @Autowired
     Terminated terminated;
 
+    @Value("${initial-y-position}")
+    private int initialYPos;
+
+    @Value("${initial-bottom-y-position}")
+    private int initialBottomYPos;
+
+    @Value("${pixels-per-y-step}")
+    private int pixelsPerYStep;
+
     private List<ThreadSprite> threads = new CopyOnWriteArrayList<>();
     @Autowired
     ApplicationContext context;
+
+    @Autowired
+    JFrame frame = new JFrame();
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -39,9 +55,39 @@ public class ThreadContext  {
     @Value("${monolith-left-border}")
     public int monolithLeftBorder;
     @Value("${monolith-right-border}")
-    public int monolithRightBorder;
+    private int monolithRightBorder;
     @Value("${pixels-per-step}")
     public int pixelsPerStep;
+
+    @Value("${arrow-length}")
+    private int arrowLength;
+
+    public ThreadContext() throws InterruptedException {
+//        JFrame jFrame = new JFrame("Java Concurrent Animated - Reboot");
+//        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        jFrame.setBounds(30, 30, 1200, 600);
+//        jFrame.setVisible(true);
+    }
+
+    private void render() {
+        Thread thread = new Thread(() -> {
+            while (true) {
+                if (frame!=null) {
+                    frame.revalidate();
+                    frame.repaint();
+                    frame.addNotify();
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        thread.start();
+    }
+
 
     public synchronized void addThread(ThreadSprite thread) {
         threads.add(thread);
@@ -98,10 +144,56 @@ public class ThreadContext  {
         return collect;
     }
 
+
     /**
      * Advance the position of each sprite, based on its current position and state
      */
     private void advanceSprites() {
         threads.forEach(ThreadSprite::setNextPosition);
     }
+
+    public int getNextYPosition() {
+        int initialYPos = this.initialYPos;
+        this.initialYPos += pixelsPerYStep;
+        return initialYPos;
+    }
+
+    public int getNextBottomYPosition() {
+        int initialBottomYPos = this.initialBottomYPos;
+        this.initialBottomYPos += pixelsPerYStep;
+        return initialBottomYPos;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        frame.getContentPane().setLayout(new BorderLayout());
+        JPanel panel = new JPanel() {
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                setOpaque(true);
+//                Toolkit.getDefaultToolkit().beep();
+                super.paintComponent(g);
+//                setBackground(Color.black);
+                System.out.println("repainting");
+                Graphics graphics = getGraphics();
+                graphics.setColor(Color.black);
+                graphics.fillRect(0, 0, 10000, 10000);
+                graphics.setColor(Color.white);
+                graphics.drawLine(0, 0, 1000, 1000);
+                threads.forEach(sprite -> render(sprite, graphics));
+                graphics.dispose();
+            }
+
+            private void render(ThreadSprite sprite, Graphics graphics) {
+                graphics.drawLine(sprite.getXPosition(), sprite.getYPosition(),
+                        sprite.getXPosition() + arrowLength, sprite.getYPosition());
+
+            }
+        };
+        frame.getContentPane().add("Center", panel);
+        frame.setVisible(true);
+        render();
+    }
 }
+

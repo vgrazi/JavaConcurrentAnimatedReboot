@@ -10,6 +10,6 @@ public class Terminated extends State {
 
     @Override
     public void advancePosition(ThreadSprite thread) {
-        thread.setPosition(thread.getPosition() + threadContext.pixelsPerStep);
+        thread.setXPosition(thread.getXPosition() + threadContext.pixelsPerStep);
     }
 }

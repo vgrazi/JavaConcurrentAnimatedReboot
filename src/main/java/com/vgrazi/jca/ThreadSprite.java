@@ -1,21 +1,24 @@
 package com.vgrazi.jca;
 
 import com.vgrazi.jca.states.State;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
- * including the thread itself, the shape, position, and the targetState, which is called by
+ * including the thread itself, the shape, xPosition, and the targetState, which is called by
  * the used to change the state
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class ThreadSprite {
+public class ThreadSprite implements InitializingBean {
     private Thread thread;
-    private int position;
+    private int xPosition;
+
     private int ID = IDGenerator.next();
-    private TargetState targetState = TargetState.no_change;
+
+    private TargetState targetState = TargetState.default_state;
     private Direction direction = Direction.right;
     @Value("${monolith-left-border}")
     private int monolithLeftBorder;
@@ -23,14 +26,25 @@ public class ThreadSprite {
     private int monolithRightBorder;
     @Value("${pixels-per-step}")
     private int pixelsPerStep;
-
     private boolean running = true;
 
     @Autowired
     private ThreadContext threadContext;
+    private int yPosition;
+
+    public ThreadSprite() {
+    }
+
+    /**
+     * You can change the ID to something more meaningful
+     * @param ID
+     */
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public RelativePosition getRelativePosition() {
-        int position = getPosition();
+        int position = getXPosition();
         if(position < monolithLeftBorder - pixelsPerStep) {
             return RelativePosition.Before;
         }
@@ -47,6 +61,14 @@ public class ThreadSprite {
 
     void setNextPosition() {
         getState().advancePosition(this);
+    }
+
+    public void setYPosition(int yPosition) {
+        this.yPosition = yPosition;
+    }
+
+    public int getYPosition() {
+        return yPosition;
     }
 
     public enum Direction {
@@ -66,7 +88,7 @@ public class ThreadSprite {
      * The runnable must be written such that it recognizes the state and responds appropriately
      */
     public enum TargetState {
-        no_change, waiting, notifying, release
+        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, release
 
     }
 
@@ -111,12 +133,12 @@ public class ThreadSprite {
         }
     }
 
-    public int getPosition() {
-        return position;
+    public int getXPosition() {
+        return xPosition;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setXPosition(int xPosition) {
+        this.xPosition = xPosition;
     }
 
     public Thread getThread() {
@@ -124,12 +146,18 @@ public class ThreadSprite {
     }
 
     @Override
+    public void afterPropertiesSet() {
+        setYPosition(threadContext.getNextYPosition());
+    }
+
+    @Override
     public String toString() {
         return "ThreadSprite{" +
                 "ID=" + ID +
-                ", position=" + position +
-                ", relative_position=" + getRelativePosition() +
                 ", state=" + getState() +
+                ", x-position=" + xPosition +
+                ", y-position=" + yPosition +
+                ", relative_position=" + getRelativePosition() +
                 ", " + super.toString() +
                 '}';
     }

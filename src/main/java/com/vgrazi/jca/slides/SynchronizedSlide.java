@@ -65,13 +65,13 @@ public class SynchronizedSlide implements Slide {
                         switch (sprite.getTargetState()) {
                             case waiting:
                                 mutex.wait();
-                                sprite.setTargetState(ThreadSprite.TargetState.no_change);
+                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
                                 break;
                             case notifying:
                                 mutex.notify();
-                                sprite.setTargetState(ThreadSprite.TargetState.no_change);
+                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
                                 break;
-                            case no_change:
+                            case default_state:
                                 Thread.yield();
                                 break;
                         }

@@ -40,12 +40,12 @@ public class State {
      * and stores it in the sprite
      */
     void calculateNextPositionBefore(ThreadSprite sprite) {
-        int position = sprite.getPosition();
+        int position = sprite.getXPosition();
         position += pixelsPerStep;
         if (position > monolithLeftBorder) {
             position = monolithLeftBorder;
         }
-        sprite.setPosition(position);
+        sprite.setXPosition(position);
     }
 
     /**
@@ -53,7 +53,7 @@ public class State {
      * and stores it in the sprite
      */
     void calculateNextPositionIn(ThreadSprite sprite) {
-        int position = sprite.getPosition();
+        int position = sprite.getXPosition();
         ThreadSprite.Direction direction = sprite.getDirection();
         switch (direction) {
             case right:
@@ -61,10 +61,10 @@ public class State {
                 if (position > monolithRightBorder) {
                     position = monolithRightBorder;
                     // todo: build the rotational animation here
-                    sprite.setPosition(position);
+                    sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.left);
                 } else if (position <= monolithRightBorder) {
-                    sprite.setPosition(position);
+                    sprite.setXPosition(position);
                 }
                 break;
             case left:
@@ -72,16 +72,16 @@ public class State {
                 if (position > monolithLeftBorder) {
                     position = monolithLeftBorder;
                     // todo: build the rotational animation here
-                    sprite.setPosition(position);
+                    sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.right);
                 } else if (position >= monolithLeftBorder) {
-                    sprite.setPosition(position);
+                    sprite.setXPosition(position);
                 }
                 break;
         }
     }
 
     void calculateNextPositionAfter(ThreadSprite sprite) {
-        sprite.setPosition(sprite.getPosition() + threadContext.pixelsPerStep);
+        sprite.setXPosition(sprite.getXPosition() + threadContext.pixelsPerStep);
     }
 }
