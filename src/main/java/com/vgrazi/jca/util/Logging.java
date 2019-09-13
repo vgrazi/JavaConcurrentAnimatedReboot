@@ -10,30 +10,43 @@ public class Logging {
     static Map<ThreadSprite, String> messageCache = new HashMap<>();
     static private long stepDelay = 2000;
 
-    public static void sleepAndLog(long delay, String message) throws InterruptedException {
+    public static void logAndSleep(long delay, String message) throws InterruptedException {
         Thread.sleep(delay);
         System.out.println(LocalTime.now() + " " + message);
     }
 
-    public static void sleepAndLog(String message, ThreadSprite sprite) {
-        sleepAndLog(stepDelay, message, sprite);
+    public static void logAndSleep(String message, ThreadSprite sprite) {
+        logAndSleep(stepDelay, message, sprite);
     }
 
-    public static void sleepAndLog(long stepDelay, String message, ThreadSprite sprite) {
+    public static void logAndSleep(String message) throws InterruptedException {
+        logAndSleep(stepDelay, message);
+    }
+
+    public static void logAndSleep(long stepDelay, String message, ThreadSprite sprite) {
         try {
-            Thread.sleep(stepDelay);
             String cachedMessage = messageCache.get(sprite);
             if (cachedMessage == null || !cachedMessage.equals(message)) {
                 messageCache.put(sprite, message);
                 String newMessage = message + " " + sprite;
                 System.out.println(LocalTime.now() + " " + newMessage);
             }
+            Thread.sleep(stepDelay);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public static void sleepAndLog(String message) throws InterruptedException {
-        sleepAndLog(stepDelay, message);
+    public static void log(ThreadSprite sprite) {
+        String message = sprite.toString();
+        String cachedMessage = messageCache.get(sprite);
+        if (cachedMessage == null || !cachedMessage.equals(message)) {
+            messageCache.put(sprite, message);
+            System.out.println(LocalTime.now() + " " + message);
+        }
+    }
+
+    public static void log(String message) {
+        System.out.println(message);
     }
 }

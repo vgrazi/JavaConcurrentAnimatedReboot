@@ -17,6 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.vgrazi.jca.util.Logging.log;
+
 /**
  * Maintains the list of ThreadSprites, position of monolith,
  * responsible for creating new threadSprites, and provides accessors
@@ -106,8 +108,9 @@ public class ThreadContext implements InitializingBean {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while(true) {
-            threads.forEach(thread -> Logging.sleepAndLog(0,"", thread));
-            Thread.sleep(1000);
+            printAllThreads();
+//            threads.forEach(thread -> Logging.logAndSleep(0,"", thread));
+            Thread.sleep(100);
         }
     }
 
@@ -124,6 +127,16 @@ public class ThreadContext implements InitializingBean {
         return threads.get(0);
     }
 
+    /**
+     * If there is exactly one running thread, returns it.
+     * Otherwise throws an IllegalArgumentException
+     * @return
+     */
+    public List<ThreadSprite> getRunningThreads() {
+        List<ThreadSprite> threads = getThreadsOfState(runnable);
+        return threads;
+    }
+
 
     /**
      * Returns a list of all threads that are not of the specified state
@@ -131,6 +144,10 @@ public class ThreadContext implements InitializingBean {
     public List<ThreadSprite> getThreadsNotOfState(State state) {
         List<ThreadSprite> collect = threads.stream().filter(sprite -> sprite.getState() != state).collect(Collectors.toList());
         return collect;
+    }
+
+    public void printAllThreads() {
+        threads.forEach(Logging::log);
     }
 
     /**

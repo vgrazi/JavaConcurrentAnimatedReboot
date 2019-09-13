@@ -2,10 +2,11 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.ThreadContext;
 import com.vgrazi.jca.ThreadSprite;
-import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import static com.vgrazi.jca.util.Logging.logAndSleep;
 
 @Component
 public class SynchronizedSlide extends Slide {
@@ -18,41 +19,49 @@ public class SynchronizedSlide extends Slide {
 
     public void run() throws InterruptedException {
         Object mutex = new Object();
-        Logging.sleepAndLog("Created mutex");
+        logAndSleep("Created mutex");
+
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite1);
-        Logging.sleepAndLog("Added first runnable " + sprite1);
+        logAndSleep("Added first runnable ", sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite2);
-        Logging.sleepAndLog("Added second runnable " + sprite2);
+        logAndSleep("Added second runnable ", sprite2);
 
+//        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
+//
         ThreadSprite runningSprite = threadContext.getRunningThread();
         runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
-        Logging.sleepAndLog("Set waiting on " + runningSprite);
-
+        logAndSleep("Calling wait() on Runnable", runningSprite);
+//
+        // The blocked thread (thread2) is now runnable
         runningSprite = threadContext.getRunningThread();
+        // The new running thread should call notify
         runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
-        Logging.sleepAndLog("Set notifying on " + runningSprite);
+        logAndSleep("Set notifying on " + runningSprite);
 
         runningSprite = threadContext.getRunningThread();
         runningSprite.setTargetState(ThreadSprite.TargetState.release);
-        Logging.sleepAndLog("Set release on " + runningSprite);
+        logAndSleep("Set release on " + runningSprite);
+
+//        List<ThreadSprite> runningThreads = threadContext.getRunningThreads();
 //        System.out.println("1. Running:" + runningThreads);
 //        threadContext.stopThread(runningSprite);
-//        sleepAndLog(runningSprite + " done");
+//        logAndSleep(runningSprite + " done");
 //
 //        runningThreads = threadContext.getRunningThreads();
 //        System.out.println("2. Running:" + runningThreads);
 //        runningSprite = runningThreads.get(0);
 //        threadContext.stopThread(runningSprite);
-//        sleepAndLog(runningSprite + " done", 10000);
+//        logAndSleep(1000, " done", runningSprite);
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
-        sprite.setRunnable(() -> {
+        sprite.attachAndStartRunnable(() -> {
             try {
                 synchronized (mutex) {
+                    System.out.println("Target state:" + sprite.getTargetState());
                     while (sprite.isRunning()) {
                         if(sprite.getTargetState() == ThreadSprite.TargetState.release) {
                             threadContext.stopThread(sprite);
@@ -79,5 +88,6 @@ public class SynchronizedSlide extends Slide {
             }
         });
         threadContext.addThread(sprite);
+        System.out.println("Added " + sprite);
     }
 }

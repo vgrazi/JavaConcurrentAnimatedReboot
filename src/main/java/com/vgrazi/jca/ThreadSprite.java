@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
- * including the thread itself, the shape, xPosition, and the targetState, which is called by
- * the used to change the state
+ * including the Java thread itself, the shape, xPosition, and the targetState, which is called by slide,
+ * and is used to change the state
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
@@ -48,7 +48,7 @@ public class ThreadSprite implements InitializingBean {
         if(position < monolithLeftBorder - pixelsPerStep) {
             return RelativePosition.Before;
         }
-        else if (position > monolithLeftBorder - pixelsPerStep && position <= monolithLeftBorder) {
+        else if (position >= monolithLeftBorder - pixelsPerStep && position <= monolithLeftBorder) {
             return RelativePosition.At;
         }
         else if (position > monolithLeftBorder && position < monolithRightBorder) {
@@ -86,6 +86,7 @@ public class ThreadSprite implements InitializingBean {
     /**
      * In order to change the thread state, call setTargetState() passing in appropriate state.
      * The runnable must be written such that it recognizes the state and responds appropriately
+     * todo: should TargetState be renamed to action? (Since it is really an action to be performed, more than it is a state.)
      */
     public enum TargetState {
         default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, release
@@ -103,7 +104,7 @@ public class ThreadSprite implements InitializingBean {
     /**
      * Create the thread associated with this runnable, and starts it
      */
-    public void setRunnable(Runnable runnable) {
+    public void attachAndStartRunnable(Runnable runnable) {
         thread = new Thread(runnable);
         thread.start();
     }
@@ -116,6 +117,11 @@ public class ThreadSprite implements InitializingBean {
         this.running = running;
     }
 
+    /**
+     * Returns our internal thread state, reflecting the native thread state, with some adjustments (new and runnable
+     * are both considered runnable, and waiting and timed-waiting are both considered waiting.
+     * @return
+     */
     State getState() {
         if(thread == null) {
             return null;
@@ -158,8 +164,8 @@ public class ThreadSprite implements InitializingBean {
         return "ThreadSprite{" +
                 "ID=" + ID +
                 ", state=" + getState() +
-                ", x-position=" + xPosition +
-                ", y-position=" + yPosition +
+//                ", x-position=" + xPosition +
+//                ", y-position=" + yPosition +
                 ", relative_position=" + getRelativePosition() +
                 ", " + super.toString() +
                 '}';

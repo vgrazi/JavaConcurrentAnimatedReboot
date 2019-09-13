@@ -21,32 +21,32 @@ public class ReadWriteLockSlide extends Slide {
 
     public void run() throws InterruptedException {
         ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-        Logging.sleepAndLog("Created RW Lock");
+        Logging.logAndSleep("Created RW Lock");
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite1.setTargetState(ThreadSprite.TargetState.readLock);
         addRunnable(readWriteLock, sprite1);
-        Logging.sleepAndLog("Added first read lock " + sprite1);
+        Logging.logAndSleep("Added first read lock " + sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite2.setTargetState(ThreadSprite.TargetState.readLock);
         addRunnable(readWriteLock, sprite2);
-        Logging.sleepAndLog("Added second read lock " + sprite2);
+        Logging.logAndSleep("Added second read lock " + sprite2);
 
         ThreadSprite spriteWriteLock = (ThreadSprite) applicationContext.getBean("threadSprite");
         spriteWriteLock.setTargetState(ThreadSprite.TargetState.writeLock);
         addRunnable(readWriteLock, spriteWriteLock);
-        Logging.sleepAndLog("Added write lock runnable " + spriteWriteLock);
+        Logging.logAndSleep("Added write lock runnable " + spriteWriteLock);
 
         sprite1.setTargetState(ThreadSprite.TargetState.releaseReadLock);
-        Logging.sleepAndLog("Released readlock 1");
+        Logging.logAndSleep("Released readlock 1");
 
         sprite2.setTargetState(ThreadSprite.TargetState.releaseReadLock);
-        Logging.sleepAndLog("Released readlock 2");
+        Logging.logAndSleep("Released readlock 2");
 
 //        ThreadSprite sprite4 = (ThreadSprite) applicationContext.getBean("threadSprite");
 //        sprite4.setTargetState(ThreadSprite.TargetState.readLock);
 //        addRunnable(readWriteLock, sprite4);
-//        sleepAndLog("Added third read lock " + sprite4);
+//        logAndSleep("Added third read lock " + sprite4);
 //
 //        spriteWriteLock.setTargetState(ThreadSprite.TargetState.releaseWriteLock);
 
@@ -55,7 +55,7 @@ public class ReadWriteLockSlide extends Slide {
     }
 
     private void addRunnable(ReadWriteLock rwLock, ThreadSprite sprite) {
-        sprite.setRunnable(() -> {
+        sprite.attachAndStartRunnable(() -> {
             while (sprite.isRunning()) {
                 if (sprite.getTargetState() == ThreadSprite.TargetState.release) {
                     threadContext.stopThread(sprite);

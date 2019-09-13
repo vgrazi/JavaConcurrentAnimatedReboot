@@ -20,42 +20,42 @@ public class PhaserSlide extends Slide {
 
     public void run() throws InterruptedException {
         Phaser phaser = new Phaser(4);
-        Logging.sleepAndLog(0, "Creating Phaser");
+        Logging.logAndSleep(0, "Creating Phaser");
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
-        Logging.sleepAndLog("Adding first await ", sprite1);
+        Logging.logAndSleep("Adding first await ", sprite1);
         addRunnable(phaser, sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite2.setTargetState(ThreadSprite.TargetState.awaitAdvance);
-        Logging.sleepAndLog("Adding second await ",sprite2);
+        Logging.logAndSleep("Adding second await ",sprite2);
         addRunnable(phaser, sprite2);
 
         ThreadSprite arriveSprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite1.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.sleepAndLog("Arriving ", arriveSprite1);
+        Logging.logAndSleep("Arriving ", arriveSprite1);
         addRunnable(phaser, arriveSprite1);
 
         ThreadSprite arriveSprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite2.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.sleepAndLog("Arriving ", arriveSprite2);
+        Logging.logAndSleep("Arriving ", arriveSprite2);
         addRunnable(phaser, arriveSprite2);
 
         ThreadSprite arriveSprite3 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite3.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.sleepAndLog("Arriving ", arriveSprite3);
+        Logging.logAndSleep("Arriving ", arriveSprite3);
         addRunnable(phaser, arriveSprite3);
 
         ThreadSprite arriveSprite4 = (ThreadSprite) applicationContext.getBean("threadSprite");
         arriveSprite4.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.sleepAndLog("Arriving ", arriveSprite4);
+        Logging.logAndSleep("Arriving ", arriveSprite4);
         addRunnable(phaser, arriveSprite4);
 
 
     }
 
     private void addRunnable(Phaser phaser, ThreadSprite sprite) {
-        sprite.setRunnable(() -> {
+        sprite.attachAndStartRunnable(() -> {
             int phase =0;
             while (sprite.isRunning()) {
                 if (sprite.getTargetState() == ThreadSprite.TargetState.release) {

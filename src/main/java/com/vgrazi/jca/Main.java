@@ -1,9 +1,6 @@
 package com.vgrazi.jca;
 
-import com.vgrazi.jca.slides.PhaserSlide;
-import com.vgrazi.jca.slides.ReadWriteLockSlide;
-import com.vgrazi.jca.slides.Slide;
-import com.vgrazi.jca.slides.SynchronizedSlide;
+import com.vgrazi.jca.slides.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +26,9 @@ public class Main implements CommandLineRunner {
     @Autowired
     PhaserSlide phaserSlide;
 
+    @Autowired
+    CompletableFutureSlide completableFutureSlide;
+
     @Override
     public void run(String... args) throws InterruptedException {
         new Thread(() -> {
@@ -47,6 +47,9 @@ public class Main implements CommandLineRunner {
                 break;
             case "phaser":
                 phaserSlide.run();
+                break;
+            case "completable-future":
+                completableFutureSlide.run();
                 break;
         }
 
