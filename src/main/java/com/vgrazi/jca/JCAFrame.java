@@ -1,10 +1,9 @@
 package com.vgrazi.jca;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import com.vgrazi.jca.view.ThreadCanvas;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -17,8 +16,6 @@ public class JCAFrame extends JFrame {
     private ThreadCanvas threadCanvas;
 
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    @Value("${divider-location}")
-    private int dividerLocation;
 
     public JCAFrame() throws HeadlessException {
         super("Java Concurrent Animated - Reboot!");
