@@ -25,15 +25,23 @@ public class Logging {
 
     public static void logAndSleep(long stepDelay, String message, ThreadSprite sprite) {
         try {
-            String cachedMessage = messageCache.get(sprite);
-            if (cachedMessage == null || !cachedMessage.equals(message)) {
-                messageCache.put(sprite, message);
-                String newMessage = message + " " + sprite;
-                System.out.println(LocalTime.now() + " " + newMessage);
-            }
+            message(message, sprite);
             Thread.sleep(stepDelay);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void log(String message, ThreadSprite sprite) {
+        message(message, sprite);
+    }
+
+    private static void message(String message, ThreadSprite sprite) {
+        String cachedMessage = messageCache.get(sprite);
+        if (cachedMessage == null || !cachedMessage.equals(message)) {
+            messageCache.put(sprite, message);
+            String newMessage = message + " " + sprite;
+            System.out.println(LocalTime.now() + " " + newMessage);
         }
     }
 
