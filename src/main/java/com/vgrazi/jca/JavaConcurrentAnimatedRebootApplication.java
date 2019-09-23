@@ -1,5 +1,6 @@
 package com.vgrazi.jca;
 
+import com.vgrazi.jca.context.ThreadSprite;
 import com.vgrazi.jca.states.Terminated;
 import com.vgrazi.jca.states.Waiting;
 import com.vgrazi.jca.states.Blocked;
@@ -41,13 +42,5 @@ public class JavaConcurrentAnimatedRebootApplication {
     @Bean
     public Waiting waiting () {
         return new Waiting();
-    }
-
-    @Bean
-    JFrame frame() {
-        JFrame jFrame = new JFrame("Java Concurrent Animated - Reboot");
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jFrame.setBounds(30, 30, 1200, 600);
-        return jFrame;
     }
 }

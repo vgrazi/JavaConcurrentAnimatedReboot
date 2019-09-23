@@ -1,4 +1,4 @@
-package com.vgrazi.jca;
+package com.vgrazi.jca.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

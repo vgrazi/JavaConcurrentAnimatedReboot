@@ -1,7 +1,7 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.RelativePosition;
-import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.context.ThreadSprite;
 
 public class Blocked extends State {
 

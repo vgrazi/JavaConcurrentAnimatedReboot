@@ -1,5 +1,6 @@
 package com.vgrazi.jca;
 
+import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

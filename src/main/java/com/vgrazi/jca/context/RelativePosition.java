@@ -1,4 +1,4 @@
-package com.vgrazi.jca;
+package com.vgrazi.jca.context;
 
 /**
  * Represents the position of the arrow relative to the monolith

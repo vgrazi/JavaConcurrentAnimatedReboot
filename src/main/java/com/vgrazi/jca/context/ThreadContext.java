@@ -1,7 +1,9 @@
-package com.vgrazi.jca;
+package com.vgrazi.jca.context;
 
+import com.vgrazi.jca.JCAFrame;
 import com.vgrazi.jca.states.*;
 import com.vgrazi.jca.util.Logging;
+import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -17,15 +19,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.vgrazi.jca.util.Logging.log;
-
 /**
  * Maintains the list of ThreadSprites, position of monolith,
  * responsible for creating new threadSprites, and provides accessors
  * for all of the threads of a specific state (for example, getRunningThreads)
  */
 @Component
-//@Scope("prototype")
 public class ThreadContext implements InitializingBean {
     @Autowired
     Blocked blocked;
@@ -49,8 +48,10 @@ public class ThreadContext implements InitializingBean {
     @Autowired
     ApplicationContext context;
 
+    @Autowired ThreadCanvas canvas;
+
     @Autowired
-    JFrame frame;
+    JCAFrame frame;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -71,11 +72,7 @@ public class ThreadContext implements InitializingBean {
     private void render() {
         Thread thread = new Thread(() -> {
             while (true) {
-                if (frame!=null) {
-                    frame.revalidate();
-                    frame.repaint();
-                    frame.addNotify();
-                }
+                canvas.repaint();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -104,12 +101,11 @@ public class ThreadContext implements InitializingBean {
         }).start();
     }
 
-    void run() throws InterruptedException {
+    public void run() throws InterruptedException {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while(true) {
             printAllThreads();
-//            threads.forEach(thread -> Logging.logAndSleep(0,"", thread));
             Thread.sleep(100);
         }
     }
@@ -178,33 +174,28 @@ public class ThreadContext implements InitializingBean {
         return initialBottomYPos;
     }
 
+    public List<ThreadSprite> getAllThreads() {
+        return threads;
+    }
+
     @Override
     public void afterPropertiesSet() {
-
-        JPanel panel = new JPanel() {
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                setOpaque(true);
-                Graphics2D graphics = (Graphics2D) g;
-                super.paintComponent(graphics);
-                graphics.setColor(Color.black);
-                graphics.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
-                graphics.setColor(Color.white);
-                threads.forEach(sprite -> render(sprite, graphics));
-                graphics.dispose();
-            }
-
-            private void render(ThreadSprite sprite, Graphics graphics) {
-                graphics.drawLine(sprite.getXPosition(), sprite.getYPosition(),
-                        sprite.getXPosition() + arrowLength, sprite.getYPosition());
-
-            }
-        };
-        frame.getContentPane().add(panel);
-        frame.setBounds(0, 0, 500, 500);
-        frame.setVisible(true);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setBounds(30, 30, 1200, 600);
         render();
+    }
+
+    public void addButton(String text, ActionListener action) {
+        JButton button = new JButton(text);
+        button.addActionListener(action);
+        frame.getButtonPanel().add(button);
+        frame.getButtonPanel().revalidate();
+        frame.revalidate();
+        frame.addNotify();
+    }
+
+    public void setVisible() {
+        frame.setVisible(true);
     }
 }
 

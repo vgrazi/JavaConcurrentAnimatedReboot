@@ -1,8 +1,8 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.RelativePosition;
-import com.vgrazi.jca.ThreadContext;
-import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Waiting extends State {

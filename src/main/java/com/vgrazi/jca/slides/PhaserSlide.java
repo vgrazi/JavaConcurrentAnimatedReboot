@@ -1,7 +1,7 @@
 package com.vgrazi.jca.slides;
 
-import com.vgrazi.jca.ThreadContext;
-import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.context.ThreadSprite;
 import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

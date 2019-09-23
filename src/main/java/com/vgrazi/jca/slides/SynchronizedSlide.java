@@ -1,10 +1,13 @@
 package com.vgrazi.jca.slides;
 
-import com.vgrazi.jca.ThreadContext;
-import com.vgrazi.jca.ThreadSprite;
+import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import static com.vgrazi.jca.util.Logging.logAndSleep;
 
@@ -21,9 +24,18 @@ public class SynchronizedSlide extends Slide {
         Object mutex = new Object();
         logAndSleep("Created mutex");
 
+        threadContext.addButton("test", new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        threadContext.setVisible();
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite1);
         logAndSleep("Added first runnable ", sprite1);
+
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         addYieldRunnable(mutex, sprite2);
@@ -63,7 +75,7 @@ public class SynchronizedSlide extends Slide {
                 synchronized (mutex) {
                     System.out.println("Target state:" + sprite.getTargetState());
                     while (sprite.isRunning()) {
-                        if(sprite.getTargetState() == ThreadSprite.TargetState.release) {
+                        if (sprite.getTargetState() == ThreadSprite.TargetState.release) {
                             threadContext.stopThread(sprite);
                             break;
                         }
