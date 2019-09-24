@@ -58,8 +58,8 @@ public class State {
         switch (direction) {
             case right:
                 position += pixelsPerStep;
-                if (position > monolithRightBorder) {
-                    position = monolithRightBorder;
+                if (position > monolithRightBorder - 5) {
+                    position = monolithRightBorder - 5;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.left);
@@ -69,12 +69,12 @@ public class State {
                 break;
             case left:
                 position -= pixelsPerStep;
-                if (position > monolithLeftBorder) {
-                    position = monolithLeftBorder;
+                if (position < monolithLeftBorder + pixelsPerStep*2) {
+                    position = monolithLeftBorder + pixelsPerStep*2;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.right);
-                } else if (position >= monolithLeftBorder) {
+                } else {
                     sprite.setXPosition(position);
                 }
                 break;

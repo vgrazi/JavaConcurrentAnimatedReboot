@@ -18,7 +18,6 @@ public class Running extends State {
                 calculateNextPositionBefore(sprite);
                 break;
             case At:
-                break;
             case In:
                 calculateNextPositionIn(sprite);
                 break;

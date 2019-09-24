@@ -36,6 +36,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private Color timedWaitingColor;
     private Color terminatedColor;
     private Color defaultColor;
+    private Color mutexColor;
 
     @Value("${BLOCKED_COLOR}")
     public void setBlockedColor( String color) {
@@ -64,6 +65,11 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${DEFAULT_COLOR}")
     public void setDefaultColor( String color) {
         this.defaultColor = parseColor(color);
+    }
+
+    @Value("${MUTEX_COLOR}")
+    public void setMutexColor( String color) {
+        this.mutexColor = parseColor(color);
     }
 
     @Override
@@ -123,7 +129,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     }
 
     private void paintMutex(Graphics2D g) {
-        g.setColor(Color.white);
+        g.setColor(mutexColor);
         g.fill3DRect(leftBorder, initialYPosition - 20, rightBorder - leftBorder, 5000, true);
     }
 
