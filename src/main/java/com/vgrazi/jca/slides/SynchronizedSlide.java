@@ -6,11 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import static com.vgrazi.jca.util.Logging.log;
-import static com.vgrazi.jca.util.Logging.logAndSleep;
 
 @Component
 public class SynchronizedSlide extends Slide {
@@ -21,11 +17,11 @@ public class SynchronizedSlide extends Slide {
     @Autowired
     ThreadContext threadContext;
 
-    public void run() throws InterruptedException {
+    public void run() {
         Object mutex = new Object();
         log("Created mutex");
 
-        threadContext.addButton("Add thread", e -> {
+        threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
             addYieldRunnable(mutex, sprite1);
 
@@ -36,7 +32,7 @@ public class SynchronizedSlide extends Slide {
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
 
-        threadContext.addButton("Wait", e -> {
+        threadContext.addButton("Wait", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
             log("Calling wait() on Runnable", runningSprite);
@@ -44,21 +40,15 @@ public class SynchronizedSlide extends Slide {
 
         });
 
-       threadContext.addButton("Notify", e -> {
-            try {
-                ThreadSprite runningSprite = threadContext.getRunningThread();
-                // The new running thread should call notify
-                runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
-                logAndSleep("Set notifying on " + runningSprite);
-                runningSprite = threadContext.getRunningThread();
-                runningSprite.setTargetState(ThreadSprite.TargetState.release);
-                log("Set release on " + runningSprite);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-
-
-        });
+       threadContext.addButton("Notify", () -> {
+           ThreadSprite runningSprite = threadContext.getRunningThread();
+           // The new running thread should call notify
+           runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
+           log("Set notifying on ", runningSprite);
+           runningSprite = threadContext.getRunningThread();
+           runningSprite.setTargetState(ThreadSprite.TargetState.release);
+           log("Set release on " + runningSprite);
+       });
 
 //
 

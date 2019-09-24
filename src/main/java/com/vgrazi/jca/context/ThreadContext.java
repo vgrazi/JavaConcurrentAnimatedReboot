@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -65,6 +64,14 @@ public class ThreadContext implements InitializingBean {
 
     @Value("${arrow-length}")
     private int arrowLength;
+    @Value("${frame-x}")
+    private int frameX;
+    @Value("${frame-y}")
+    private int frameY;
+    @Value("${frame-width}")
+    private int frameWidth;
+    @Value("${frame-height}")
+    private int frameHeight;
 
     public ThreadContext() {
     }
@@ -181,13 +188,13 @@ public class ThreadContext implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setBounds(30, 30, 1200, 600);
+        frame.setBounds(frameX, frameY, frameWidth, frameHeight);
         render();
     }
 
-    public void addButton(String text, ActionListener action) {
+    public void addButton(String text, Runnable runnable) {
         JButton button = new JButton(text);
-        button.addActionListener(action);
+        button.addActionListener(e -> SwingUtilities.invokeLater(runnable));
         frame.getButtonPanel().add(button);
         frame.getButtonPanel().revalidate();
         frame.revalidate();

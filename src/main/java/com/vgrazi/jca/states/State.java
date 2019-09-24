@@ -63,7 +63,7 @@ public class State {
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.left);
-                } else if (position <= monolithRightBorder) {
+                } else {
                     sprite.setXPosition(position);
                 }
                 break;

@@ -41,7 +41,7 @@ public class Logging {
         if (cachedMessage == null || !cachedMessage.equals(message)) {
             messageCache.put(sprite, message);
             String newMessage = message + " " + sprite;
-            System.out.println(LocalTime.now() + " " + newMessage);
+            log(LocalTime.now() + " " + newMessage);
         }
     }
 

@@ -46,13 +46,13 @@ public class ThreadSprite implements InitializingBean {
 
     public RelativePosition getRelativePosition() {
         int position = getXPosition();
-        if(position < monolithLeftBorder - pixelsPerStep) {
+        if(position < monolithLeftBorder) {
             return RelativePosition.Before;
         }
-        else if (position >= monolithLeftBorder - pixelsPerStep && position <= monolithLeftBorder) {
+        else if (position >= monolithLeftBorder&& position <= monolithLeftBorder +  pixelsPerStep) {
             return RelativePosition.At;
         }
-        else if (position > monolithLeftBorder && position < monolithRightBorder) {
+        else if (position > monolithLeftBorder +  pixelsPerStep && position < monolithRightBorder) {
             return RelativePosition.In;
         }
         else {
