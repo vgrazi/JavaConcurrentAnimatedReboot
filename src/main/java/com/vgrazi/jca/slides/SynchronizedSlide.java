@@ -22,8 +22,8 @@ public class SynchronizedSlide extends Slide {
         log("Created mutex");
 
         threadContext.addButton("Add thread", () -> {
-            ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-            addYieldRunnable(mutex, sprite1);
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            addYieldRunnable(mutex, sprite);
 
         });
 
@@ -31,7 +31,6 @@ public class SynchronizedSlide extends Slide {
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
-
         threadContext.addButton("Wait", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             runningSprite.setTargetState(ThreadSprite.TargetState.waiting);

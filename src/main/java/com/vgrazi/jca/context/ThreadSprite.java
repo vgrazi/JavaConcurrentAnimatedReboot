@@ -72,6 +72,10 @@ public class ThreadSprite implements InitializingBean {
         return yPosition;
     }
 
+    public Thread.State getThreadState() {
+        return thread.getState();
+    }
+
     public enum Direction {
         right, down, left, up
     }
