@@ -79,11 +79,12 @@ public class ThreadContext implements InitializingBean {
     private void render() {
         Thread thread = new Thread(() -> {
             while (true) {
-                canvas.repaint();
+//                canvas.paintImmediately(canvas.getBounds());
+                canvas.repaint(canvas.getBounds());
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
 
