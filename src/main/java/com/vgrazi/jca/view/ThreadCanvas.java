@@ -30,24 +30,41 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    @Value("${BLOCKED_COLOR}")
-    private String blockedColorString;
     private Color blockedColor;
-    @Value("${RUNNABLE_COLOR}")
-    private String runnableColorString;
     private Color runnableColor;
-    @Value("${WAITING_COLOR}")
-    private String waitingColorString;
     private Color waitingColor;
-    @Value("${TIMED_WAITING_COLOR}")
-    private String timedWaitingColorString;
     private Color timedWaitingColor;
-    @Value("${TERMINATED_COLOR}")
-    private String terminatedColorString;
     private Color terminatedColor;
-    @Value("${DEFAULT_COLOR}")
-    private String defaultColorString;
     private Color defaultColor;
+
+    @Value("${BLOCKED_COLOR}")
+    public void setBlockedColor( String color) {
+        this.blockedColor = parseColor(color);
+    }
+
+    @Value("${RUNNABLE_COLOR}")
+    public void setRunnableColor( String color) {
+        this.runnableColor = parseColor(color);
+    }
+    @Value("${WAITING_COLOR}")
+    public void setWaitingColor( String color) {
+        this.waitingColor = parseColor(color);
+    }
+
+    @Value("${TIMED_WAITING_COLOR}")
+    public void setTimedWaitingColor( String color) {
+        this.timedWaitingColor = parseColor(color);
+    }
+
+    @Value("${TERMINATED_COLOR}")
+    public void setTerminatedColor(String color) {
+        this.terminatedColor = parseColor(color);
+    }
+
+    @Value("${DEFAULT_COLOR}")
+    public void setDefaultColor( String color) {
+        this.defaultColor = parseColor(color);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -113,10 +130,5 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        blockedColor = parseColor(blockedColorString);
-        runnableColor = parseColor(runnableColorString);
-        waitingColor = parseColor(waitingColorString);
-        timedWaitingColor = parseColor(timedWaitingColorString);
-        terminatedColor = parseColor(terminatedColorString);
     }
 }
