@@ -84,12 +84,8 @@ public class SynchronizedSlide extends Slide {
                                 break;
                             case notifying:
                                 mutex.notify();
-//                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
+                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
                                 break;
-                            case release:
-//                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
-                                break;
-
                             case default_state:
                                 Thread.yield();
                                 break;
