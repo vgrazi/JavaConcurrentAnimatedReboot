@@ -1,5 +1,6 @@
 package com.vgrazi.jca.view;
 
+import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.InitializingBean;
@@ -120,7 +121,13 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
             color = timedWaitingColor;
         }
         else if(state == Thread.State.TERMINATED) {
-            color = terminatedColor;
+            // we should display it as runnable (green) until it flies
+            // past the monolith
+            if(sprite.getRelativePosition() == RelativePosition.After)
+                color = terminatedColor;
+            else {
+                color = runnableColor;
+            }
         }
         else {
             color = defaultColor;

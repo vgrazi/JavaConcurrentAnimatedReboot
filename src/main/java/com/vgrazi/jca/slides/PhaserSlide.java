@@ -40,6 +40,8 @@ public class PhaserSlide extends Slide {
         });
 
         threadContext.addButton("register()", ()->{
+            // todo: register should set a message on the UI message area, indicating the number
+            //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setTargetState(ThreadSprite.TargetState.register);
             addRunnable(phaser, sprite);
