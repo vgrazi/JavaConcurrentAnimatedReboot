@@ -38,7 +38,6 @@ public class ThreadSprite implements InitializingBean {
 
     /**
      * You can change the ID to something more meaningful
-     * @param ID
      */
     public void setID(int ID) {
         this.ID = ID;
@@ -49,7 +48,7 @@ public class ThreadSprite implements InitializingBean {
         if(position < monolithLeftBorder) {
             return RelativePosition.Before;
         }
-        else if (position >= monolithLeftBorder&& position <= monolithLeftBorder +  pixelsPerStep) {
+        else if (position <= monolithLeftBorder + pixelsPerStep) {
             return RelativePosition.At;
         }
         else if (position > monolithLeftBorder +  pixelsPerStep && position < monolithRightBorder) {
@@ -94,7 +93,7 @@ public class ThreadSprite implements InitializingBean {
      * todo: should TargetState be renamed to action? (Since it is really an action to be performed, more than it is a state.)
      */
     public enum TargetState {
-        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, release
+        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, notifyingAll, release
 
     }
 
@@ -125,7 +124,6 @@ public class ThreadSprite implements InitializingBean {
     /**
      * Returns our internal thread state, reflecting the native thread state, with some adjustments (new and runnable
      * are both considered runnable, and waiting and timed-waiting are both considered waiting.
-     * @return
      */
     State getState() {
         if(thread == null) {

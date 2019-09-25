@@ -11,11 +11,14 @@ import static com.vgrazi.jca.util.Logging.log;
 @Component
 public class SynchronizedSlide extends Slide {
 
-    @Autowired
-    ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
-    @Autowired
-    ThreadContext threadContext;
+    private final ThreadContext threadContext;
+
+    public SynchronizedSlide(ApplicationContext applicationContext, ThreadContext threadContext) {
+        this.applicationContext = applicationContext;
+        this.threadContext = threadContext;
+    }
 
     public void run() {
         Object mutex = new Object();
@@ -31,7 +34,7 @@ public class SynchronizedSlide extends Slide {
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
-        threadContext.addButton("Wait", () -> {
+        threadContext.addButton("wait()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
             log("Calling wait() on Runnable", runningSprite);
@@ -39,11 +42,18 @@ public class SynchronizedSlide extends Slide {
 
         });
 
-       threadContext.addButton("Notify", () -> {
+       threadContext.addButton("notify()", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
            // The new running thread should call notify
            runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
            log("Set notifying on ", runningSprite);
+       });
+
+       threadContext.addButton("notifyAll()", () -> {
+           ThreadSprite runningSprite = threadContext.getRunningThread();
+           // The new running thread should call notify
+           runningSprite.setTargetState(ThreadSprite.TargetState.notifyingAll);
+           log("Set notifyAll on ", runningSprite);
        });
 
        threadContext.addButton("Release", () -> {
@@ -52,19 +62,6 @@ public class SynchronizedSlide extends Slide {
            runningSprite.setTargetState(ThreadSprite.TargetState.release);
            log("Set release on ", runningSprite);
        });
-
-//
-
-//        List<ThreadSprite> runningThreads = threadContext.getRunningThreads();
-//        System.out.println("1. Running:" + runningThreads);
-//        threadContext.stopThread(runningSprite);
-//        logAndSleep(runningSprite + " done");
-//
-//        runningThreads = threadContext.getRunningThreads();
-//        System.out.println("2. Running:" + runningThreads);
-//        runningSprite = runningThreads.get(0);
-//        threadContext.stopThread(runningSprite);
-//        logAndSleep(1000, " done", runningSprite);
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
@@ -84,6 +81,10 @@ public class SynchronizedSlide extends Slide {
                                 break;
                             case notifying:
                                 mutex.notify();
+                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
+                                break;
+                            case notifyingAll:
+                                mutex.notifyAll();
                                 sprite.setTargetState(ThreadSprite.TargetState.default_state);
                                 break;
                             case default_state:
