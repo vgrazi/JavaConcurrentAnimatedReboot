@@ -93,7 +93,7 @@ public class ThreadSprite implements InitializingBean {
      * todo: should TargetState be renamed to action? (Since it is really an action to be performed, more than it is a state.)
      */
     public enum TargetState {
-        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, notifyingAll, release
+        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, notifyingAll, arriveAndAwaitAdvance, register, release
 
     }
 

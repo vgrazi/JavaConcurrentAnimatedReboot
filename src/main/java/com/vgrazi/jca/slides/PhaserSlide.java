@@ -2,7 +2,6 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
-import com.vgrazi.jca.util.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -20,24 +19,32 @@ public class PhaserSlide extends Slide {
     @Autowired
     ThreadContext threadContext;
 
-    public void run() throws InterruptedException {
+    public void run() {
         Phaser phaser = new Phaser(4);
         threadContext.addButton("await()", ()->{
-            ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
-            log("Adding first await ", sprite1);
-            addRunnable(phaser, sprite1);
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+            addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arrive()", ()->{
-            ThreadSprite arriveSprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-            arriveSprite1.setTargetState(ThreadSprite.TargetState.arrive);
-            log("Arriving ", arriveSprite1);
-            addRunnable(phaser, arriveSprite1);
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setTargetState(ThreadSprite.TargetState.arrive);
+            addRunnable(phaser, sprite);
+        });
+
+        threadContext.addButton("arriveAndAwaitAdvance()", ()->{
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setTargetState(ThreadSprite.TargetState.arriveAndAwaitAdvance);
+            addRunnable(phaser, sprite);
+        });
+
+        threadContext.addButton("register()", ()->{
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setTargetState(ThreadSprite.TargetState.register);
+            addRunnable(phaser, sprite);
         });
         threadContext.setVisible();
-
-
     }
 
     private void addRunnable(Phaser phaser, ThreadSprite sprite) {
@@ -56,6 +63,14 @@ public class PhaserSlide extends Slide {
                     case arrive:
                         phase = phaser.arrive();
                         System.out.println("Phase:" + phase);
+                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        break;
+                    case arriveAndAwaitAdvance:
+                        phase = phaser.arriveAndAwaitAdvance();
+                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        break;
+                    case register:
+                        phase = phaser.register();
                         sprite.setTargetState(ThreadSprite.TargetState.release);
                         break;
                     case default_state:
