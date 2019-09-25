@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Phaser;
 
+import static com.vgrazi.jca.util.Logging.log;
+
 @Component
 public class PhaserSlide extends Slide {
 
@@ -20,36 +22,20 @@ public class PhaserSlide extends Slide {
 
     public void run() throws InterruptedException {
         Phaser phaser = new Phaser(4);
-        Logging.logAndSleep(0, "Creating Phaser");
-        ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
-        Logging.logAndSleep("Adding first await ", sprite1);
-        addRunnable(phaser, sprite1);
+        threadContext.addButton("await()", ()->{
+            ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+            log("Adding first await ", sprite1);
+            addRunnable(phaser, sprite1);
+        });
 
-        ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        sprite2.setTargetState(ThreadSprite.TargetState.awaitAdvance);
-        Logging.logAndSleep("Adding second await ",sprite2);
-        addRunnable(phaser, sprite2);
-
-        ThreadSprite arriveSprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        arriveSprite1.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.logAndSleep("Arriving ", arriveSprite1);
-        addRunnable(phaser, arriveSprite1);
-
-        ThreadSprite arriveSprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        arriveSprite2.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.logAndSleep("Arriving ", arriveSprite2);
-        addRunnable(phaser, arriveSprite2);
-
-        ThreadSprite arriveSprite3 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        arriveSprite3.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.logAndSleep("Arriving ", arriveSprite3);
-        addRunnable(phaser, arriveSprite3);
-
-        ThreadSprite arriveSprite4 = (ThreadSprite) applicationContext.getBean("threadSprite");
-        arriveSprite4.setTargetState(ThreadSprite.TargetState.arrive);
-        Logging.logAndSleep("Arriving ", arriveSprite4);
-        addRunnable(phaser, arriveSprite4);
+        threadContext.addButton("arrive()", ()->{
+            ThreadSprite arriveSprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
+            arriveSprite1.setTargetState(ThreadSprite.TargetState.arrive);
+            log("Arriving ", arriveSprite1);
+            addRunnable(phaser, arriveSprite1);
+        });
+        threadContext.setVisible();
 
 
     }

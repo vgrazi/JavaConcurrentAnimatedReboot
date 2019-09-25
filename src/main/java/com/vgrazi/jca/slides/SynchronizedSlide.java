@@ -30,7 +30,6 @@ public class SynchronizedSlide extends Slide {
 
         });
 
-        threadContext.setVisible();
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
@@ -62,6 +61,9 @@ public class SynchronizedSlide extends Slide {
            runningSprite.setTargetState(ThreadSprite.TargetState.release);
            log("Set release on ", runningSprite);
        });
+
+        threadContext.setVisible();
+
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
