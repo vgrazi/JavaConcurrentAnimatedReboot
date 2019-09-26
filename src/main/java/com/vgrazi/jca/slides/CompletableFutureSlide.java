@@ -35,7 +35,7 @@ public class CompletableFutureSlide extends Slide {
             CompletableFuture<Void> completableFuture = CompletableFuture.allOf(completableFuture1, completableFuture2);
             completableFuture.get();
             ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite1.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+            sprite1.setAction("awaitAdvance");
             Logging.logAndSleep("Adding first await ", sprite1);
             addRunnable(completableFuture, sprite1);
         } catch (ExecutionException e) {
@@ -47,19 +47,19 @@ public class CompletableFutureSlide extends Slide {
 //        sprite.attachAndStartRunnable(() -> {
 //            int phase = 0;
 //            while (sprite.isRunning()) {
-//                if (sprite.getTargetState() == ThreadSprite.TargetState.release) {
+//                if (sprite.getAction() == ThreadSprite.TargetState.release) {
 //                    threadContext.stopThread(sprite);
 //                    break;
 //                }
-//                switch (sprite.getTargetState()) {
+//                switch (sprite.getAction()) {
 //                    case awaitAdvance:
 //                        completableFuture.awaitAdvance(phase);
-//                        sprite.setTargetState(ThreadSprite.TargetState.release);
+//                        sprite.setAction(ThreadSprite.TargetState.release);
 //                        break;
 //                    case arrive:
 //                        phase = completableFuture.arrive();
 //                        System.out.println("Phase:" + phase);
-//                        sprite.setTargetState(ThreadSprite.TargetState.release);
+//                        sprite.setAction(ThreadSprite.TargetState.release);
 //                        break;
 //                    case default_state:
 //                        Thread.yield();

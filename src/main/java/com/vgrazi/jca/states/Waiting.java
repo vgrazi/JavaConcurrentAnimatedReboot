@@ -17,7 +17,7 @@ public class Waiting extends State implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    private int xPos;
+    private int waitingXPos;
     @Override
     public void advancePosition(ThreadSprite sprite) {
         RelativePosition relativePosition = sprite.getRelativePosition();
@@ -27,7 +27,8 @@ public class Waiting extends State implements InitializingBean {
                 break;
             case At:
             case In:
-                sprite.setXPosition(xPos);
+                // todo: only stop when it arrives at the waitingXPos
+                sprite.setXPosition(waitingXPos);
                 break;
             case After:
                 // nothing to do, this thread is waiting
@@ -37,6 +38,6 @@ public class Waiting extends State implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        xPos = (monolithLeftBorder + monolithRightBorder + arrowLength)/2;
+        waitingXPos = (monolithLeftBorder + monolithRightBorder + arrowLength)/2;
     }
 }

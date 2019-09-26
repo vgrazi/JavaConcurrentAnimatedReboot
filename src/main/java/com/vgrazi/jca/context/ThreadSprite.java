@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
- * including the Java thread itself, the shape, xPosition, and the targetState, which is called by slide,
+ * including the Java thread itself, the shape, xPosition, and the action, which is called by slide,
  * and is used to change the state
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
@@ -19,7 +19,6 @@ public class ThreadSprite implements InitializingBean {
 
     private int ID = IDGenerator.next();
 
-    private TargetState targetState = TargetState.default_state;
     private Direction direction = Direction.right;
     @Value("${monolith-left-border}")
     private int monolithLeftBorder;
@@ -32,6 +31,7 @@ public class ThreadSprite implements InitializingBean {
     @Autowired
     private ThreadContext threadContext;
     private int yPosition;
+    private String action = "default";
 
     public ThreadSprite() {
     }
@@ -88,21 +88,15 @@ public class ThreadSprite implements InitializingBean {
     }
 
     /**
-     * In order to change the thread state, call setTargetState() passing in appropriate state.
+     * In order to change the thread state, call setAction() passing in appropriate state.
      * The runnable must be written such that it recognizes the state and responds appropriately
-     * todo: should TargetState be renamed to action? (Since it is really an action to be performed, more than it is a state.)
      */
-    public enum TargetState {
-        default_state, waiting, notifying, readLock, writeLock, releaseWriteLock, releaseReadLock, awaitAdvance, arrive, notifyingAll, arriveAndAwaitAdvance, register, release
-
+    public String getAction() {
+        return action;
     }
 
-    public TargetState getTargetState() {
-        return targetState;
-    }
-
-    public void setTargetState(TargetState targetState) {
-        this.targetState = targetState;
+    public void setAction(String action) {
+        this.action = action;
     }
 
     /**

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Phaser;
 
-import static com.vgrazi.jca.util.Logging.log;
-
 @Component
 public class PhaserSlide extends Slide {
 
@@ -23,19 +21,19 @@ public class PhaserSlide extends Slide {
         Phaser phaser = new Phaser(4);
         threadContext.addButton("await()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setTargetState(ThreadSprite.TargetState.awaitAdvance);
+            sprite.setAction("awaitAdvance");
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arrive()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setTargetState(ThreadSprite.TargetState.arrive);
+            sprite.setAction("arrive");
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arriveAndAwaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setTargetState(ThreadSprite.TargetState.arriveAndAwaitAdvance);
+            sprite.setAction("arriveAndAwaitAdvance");
             addRunnable(phaser, sprite);
         });
 
@@ -43,7 +41,7 @@ public class PhaserSlide extends Slide {
             // todo: register should set a message on the UI message area, indicating the number
             //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setTargetState(ThreadSprite.TargetState.register);
+            sprite.setAction("register");
             addRunnable(phaser, sprite);
         });
         threadContext.setVisible();
@@ -53,29 +51,29 @@ public class PhaserSlide extends Slide {
         sprite.attachAndStartRunnable(() -> {
             int phase =0;
             while (sprite.isRunning()) {
-                if (sprite.getTargetState() == ThreadSprite.TargetState.release) {
+                if ("release".equals(sprite.getAction())) {
                     threadContext.stopThread(sprite);
                     break;
                 }
-                switch (sprite.getTargetState()) {
-                    case awaitAdvance:
+                switch (sprite.getAction()) {
+                    case "awaitAdvance":
                         phaser.awaitAdvance(phase);
-                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        sprite.setAction("release");
                         break;
-                    case arrive:
+                    case "arrive":
                         phase = phaser.arrive();
                         System.out.println("Phase:" + phase);
-                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        sprite.setAction("release");
                         break;
-                    case arriveAndAwaitAdvance:
+                    case "arriveAndAwaitAdvance":
                         phase = phaser.arriveAndAwaitAdvance();
-                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        sprite.setAction("release");
                         break;
-                    case register:
+                    case "register":
                         phase = phaser.register();
-                        sprite.setTargetState(ThreadSprite.TargetState.release);
+                        sprite.setAction("release");
                         break;
-                    case default_state:
+                    case "default":
                         Thread.yield();
                         break;
                 }

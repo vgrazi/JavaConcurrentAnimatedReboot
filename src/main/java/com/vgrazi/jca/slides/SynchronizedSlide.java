@@ -2,7 +2,6 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +34,7 @@ public class SynchronizedSlide extends Slide {
 //
         threadContext.addButton("wait()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
-            runningSprite.setTargetState(ThreadSprite.TargetState.waiting);
+            runningSprite.setAction("waiting");
             log("Calling wait() on Runnable", runningSprite);
 
 
@@ -44,21 +43,21 @@ public class SynchronizedSlide extends Slide {
        threadContext.addButton("notify()", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
            // The new running thread should call notify
-           runningSprite.setTargetState(ThreadSprite.TargetState.notifying);
+           runningSprite.setAction("notifying");
            log("Set notifying on ", runningSprite);
        });
 
        threadContext.addButton("notifyAll()", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
            // The new running thread should call notify
-           runningSprite.setTargetState(ThreadSprite.TargetState.notifyingAll);
+           runningSprite.setAction("notifyingAll");
            log("Set notifyAll on ", runningSprite);
        });
 
        threadContext.addButton("Release", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
            // The new running thread should call notify
-           runningSprite.setTargetState(ThreadSprite.TargetState.release);
+           runningSprite.setAction("release");
            log("Set release on ", runningSprite);
        });
 
@@ -70,26 +69,26 @@ public class SynchronizedSlide extends Slide {
         sprite.attachAndStartRunnable(() -> {
             try {
                 synchronized (mutex) {
-                    System.out.println("Target state:" + sprite.getTargetState());
+                    System.out.println("Target state:" + sprite.getAction());
                     while (sprite.isRunning()) {
-                        if (sprite.getTargetState() == ThreadSprite.TargetState.release) {
+                        if ("release".equals(sprite.getAction())) {
                             threadContext.stopThread(sprite);
                             break;
                         }
-                        switch (sprite.getTargetState()) {
-                            case waiting:
+                        switch (sprite.getAction()) {
+                            case "waiting":
                                 mutex.wait();
-                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
+                                sprite.setAction("default");
                                 break;
-                            case notifying:
+                            case "notifying":
                                 mutex.notify();
-                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
+                                sprite.setAction("default");
                                 break;
-                            case notifyingAll:
+                            case "notifyingAll":
                                 mutex.notifyAll();
-                                sprite.setTargetState(ThreadSprite.TargetState.default_state);
+                                sprite.setAction("default");
                                 break;
-                            case default_state:
+                            case "default":
                                 Thread.yield();
                                 break;
                         }
