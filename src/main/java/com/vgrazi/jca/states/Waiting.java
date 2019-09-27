@@ -7,7 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-public class Waiting extends State implements InitializingBean {
+public class Waiting extends ThreadState implements InitializingBean {
     @Autowired
     ThreadContext threadContext;
     @Value("${monolith-left-border}")

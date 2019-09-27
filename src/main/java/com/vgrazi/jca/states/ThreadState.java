@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
  * monolith, will advance the thread to the right
  */
 @Component
-public class State {
+public class ThreadState {
 
     /**
      * Based on the current state, calculates the next position of the thread
      * The state is automatically returned by ThreadSprite.getState(), based on the thread's state
      *
+     * @param thread
      */
     public void advancePosition(ThreadSprite thread){}
 

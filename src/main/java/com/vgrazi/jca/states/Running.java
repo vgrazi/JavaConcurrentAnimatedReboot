@@ -5,7 +5,7 @@ import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Running extends State {
+public class Running extends ThreadState {
     @Autowired
     ThreadContext threadContext;
 

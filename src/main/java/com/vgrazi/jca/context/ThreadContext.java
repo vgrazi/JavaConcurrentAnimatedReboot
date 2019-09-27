@@ -145,8 +145,8 @@ public class ThreadContext implements InitializingBean {
     /**
      * Returns a list of all threads that are not of the specified state
      */
-    public List<ThreadSprite> getThreadsNotOfState(State state) {
-        List<ThreadSprite> collect = threads.stream().filter(sprite -> sprite.getState() != state).collect(Collectors.toList());
+    public List<ThreadSprite> getThreadsNotOfState(ThreadState threadState) {
+        List<ThreadSprite> collect = threads.stream().filter(sprite -> sprite.getState() != threadState).collect(Collectors.toList());
         return collect;
     }
 
@@ -157,8 +157,8 @@ public class ThreadContext implements InitializingBean {
     /**
      * Returns a list of all threads in the supplied state
      */
-    private List<ThreadSprite> getThreadsOfState(State state) {
-        List<ThreadSprite> collect = threads.stream().filter(sprite -> sprite.getState() == state).collect(Collectors.toList());
+    private List<ThreadSprite> getThreadsOfState(ThreadState threadState) {
+        List<ThreadSprite> collect = threads.stream().filter(sprite -> sprite.getState() == threadState).collect(Collectors.toList());
         return collect;
     }
 

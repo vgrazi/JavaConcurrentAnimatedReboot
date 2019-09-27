@@ -3,7 +3,7 @@ package com.vgrazi.jca.states;
 import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.context.ThreadSprite;
 
-public class Blocked extends State {
+public class Blocked extends ThreadState {
 
     @Override
     public void advancePosition(ThreadSprite sprite) {
