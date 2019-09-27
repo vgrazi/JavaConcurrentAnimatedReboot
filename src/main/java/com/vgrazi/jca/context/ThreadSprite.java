@@ -1,6 +1,9 @@
 package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.states.ThreadState;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.awt.*;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
@@ -10,8 +13,10 @@ import com.vgrazi.jca.states.ThreadState;
  * running flag. So construct the sprite, then add the Runnable.
  */
 public class ThreadSprite extends Sprite {
-    private Thread thread;
 
+    private Thread thread;
+    @Value("${arrow-length}")
+    private int arrowLength;
     public Thread getThread() {
         return thread;
     }
@@ -41,6 +46,15 @@ public class ThreadSprite extends Sprite {
         getState().advancePosition(this);
     }
 
+    @Override
+    public void render(Graphics2D graphics) {
+
+        Color color = getThreadContext().getColor(this);
+//        Color color = getColorByThreadState();
+        graphics.setColor(color);
+        graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
+    }
+
     protected ThreadState getState() {
         if(thread == null) {
             return null;
@@ -60,5 +74,6 @@ public class ThreadSprite extends Sprite {
                 throw new IllegalArgumentException("Unknown thread state " + thread.getState());
         }
     }
+
 
 }

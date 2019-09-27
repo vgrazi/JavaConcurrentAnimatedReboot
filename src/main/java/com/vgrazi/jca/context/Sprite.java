@@ -6,6 +6,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.awt.*;
+
 /**
  * Base class for sprites, such as ThreadSprite, FutureSprite, ObjectSprite, etc.
  */
@@ -67,6 +69,8 @@ public abstract class Sprite implements InitializingBean {
     public void setThreadContext(ThreadContext threadContext) {
         this.threadContext = threadContext;
     }
+
+    public abstract void render(Graphics2D graphics);
 
 
     public enum Direction {

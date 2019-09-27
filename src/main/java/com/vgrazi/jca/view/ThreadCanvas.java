@@ -1,6 +1,6 @@
 package com.vgrazi.jca.view;
 
-import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import static com.vgrazi.jca.util.ColorParser.*;
+
+import static com.vgrazi.jca.util.ColorParser.parseColor;
 
 @Component
 public class ThreadCanvas extends JPanel implements InitializingBean {
@@ -31,42 +32,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    private Color blockedColor;
-    private Color runnableColor;
-    private Color waitingColor;
-    private Color timedWaitingColor;
-    private Color terminatedColor;
-    private Color defaultColor;
     private Color mutexColor;
-
-    @Value("${BLOCKED_COLOR}")
-    public void setBlockedColor( String color) {
-        this.blockedColor = parseColor(color);
-    }
-
-    @Value("${RUNNABLE_COLOR}")
-    public void setRunnableColor( String color) {
-        this.runnableColor = parseColor(color);
-    }
-    @Value("${WAITING_COLOR}")
-    public void setWaitingColor( String color) {
-        this.waitingColor = parseColor(color);
-    }
-
-    @Value("${TIMED_WAITING_COLOR}")
-    public void setTimedWaitingColor( String color) {
-        this.timedWaitingColor = parseColor(color);
-    }
-
-    @Value("${TERMINATED_COLOR}")
-    public void setTerminatedColor(String color) {
-        this.terminatedColor = parseColor(color);
-    }
-
-    @Value("${DEFAULT_COLOR}")
-    public void setDefaultColor( String color) {
-        this.defaultColor = parseColor(color);
-    }
 
     @Value("${MUTEX_COLOR}")
     public void setMutexColor( String color) {
@@ -94,46 +60,10 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         graphics.dispose();
     }
 
-    private void render(ThreadSprite sprite, Graphics2D graphics) {
-        Color color = getColorByThreadState(sprite);
-
-        graphics.setColor(color);
-        graphics.drawLine(sprite.getXPosition() - arrowLength, sprite.getYPosition(), sprite.getXPosition(), sprite.getYPosition());
+    private void render(Sprite sprite, Graphics2D graphics) {
+        sprite.render(graphics);
     }
 
-    /**
-     * We support coloring by different schemes. This scheme colors threads by their state, blue for blocked, green
-     * for Runnable, etc.
-     */
-    private Color getColorByThreadState(ThreadSprite sprite) {
-        Color color;
-        Thread.State state = sprite.getThreadState();
-        if(state == Thread.State.BLOCKED) {
-            color = blockedColor;
-        }
-        else if(state == Thread.State.RUNNABLE) {
-            color = runnableColor;
-        }
-        else if(state == Thread.State.WAITING) {
-            color = waitingColor;
-        }
-        else if(state == Thread.State.TIMED_WAITING) {
-            color = timedWaitingColor;
-        }
-        else if(state == Thread.State.TERMINATED) {
-            // we should display it as runnable (green) until it flies
-            // past the monolith
-            if(sprite.getRelativePosition() == RelativePosition.After)
-                color = terminatedColor;
-            else {
-                color = runnableColor;
-            }
-        }
-        else {
-            color = defaultColor;
-        }
-        return color;
-    }
 
     private void paintMutex(Graphics2D g) {
         g.setColor(mutexColor);

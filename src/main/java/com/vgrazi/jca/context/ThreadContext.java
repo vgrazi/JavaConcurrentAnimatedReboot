@@ -11,20 +11,41 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.vgrazi.jca.util.ColorParser.parseColor;
+
 /**
- * Maintains the list of ThreadSprites, position of monolith,
+ * Maintains the list of ThreadSprites, position of monolith, color schemes,
  * responsible for creating new threadSprites, and provides accessors
  * for all of the threads of a specific state (for example, getRunningThreads)
  */
 @Component
 public class ThreadContext implements InitializingBean {
+    /**
+     * We either color by thread state or thread instance (eg in ForkJoin)
+     */
+    private ColorationScheme colorScheme = ColorationScheme.byState;
+
+    private enum ColorationScheme {
+        byState, byInstance
+    }
+
+    public void colorByThreadState() {
+        this.colorScheme = ColorationScheme.byState;
+    }
+    public void colorByThreadInstance() {
+        this.colorScheme = ColorationScheme.byInstance;
+    }
+
     @Autowired
     Blocked blocked;
     @Autowired
@@ -42,12 +63,22 @@ public class ThreadContext implements InitializingBean {
 
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
+    private Color blockedColor;
+    private Color runnableColor;
+    private Color waitingColor;
+    private Color timedWaitingColor;
+    private Color terminatedColor;
+    private Color defaultColor;
+    private Color unknownColor;
 
     private List<ThreadSprite> threads = new CopyOnWriteArrayList<>();
+
+    private final Map<Thread, Color> threadColors = new HashMap<>();
     @Autowired
     ApplicationContext context;
 
-    @Autowired ThreadCanvas canvas;
+    @Autowired
+    ThreadCanvas canvas;
 
     @Autowired
     JCAFrame frame;
@@ -76,6 +107,44 @@ public class ThreadContext implements InitializingBean {
     public ThreadContext() {
     }
 
+    public void reset() {
+        threadColors.clear();
+    }
+    @Value("${BLOCKED_COLOR}")
+    public void setBlockedColor(String color) {
+        this.blockedColor = parseColor(color);
+    }
+
+    @Value("${RUNNABLE_COLOR}")
+    public void setRunnableColor(String color) {
+        this.runnableColor = parseColor(color);
+    }
+
+    @Value("${WAITING_COLOR}")
+    public void setWaitingColor(String color) {
+        this.waitingColor = parseColor(color);
+    }
+
+    @Value("${TIMED_WAITING_COLOR}")
+    public void setTimedWaitingColor(String color) {
+        this.timedWaitingColor = parseColor(color);
+    }
+
+    @Value("${TERMINATED_COLOR}")
+    public void setTerminatedColor(String color) {
+        this.terminatedColor = parseColor(color);
+    }
+
+    @Value("${DEFAULT_COLOR}")
+    public void setDefaultColor(String color) {
+        this.defaultColor = parseColor(color);
+    }
+
+    @Value("${UNKNOWN_COLOR}")
+    public void setUnknownColor(String color) {
+        this.unknownColor = parseColor(color);
+    }
+
     private void render() {
         Thread thread = new Thread(() -> {
             while (true) {
@@ -92,14 +161,25 @@ public class ThreadContext implements InitializingBean {
         thread.start();
     }
 
+    private final Color[] colors = {Color.red, Color.CYAN, Color.BLUE, Color.DARK_GRAY,
+            Color.gray, Color.GREEN, Color.YELLOW
+    };
+
+    private int colorPointer = 0;
+
+    private Color getNextColor() {
+        Color color = colors[(colorPointer++) % colors.length];
+        return color;
+    }
 
     public synchronized void addThread(ThreadSprite thread) {
         threads.add(thread);
+        threadColors.put(thread.getThread(), getNextColor());
     }
 
     public synchronized void stopThread(ThreadSprite threadSprite) {
         threadSprite.setRunning(false);
-        new Thread(()->{
+        new Thread(() -> {
             try {
                 Thread.sleep(5000);
                 threads.remove(threadSprite);
@@ -112,7 +192,7 @@ public class ThreadContext implements InitializingBean {
     public void run() throws InterruptedException {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
-        while(true) {
+        while (true) {
             printAllThreads();
             Thread.sleep(100);
         }
@@ -124,7 +204,7 @@ public class ThreadContext implements InitializingBean {
      */
     public ThreadSprite getRunningThread() {
         List<ThreadSprite> threads = getThreadsOfState(runnable);
-        if(threads.size() != 1) {
+        if (threads.size() != 1) {
             throw new IllegalArgumentException("Expected one running thread but found " + threads.size());
         }
 
@@ -205,5 +285,61 @@ public class ThreadContext implements InitializingBean {
     public void setVisible() {
         frame.setVisible(true);
     }
+
+    public Color getColor(ThreadSprite threadSprite) {
+        Color color;
+
+        if (isColorByThreadState()) {
+            color = getColorByThreadState(threadSprite);
+        } else if (isColorByThreadInstance()) {
+            color = threadColors.get(threadSprite.getThread());
+            if (color == null) {
+                color = unknownColor;
+            }
+        } else {
+            throw new IllegalArgumentException("Must set coloration scheme - by state or by instance");
+        }
+        return color;
+    }
+
+    private boolean isColorByThreadState() {
+        return colorScheme == ColorationScheme.byState;
+    }
+
+    private boolean isColorByThreadInstance() {
+        return colorScheme == ColorationScheme.byInstance;
+    }
+
+    /**
+     * We support coloring by different schemes. This scheme colors threads by their state, blue for blocked, green
+     * for Runnable, etc.
+     *
+     * @param threadSprite
+     */
+    private Color getColorByThreadState(ThreadSprite threadSprite) {
+        Color color;
+        Thread.State state = threadSprite.getThreadState();
+        if (state == Thread.State.BLOCKED) {
+            color = blockedColor;
+        } else if (state == Thread.State.RUNNABLE) {
+            color = runnableColor;
+        } else if (state == Thread.State.WAITING) {
+            color = waitingColor;
+        } else if (state == Thread.State.TIMED_WAITING) {
+            color = timedWaitingColor;
+        } else if (state == Thread.State.TERMINATED) {
+            // we should display it as runnable (green) until it flies
+            // past the monolith
+            if (threadSprite.getRelativePosition() == RelativePosition.After)
+                color = terminatedColor;
+            else {
+                color = runnableColor;
+            }
+        } else {
+            color = defaultColor;
+        }
+        return color;
+    }
+
 }
 
