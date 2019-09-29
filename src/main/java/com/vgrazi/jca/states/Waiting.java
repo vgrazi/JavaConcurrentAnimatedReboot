@@ -1,8 +1,8 @@
 package com.vgrazi.jca.states;
 
 import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ public class Waiting extends ThreadState implements InitializingBean {
 
     private int waitingXPos;
     @Override
-    public void advancePosition(ThreadSprite sprite) {
+    public void advancePosition(Sprite sprite) {
         RelativePosition relativePosition = sprite.getRelativePosition();
         switch (relativePosition) {
             case Before:

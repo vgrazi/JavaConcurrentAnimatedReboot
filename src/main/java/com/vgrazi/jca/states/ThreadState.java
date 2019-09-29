@@ -1,5 +1,6 @@
 package com.vgrazi.jca.states;
 
+import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,7 @@ import org.springframework.stereotype.Component;
  * monolith, will advance the thread to the right
  */
 @Component
-public class ThreadState {
-
-    /**
-     * Based on the current state, calculates the next position of the thread
-     * The state is automatically returned by ThreadSprite.getState(), based on the thread's state
-     *
-     * @param thread
-     */
-    public void advancePosition(ThreadSprite thread){}
+public abstract class ThreadState implements State {
 
     @Autowired
     protected ThreadContext threadContext;
@@ -40,7 +33,7 @@ public class ThreadState {
      * Given a sprite before the monolith, calculates the next position
      * and stores it in the sprite
      */
-    void calculateNextPositionBefore(ThreadSprite sprite) {
+    void calculateNextPositionBefore(Sprite sprite) {
         int position = sprite.getXPosition();
         position += pixelsPerStep;
         if (position > monolithLeftBorder) {
@@ -53,7 +46,7 @@ public class ThreadState {
      * Given a sprite inside the monolith, calculates the next position
      * and stores it in the sprite
      */
-    void calculateNextPositionIn(ThreadSprite sprite) {
+    void calculateNextPositionIn(Sprite sprite) {
         int position = sprite.getXPosition();
         ThreadSprite.Direction direction = sprite.getDirection();
         switch (direction) {
@@ -82,7 +75,7 @@ public class ThreadState {
         }
     }
 
-    void calculateNextPositionAfter(ThreadSprite sprite) {
+    void calculateNextPositionAfter(Sprite sprite) {
         sprite.setXPosition(sprite.getXPosition() + threadContext.pixelsPerStep);
     }
 }

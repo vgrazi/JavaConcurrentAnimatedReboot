@@ -1,12 +1,12 @@
 package com.vgrazi.jca.states;
 
 import com.vgrazi.jca.context.RelativePosition;
-import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.context.Sprite;
 
 public class Blocked extends ThreadState {
 
     @Override
-    public void advancePosition(ThreadSprite sprite) {
+    public void advancePosition(Sprite sprite) {
         int position = sprite.getXPosition();
         RelativePosition relativePosition = sprite.getRelativePosition();
         switch (relativePosition) {
@@ -18,10 +18,8 @@ public class Blocked extends ThreadState {
                 sprite.setXPosition(position);
                 break;
             case At:
-                break;
-            case In:
-                break;
             case After:
+            case In:
                 break;
         }
     }

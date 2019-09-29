@@ -1,7 +1,7 @@
 package com.vgrazi.jca.states;
 
+import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Terminated extends ThreadState {
@@ -9,7 +9,7 @@ public class Terminated extends ThreadState {
     ThreadContext threadContext;
 
     @Override
-    public void advancePosition(ThreadSprite thread) {
-        thread.setXPosition(thread.getXPosition() + threadContext.pixelsPerStep);
+    public void advancePosition(Sprite sprite) {
+        sprite.setXPosition(sprite.getXPosition() + threadContext.pixelsPerStep);
     }
 }
