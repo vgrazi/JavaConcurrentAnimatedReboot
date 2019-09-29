@@ -5,6 +5,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
+import java.util.concurrent.CompletableFuture;
+
+import static com.vgrazi.jca.util.ColorParser.parseColor;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
@@ -13,47 +16,35 @@ import java.awt.*;
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class ThreadSprite extends Sprite implements InitializingBean  {
+public class FutureSprite extends Sprite implements InitializingBean {
 
     private Thread thread;
-    @Value("${arrow-length}")
-    private int arrowLength;
-    public Thread getThread() {
-        return thread;
-    }
-    @Value("${pixels-per-y-step}")
+    private Color futureDefaultColor;
+    private Color futureDoneColor;
+    @Value("${monolith-left-border}")
+    private int leftBorder;
+
+    @Value("${monolith-right-border}")
+    private int rightBorder;
+
+    @Value("${future-width}")
+    private int futureWidth;
+
+    private CompletableFuture future;
+    @Value("${future-height}")
     private int height;
 
-    public Thread.State getThreadState() {
-        return thread.getState();
-    }
-    /**
-     * Create the thread associated with this runnable, and starts it
-     */
-    public void attachAndStartRunnable(Runnable runnable) {
-        thread = new Thread(runnable);
-        thread.start();
-    }
-
     protected void setNextPosition() {
-        getState().advancePosition(this);
     }
 
     @Override
     public void render(Graphics2D graphics) {
-
-        Color color = getThreadContext().getColor(this);
-//        Color color = getColorByThreadState();
-        graphics.setColor(color);
-        graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
+        graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
+        graphics.fill3DRect(getXPosition(), getYPosition(), futureWidth, height, true);
     }
 
-    /**
-     * Returns our internal thread state, reflecting the native thread state, with some adjustments (new and runnable
-     * are both considered runnable, and waiting and timed-waiting are both considered waiting.
-     */
     protected ThreadState getState() {
-        if(thread == null) {
+        if (thread == null) {
             return null;
         }
         switch (thread.getState()) {
@@ -72,14 +63,33 @@ public class ThreadSprite extends Sprite implements InitializingBean  {
         }
     }
 
+    @Value("${FUTURE-DEFAULT-COLOR}")
+    private void setFutureDefaultColor(String color) {
+        futureDefaultColor = parseColor(color);
+    }
+
+    @Value("${FUTURE-DONE-COLOR}")
+    private void setFutureDoneColor(String color) {
+        futureDoneColor = parseColor(color);
+    }
+
     @Override
     public void afterPropertiesSet() {
+        setXPosition((rightBorder + leftBorder - futureWidth) / 2);
+    }
+
+    /**
+     * Override the default height
+     * @param height
+     */
+    public void setHeight(int height) {
+        this.height = height;
         setYPosition(getThreadContext().getNextYPosition(height));
     }
 
     @Override
     public String toString() {
-        return "ThreadSprite{" +
+        return "FutureSprite{" +
                 "ID=" + getID() +
                 ", state=" + getState() +
 //                ", x-position=" + xPosition +
@@ -89,4 +99,17 @@ public class ThreadSprite extends Sprite implements InitializingBean  {
                 '}';
     }
 
+
+    public void setFuture(CompletableFuture future) {
+        this.future = future;
+    }
+
+    /**
+     * Returns true of this future has been marked as complete
+     *
+     * @return
+     */
+    public boolean isDone() {
+        return future.isDone();
+    }
 }

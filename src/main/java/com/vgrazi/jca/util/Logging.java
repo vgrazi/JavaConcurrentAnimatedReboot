@@ -1,5 +1,6 @@
 package com.vgrazi.jca.util;
 
+import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadSprite;
 
 import java.time.LocalTime;
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Logging {
-    static Map<ThreadSprite, String> messageCache = new HashMap<>();
+    static Map<Sprite, String> messageCache = new HashMap<>();
     static private long stepDelay = 2000;
 
     public static void logAndSleep(long delay, String message) throws InterruptedException {
@@ -32,11 +33,11 @@ public class Logging {
         }
     }
 
-    public static void log(String message, ThreadSprite sprite) {
+    public static void log(String message, Sprite sprite) {
         message(message, sprite);
     }
 
-    private static void message(String message, ThreadSprite sprite) {
+    private static void message(String message, Sprite sprite) {
         String cachedMessage = messageCache.get(sprite);
         if (cachedMessage == null || !cachedMessage.equals(message)) {
             messageCache.put(sprite, message);
@@ -45,7 +46,7 @@ public class Logging {
         }
     }
 
-    public static void log(ThreadSprite sprite) {
+    public static void log(Sprite sprite) {
         String message = sprite.toString();
         String cachedMessage = messageCache.get(sprite);
         if (cachedMessage == null || !cachedMessage.equals(message)) {

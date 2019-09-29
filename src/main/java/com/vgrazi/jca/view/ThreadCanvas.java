@@ -2,7 +2,6 @@ package com.vgrazi.jca.view;
 
 import com.vgrazi.jca.context.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +53,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         }
         graphics.setColor(Color.CYAN);
 
-        List<ThreadSprite> threads = threadContext.getAllThreads();
+        List<Sprite> threads = threadContext.getAllSprites();
         graphics.setStroke(new BasicStroke(3));
         threads.forEach(sprite -> render(sprite, graphics));
         graphics.dispose();

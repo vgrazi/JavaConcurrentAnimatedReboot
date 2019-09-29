@@ -1,10 +1,9 @@
 package com.vgrazi.jca;
 
+import com.vgrazi.jca.context.FutureSprite;
+import com.vgrazi.jca.context.GetterThreadSprite;
 import com.vgrazi.jca.context.ThreadSprite;
-import com.vgrazi.jca.states.Terminated;
-import com.vgrazi.jca.states.Waiting;
-import com.vgrazi.jca.states.Blocked;
-import com.vgrazi.jca.states.Running;
+import com.vgrazi.jca.states.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +25,18 @@ public class JavaConcurrentAnimatedRebootApplication {
     }
 
     @Bean
+    @Scope("prototype")
+    GetterThreadSprite getterSprite() {
+        return new GetterThreadSprite();
+    }
+
+    @Bean
+    @Scope("prototype")
+    FutureSprite futureSprite() {
+        return new FutureSprite();
+    }
+
+    @Bean
     public Blocked blocked() {
         return new Blocked();
     }
@@ -42,5 +53,10 @@ public class JavaConcurrentAnimatedRebootApplication {
     @Bean
     public Waiting waiting () {
         return new Waiting();
+    }
+
+    @Bean
+    public Getting getting () {
+        return new Getting();
     }
 }

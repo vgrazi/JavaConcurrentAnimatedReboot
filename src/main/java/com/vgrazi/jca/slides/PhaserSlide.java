@@ -80,6 +80,6 @@ public class PhaserSlide extends Slide {
             }
             System.out.println(sprite + " exiting");
         });
-        threadContext.addThread(sprite);
+        threadContext.addSprite(sprite);
     }
 }

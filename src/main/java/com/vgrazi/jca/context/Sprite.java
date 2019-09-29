@@ -11,7 +11,7 @@ import java.awt.*;
 /**
  * Base class for sprites, such as ThreadSprite, FutureSprite, ObjectSprite, etc.
  */
-public abstract class Sprite implements InitializingBean {
+public abstract class Sprite {
     private int xPosition;
 
     private int ID = IDGenerator.next();
@@ -28,6 +28,22 @@ public abstract class Sprite implements InitializingBean {
     private ThreadContext threadContext;
     private int yPosition;
     private String action = "default";
+
+    private boolean running = true;
+    private Object holder;
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    void setRunning(boolean running) {
+        this.running = running;
+    }
+
+
+    public int getID() {
+        return ID;
+    }
 
     /**
      * You can change the ID to something more meaningful
@@ -72,9 +88,19 @@ public abstract class Sprite implements InitializingBean {
 
     public abstract void render(Graphics2D graphics);
 
+    public Object getHolder() {
+        return holder;
+    }
+
+    /**
+     * A convenience method for holding arbitrary data in a sprite
+     */
+    public void setHolder(Object holder) {
+        this.holder =holder;
+    }
 
     public enum Direction {
-        right, down, left, up
+        right, down, left, up;
     }
 
     public Direction getDirection() {
@@ -97,12 +123,6 @@ public abstract class Sprite implements InitializingBean {
         this.action = action;
     }
 
-    /**
-     * Returns our internal thread state, reflecting the native thread state, with some adjustments (new and runnable
-     * are both considered runnable, and waiting and timed-waiting are both considered waiting.
-     */
-    protected abstract ThreadState getState();
-
     public int getXPosition() {
         return xPosition;
     }
@@ -111,17 +131,10 @@ public abstract class Sprite implements InitializingBean {
         this.xPosition = xPosition;
     }
 
-
-    @Override
-    public void afterPropertiesSet() {
-        setYPosition(getThreadContext().getNextYPosition());
-    }
-
     @Override
     public String toString() {
-        return "Sprite{" +
+        return getClass().getSimpleName() + "{" +
                 "ID=" + ID +
-                ", state=" + getState() +
 //                ", x-position=" + xPosition +
 //                ", y-position=" + yPosition +
                 ", relative_position=" + getRelativePosition() +

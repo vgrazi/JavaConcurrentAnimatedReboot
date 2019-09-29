@@ -99,7 +99,7 @@ public class SynchronizedSlide extends Slide {
                 Thread.currentThread().interrupt();
             }
         });
-        threadContext.addThread(sprite);
+        threadContext.addSprite(sprite);
         System.out.println("Added " + sprite);
     }
 }
