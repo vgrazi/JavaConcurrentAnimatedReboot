@@ -33,6 +33,7 @@ public class CompletableFutureSlide extends Slide {
         threadContext.addButton("Create thread", () -> {
             // we need to create a future, a thread to attach to it, and sprites for each of those
             FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+            threadContext.addSprite(futureSprite);
             ThreadSprite threadSprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             threadSprite.setHolder(true);
             Runnable runnable = () -> {
@@ -48,7 +49,6 @@ public class CompletableFutureSlide extends Slide {
             CompletableFuture future = CompletableFuture.runAsync(runnable);
             futureSprite.setFuture(future);
             futureSprite.setHeight(completableFutureHeight);
-            threadContext.addSprite(futureSprite);
             threadSprite.attachAndStartRunnable(runnable);
             addRunnable(threadSprite);
         });

@@ -68,7 +68,7 @@ public abstract class Sprite {
         }
     }
 
-    protected abstract void setNextPosition();
+    protected abstract void setNextXPosition();
 
     public void setYPosition(int yPosition) {
         this.yPosition = yPosition;

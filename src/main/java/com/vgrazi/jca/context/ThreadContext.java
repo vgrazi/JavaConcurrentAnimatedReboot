@@ -280,12 +280,16 @@ public class ThreadContext implements InitializingBean {
      * Advance the position of each sprite, based on its current position and state
      */
     private void advanceSprites() {
-        sprites.forEach(Sprite::setNextPosition);
+        sprites.forEach(Sprite::setNextXPosition);
     }
 
     public int getNextYPosition(int height) {
         int initialYPos = this.initialYPos;
         this.initialYPos += height;
+        return initialYPos;
+    }
+
+    public int getYPosition() {
         return initialYPos;
     }
 

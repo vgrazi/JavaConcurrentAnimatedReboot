@@ -31,7 +31,7 @@ public class GetterThreadSprite extends ThreadSprite {
     }
 
     @Override
-    protected void setNextPosition() {
+    protected void setNextXPosition() {
         ThreadState state = getState();
         state.advancePosition(this);
     }

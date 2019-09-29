@@ -34,7 +34,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
     @Value("${future-height}")
     private int height;
 
-    protected void setNextPosition() {
+    protected void setNextXPosition() {
     }
 
     @Override

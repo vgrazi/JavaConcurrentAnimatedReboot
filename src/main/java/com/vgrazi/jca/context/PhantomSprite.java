@@ -10,7 +10,7 @@ import java.awt.*;
  */
 public class PhantomSprite extends Sprite{
     @Override
-    protected void setNextPosition() {
+    protected void setNextXPosition() {
 
     }
 

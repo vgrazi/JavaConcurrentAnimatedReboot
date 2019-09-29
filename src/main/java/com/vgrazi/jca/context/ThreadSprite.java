@@ -35,7 +35,7 @@ public class ThreadSprite extends Sprite implements InitializingBean  {
         thread.start();
     }
 
-    protected void setNextPosition() {
+    protected void setNextXPosition() {
         getState().advancePosition(this);
     }
 
