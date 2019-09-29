@@ -31,11 +31,11 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    private Color mutexColor;
+    private Color monolithColor;
 
-    @Value("${MUTEX_COLOR}")
-    public void setMutexColor( String color) {
-        this.mutexColor = parseColor(color);
+    @Value("${MONOLITH-COLOR}")
+    public void setMonolithColor(String color) {
+        this.monolithColor = parseColor(color);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         graphics.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
         // todo: make this a case statement depending on the kind of monolith
         if (true) {
-            paintMutex(graphics);
+            paintMonolith(graphics);
         }
         graphics.setColor(Color.CYAN);
 
@@ -64,8 +64,8 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     }
 
 
-    private void paintMutex(Graphics2D g) {
-        g.setColor(mutexColor);
+    private void paintMonolith(Graphics2D g) {
+        g.setColor(monolithColor);
         g.fill3DRect(leftBorder, initialYPosition - 20, rightBorder - leftBorder, 5000, true);
     }
 

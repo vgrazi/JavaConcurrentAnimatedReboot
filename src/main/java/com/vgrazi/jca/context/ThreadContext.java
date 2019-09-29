@@ -217,28 +217,16 @@ public class ThreadContext implements InitializingBean {
     }
 
     /**
-     * If there is exactly one running thread, returns it.
-     * Otherwise throws an IllegalArgumentException
+     * Returns the first running thread, or null if none
      */
     public ThreadSprite getRunningThread() {
         List<ThreadSprite> threads = getThreadsOfState(runnable);
-        if (threads.size() != 1) {
-            throw new IllegalArgumentException("Expected one running thread but found " + threads.size());
-        }
 
-        return threads.get(0);
-    }
-
-    /**
-     * Returns the first running thread, or null if none
-     */
-    public ThreadSprite getNextRunningThread() {
-        ThreadSprite rval = null;
-        List<ThreadSprite> threads = getThreadsOfState(runnable);
-        if(!threads.isEmpty()){
-            rval = threads.get(0);
+        ThreadSprite threadSprite = null;
+        if (!threads.isEmpty()) {
+            threadSprite = threads.get(0);
         }
-        return rval;
+        return threadSprite;
     }
 
     private List<FutureSprite> getAllFutureSprites() {

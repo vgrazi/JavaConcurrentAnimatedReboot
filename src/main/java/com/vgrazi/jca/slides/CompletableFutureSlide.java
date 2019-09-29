@@ -61,7 +61,7 @@ public class CompletableFutureSlide extends Slide {
         });
 
         threadContext.addButton("Done", () -> {
-            ThreadSprite runningSprite = threadContext.getNextRunningThread();
+            ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 runningSprite.setHolder(false);
                 runningSprite.setAction("release");

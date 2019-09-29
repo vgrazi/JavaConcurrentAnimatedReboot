@@ -34,31 +34,40 @@ public class SynchronizedSlide extends Slide {
 //
         threadContext.addButton("wait()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
-            runningSprite.setAction("waiting");
-            log("Calling wait() on Runnable", runningSprite);
+
+            if (runningSprite != null) {
+                runningSprite.setAction("waiting");
+                log("Calling wait() on Runnable", runningSprite);
+            }
 
 
         });
 
        threadContext.addButton("notify()", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
-           // The new running thread should call notify
-           runningSprite.setAction("notifying");
-           log("Set notifying on ", runningSprite);
+           if (runningSprite != null) {
+               // The new running thread should call notify
+               runningSprite.setAction("notifying");
+               log("Set notifying on ", runningSprite);
+           }
        });
 
        threadContext.addButton("notifyAll()", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
-           // The new running thread should call notify
-           runningSprite.setAction("notifyingAll");
-           log("Set notifyAll on ", runningSprite);
+           if (runningSprite != null) {
+               // The new running thread should call notify
+               runningSprite.setAction("notifyingAll");
+               log("Set notifyAll on ", runningSprite);
+           }
        });
 
        threadContext.addButton("Release", () -> {
            ThreadSprite runningSprite = threadContext.getRunningThread();
-           // The new running thread should call notify
-           runningSprite.setAction("release");
-           log("Set release on ", runningSprite);
+           if (runningSprite != null) {
+               // The new running thread should call notify
+               runningSprite.setAction("release");
+               log("Set release on ", runningSprite);
+           }
        });
 
         threadContext.setVisible();
