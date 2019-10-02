@@ -2,8 +2,10 @@ package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.states.ThreadState;
 
+import java.awt.*;
+
 /**
- * This sprite renders a "getter" thread - a thread that called a potentially blocking get method 
+ * This sprite renders a "getter" thread - a thread that called a potentially blocking get method
  */
 public class GetterThreadSprite extends ThreadSprite {
     public GetterThreadSprite() {
@@ -29,6 +31,11 @@ public class GetterThreadSprite extends ThreadSprite {
                 throw new IllegalArgumentException("Unknown thread state " + thread.getState());
         }
     }
+
+    protected void drawBall(Graphics2D graphics) {
+        graphics.fillOval(getXPosition() - 6 - arrowLength, getYPosition() - 5, 10, 10);
+    }
+
 
     @Override
     protected void setNextXPosition() {

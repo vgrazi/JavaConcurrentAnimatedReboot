@@ -17,7 +17,7 @@ public class ThreadSprite extends Sprite implements InitializingBean  {
 
     private Thread thread;
     @Value("${arrow-length}")
-    private int arrowLength;
+    protected int arrowLength;
     public Thread getThread() {
         return thread;
     }
@@ -46,6 +46,11 @@ public class ThreadSprite extends Sprite implements InitializingBean  {
 //        Color color = getColorByThreadState();
         graphics.setColor(color);
         graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
+        drawBall(graphics);
+    }
+
+    protected void drawBall(Graphics2D graphics) {
+        graphics.fillOval(getXPosition() -8, getYPosition()-5, 10, 10);
     }
 
     /**

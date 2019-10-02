@@ -54,7 +54,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         graphics.setColor(Color.CYAN);
 
         List<Sprite> threads = threadContext.getAllSprites();
-        graphics.setStroke(new BasicStroke(3));
+        graphics.setStroke(new BasicStroke(4));
         threads.forEach(sprite -> render(sprite, graphics));
         graphics.dispose();
     }
