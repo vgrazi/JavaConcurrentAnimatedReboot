@@ -88,40 +88,12 @@ public class CompletableFutureSlide extends Slide {
         });
 
         threadContext.addButton("CompletableFuture.allOf()", () -> {
-            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
             CompletableFuture future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
-            futureSprite.setFuture(future);
-            futureSprite.setYPosition(firstThread.getYPosition());
-            futureSprite.setHeight((threadCount-1) * pixelsPerYStep + futureTopMargin);
-            int width = futureSprite.getWidth();
-            futureSprite.setWidth(width +5);
-            futureSprite.setYMargin(15);
-            futureSprite.setXMargin(5);
-            // waste a space
-            threadContext.getNextYPosition();
-//            futureSprite.setXRightMargin(0);
-            firstThread = null;
-            threadCount = 0;
-            threadContext.addSprite(0, futureSprite);
-            bigFutures.add(futureSprite);
+            addCompletableFutureSprite(future);
         });
         threadContext.addButton("CompletableFuture.anyOf()", () -> {
-            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
             CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[0]));
-            futureSprite.setFuture(future);
-            futureSprite.setYPosition(firstThread.getYPosition());
-            futureSprite.setHeight((threadCount-1) * pixelsPerYStep + futureTopMargin);
-            int width = futureSprite.getWidth();
-            futureSprite.setWidth(width +5);
-            futureSprite.setYMargin(15);
-            futureSprite.setXMargin(5);
-            // waste a space
-            threadContext.getNextYPosition();
-//            futureSprite.setXRightMargin(0);
-            firstThread = null;
-            threadCount = 0;
-            threadContext.addSprite(0, futureSprite);
-            bigFutures.add(futureSprite);
+            addCompletableFutureSprite(future);
         });
 
 
@@ -147,26 +119,37 @@ public class CompletableFutureSlide extends Slide {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 runningSprite.setHolder(false);
-//                runningSprite.setAction("release");
             }
             log("Set release on ", runningSprite);
         });
 
-        threadContext.addButton("Reset",()-> threadContext.reset());
+        threadContext.addButton("Reset",()-> {
+            threadContext.reset();
+            firstThread = null;
+            threadCount = 0;
+            completableFutures.clear();
+            bigFutures.clear();
+        });
 
         threadContext.setVisible();
+    }
 
-//            scheduledExecutor.schedule(()-> {
-//                completableFuture1.complete("value1");
-//                completableFuture2.complete("value2");
-//            }, 2, TimeUnit.SECONDS);
-//            log("getting allOf...");
-//            CompletableFuture<Void> completableFuture = CompletableFuture.allOf(completableFuture1, completableFuture2);
-//            completableFuture.get();
-        log("got allOf...");
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
+    private void addCompletableFutureSprite(CompletableFuture future) {
+        FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+        completableFutures.clear();
+        futureSprite.setFuture(future);
+        futureSprite.setYPosition(firstThread.getYPosition());
+        futureSprite.setHeight((threadCount-1) * pixelsPerYStep + futureTopMargin);
+        int width = futureSprite.getWidth();
+        futureSprite.setWidth(width +5);
+        futureSprite.setYMargin(15);
+        futureSprite.setXMargin(5);
+        // waste a Y space
+        threadContext.getNextYPosition();
+        firstThread = null;
+        threadCount = 0;
+        threadContext.addSprite(0, futureSprite);
+        bigFutures.add(futureSprite);
     }
 
 }
