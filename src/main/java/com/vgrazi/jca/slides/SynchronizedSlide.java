@@ -69,6 +69,7 @@ public class SynchronizedSlide extends Slide {
                log("Set release on ", runningSprite);
            }
        });
+        threadContext.addButton("reset", ()-> threadContext.reset());
 
         threadContext.setVisible();
 
