@@ -46,6 +46,7 @@ public class ThreadContext implements InitializingBean {
     public void colorByThreadState() {
         this.colorScheme = ColorationScheme.byState;
     }
+
     public void colorByThreadInstance() {
         this.colorScheme = ColorationScheme.byInstance;
     }
@@ -62,14 +63,23 @@ public class ThreadContext implements InitializingBean {
     @Autowired
     Getting getting;
 
+    @Value("${pixels-per-y-step}")
+    private int pixelsPerYStep;
+
+    /**
+     * This is the starting y position. It is effectively final
+     */
     @Value("${initial-y-position}")
     private int initialYPos;
+
+    /**
+     * This is the actual current y position
+     */
+    private int nextYPos;
 
     @Value("${initial-bottom-y-position}")
     private int initialBottomYPos;
 
-    @Value("${pixels-per-y-step}")
-    private int pixelsPerYStep;
     private Color blockedColor;
     private Color runnableColor;
     private Color waitingColor;
@@ -116,7 +126,10 @@ public class ThreadContext implements InitializingBean {
 
     public void reset() {
         threadColors.clear();
+        getAllThreads().forEach(sprite -> sprite.getThread().stop());
+        sprites.clear();
     }
+
     @Value("${BLOCKED_COLOR}")
     public void setBlockedColor(String color) {
         this.blockedColor = parseColor(color);
@@ -182,17 +195,27 @@ public class ThreadContext implements InitializingBean {
         return color;
     }
 
-    public synchronized void addSprite(ThreadSprite sprite) {
-        addSprite((Sprite)sprite);
-        threadColors.put(sprite.getThread(), getNextColor());
-    }
     public synchronized void addSprite(Sprite sprite) {
         sprites.add(sprite);
+        if (sprite instanceof ThreadSprite) {
+            threadColors.put(((ThreadSprite) sprite).getThread(), getNextColor());
+        }
     }
+
+    public void addSprite(int i, Sprite sprite) {
+        if (i >=0 && i <= sprites.size()){
+            sprites.add(i, sprite);
+        }
+        if (sprite instanceof ThreadSprite) {
+            threadColors.put(((ThreadSprite) sprite).getThread(), getNextColor());
+        }
+    }
+
 
     /**
      * sets the supplied sprite to not running, and removes it from this context (allowing sufficient time
      * to animate off the screen)
+     *
      * @param threadSprite
      */
     public synchronized void stopThread(ThreadSprite threadSprite) {
@@ -231,8 +254,8 @@ public class ThreadContext implements InitializingBean {
 
     private List<FutureSprite> getAllFutureSprites() {
         List<FutureSprite> collect = sprites.stream()
-                .filter(sprite->sprite instanceof FutureSprite)
-                .map(sprite -> (FutureSprite)sprite)
+                .filter(sprite -> sprite instanceof FutureSprite)
+                .map(sprite -> (FutureSprite) sprite)
                 .collect(Collectors.toList());
         return collect;
     }
@@ -240,6 +263,7 @@ public class ThreadContext implements InitializingBean {
     /**
      * If there is exactly one running thread, returns it.
      * Otherwise throws an IllegalArgumentException
+     *
      * @return
      */
     public List<ThreadSprite> getRunningThreads() {
@@ -253,8 +277,8 @@ public class ThreadContext implements InitializingBean {
      */
     public List<ThreadSprite> getThreadsNotOfState(ThreadState threadState) {
         List<ThreadSprite> collect = sprites.stream()
-                .filter(sprite->sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite)sprite)
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
                 .filter(sprite -> sprite.getState() != threadState).collect(Collectors.toList());
         return collect;
     }
@@ -268,8 +292,8 @@ public class ThreadContext implements InitializingBean {
      */
     private List<ThreadSprite> getThreadsOfState(ThreadState threadState) {
         List<ThreadSprite> collect = sprites.stream()
-                .filter(sprite->sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite)sprite)
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
                 .filter(sprite -> sprite.getState() == threadState)
                 .collect(Collectors.toList());
         return collect;
@@ -283,10 +307,16 @@ public class ThreadContext implements InitializingBean {
         sprites.forEach(Sprite::setNextXPosition);
     }
 
+    public int getNextYPosition() {
+        return getNextYPosition(pixelsPerYStep);
+    }
     public int getNextYPosition(int height) {
-        int initialYPos = this.initialYPos;
-        this.initialYPos += height;
-        return initialYPos;
+        if(sprites.isEmpty()) {
+            nextYPos = initialYPos;
+        }
+        int nextYPos = this.nextYPos;
+        this.nextYPos += height;
+        return nextYPos;
     }
 
     public int getYPosition() {
@@ -301,8 +331,8 @@ public class ThreadContext implements InitializingBean {
 
     public List<ThreadSprite> getAllThreads() {
         return sprites.stream()
-                .filter(sprite->sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite)sprite)
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
                 .collect(Collectors.toList());
     }
 
@@ -310,6 +340,7 @@ public class ThreadContext implements InitializingBean {
     public void afterPropertiesSet() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setBounds(frameX, frameY, frameWidth, frameHeight);
+        nextYPos = initialYPos;
         render();
     }
 

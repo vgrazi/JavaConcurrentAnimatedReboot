@@ -28,7 +28,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
     private int rightBorder;
 
     @Value("${future-width}")
-    private int futureWidth;
+    private int width;
 
     private CompletableFuture future;
     @Value("${future-height}")
@@ -37,10 +37,29 @@ public class FutureSprite extends Sprite implements InitializingBean {
     protected void setNextXPosition() {
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getYCenter() {
+        return getYPosition() - getYMargin() + (height + getYMargin() * 2)/2;
+    }
+
     @Override
     public void render(Graphics2D graphics) {
-        graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
-        graphics.fill3DRect(getXPosition(), getYPosition(), futureWidth, height, true);
+        if (future != null) {
+            graphics.setColor(Color.black);
+            graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin(), width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+            graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
+            graphics.fillRect(getXPosition() - getXMargin() , getYPosition() - getYMargin(), width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+        }
+        else {
+            int debug =0;
+        }
     }
 
     protected ThreadState getState() {
@@ -75,7 +94,11 @@ public class FutureSprite extends Sprite implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        setXPosition((rightBorder + leftBorder - futureWidth) / 2);
+        setXPosition((rightBorder + leftBorder - width) / 2);
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     /**
@@ -84,7 +107,6 @@ public class FutureSprite extends Sprite implements InitializingBean {
      */
     public void setHeight(int height) {
         this.height = height;
-        setYPosition(getThreadContext().getNextYPosition(height));
     }
 
     @Override
@@ -99,6 +121,9 @@ public class FutureSprite extends Sprite implements InitializingBean {
                 '}';
     }
 
+    public CompletableFuture getFuture() {
+        return future;
+    }
 
     public void setFuture(CompletableFuture future) {
         this.future = future;

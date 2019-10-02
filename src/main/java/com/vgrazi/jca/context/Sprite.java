@@ -24,6 +24,17 @@ public abstract class Sprite {
     @Value("${pixels-per-step}")
     private int pixelsPerStep;
 
+    /**
+     * Number of pixels to allow at top - this is subtracted from the set ypos
+     */
+    private int xMargin;
+
+    /**
+     * Number of pixels to allow at left - this is subtracted from the set xpos
+     */
+    private int yMargin;
+
+
     @Autowired
     private ThreadContext threadContext;
     private int yPosition;
@@ -31,6 +42,7 @@ public abstract class Sprite {
 
     private boolean running = true;
     private Object holder;
+    private int xRightMargin;
 
     public boolean isRunning() {
         return running;
@@ -69,6 +81,30 @@ public abstract class Sprite {
     }
 
     protected abstract void setNextXPosition();
+
+    public int getXMargin() {
+        return xMargin;
+    }
+
+    public void setXMargin(int xMargin) {
+        this.xMargin = xMargin;
+    }
+
+    public int getXRightMargin() {
+        return xRightMargin;
+    }
+
+    public void setXRightMargin(int xRightMargin) {
+        this.xRightMargin = xRightMargin;
+    }
+
+    public int getYMargin() {
+        return yMargin;
+    }
+
+    public void setYMargin(int yMargin) {
+        this.yMargin = yMargin;
+    }
 
     public void setYPosition(int yPosition) {
         this.yPosition = yPosition;

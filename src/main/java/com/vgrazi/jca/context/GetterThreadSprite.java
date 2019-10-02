@@ -33,6 +33,7 @@ public class GetterThreadSprite extends ThreadSprite {
     @Override
     protected void setNextXPosition() {
         ThreadState state = getState();
+        // todo: center this in our future
         state.advancePosition(this);
     }
 }
