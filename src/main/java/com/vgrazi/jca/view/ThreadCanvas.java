@@ -32,6 +32,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private int arrowLength;
 
     private Color monolithColor;
+    private boolean hideMonolith;
 
     @Value("${MONOLITH-COLOR}")
     public void setMonolithColor(String color) {
@@ -48,7 +49,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
         // todo: make this a case statement depending on the kind of monolith
-        if (true) {
+        if (!hideMonolith) {
             paintMonolith(graphics);
         }
         graphics.setColor(Color.CYAN);
@@ -70,5 +71,12 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+    }
+
+    /**
+     * False by default, call this with true to prevent the monolith from drawing
+     */
+    public void hideMonolith(boolean b) {
+        hideMonolith = b;
     }
 }

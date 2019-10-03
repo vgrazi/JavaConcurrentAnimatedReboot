@@ -49,6 +49,7 @@ public class CompletableFutureSlide extends Slide {
 //        try {
 //            threadContext.colorByThreadInstance();
         reset();
+        threadCanvas.hideMonolith(true);
         threadContext.addButton("runAsync", () -> {
             ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("threadSprite");
             if(firstThread == null) {
@@ -61,7 +62,7 @@ public class CompletableFutureSlide extends Slide {
             // the holder contains the running status. When it is done, will be set to false
             threadSprite.setHolder(true);
             Runnable runnable = () -> {
-                while (((Boolean) threadSprite.getHolder())) {
+                while (threadSprite.getHolder()) {
                     try {
                         Thread.sleep(25);
                     } catch (InterruptedException e) {
@@ -92,7 +93,6 @@ public class CompletableFutureSlide extends Slide {
             CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[0]));
             addCompletableFutureSprite(future);
         });
-
 
         threadContext.addButton("get()", () -> {
             if(!bigFutures.isEmpty()) {
