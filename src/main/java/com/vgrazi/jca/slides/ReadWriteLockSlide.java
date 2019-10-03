@@ -2,6 +2,7 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.context.WriteThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class ReadWriteLockSlide extends Slide {
         });
 
         threadContext.addButton("writeLock", ()->{
-            ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("threadSprite");
+            ThreadSprite<String> sprite = (WriteThreadSprite<String>) applicationContext.getBean("writeThreadSprite");
             sprite.setHolder("write-lock");
             sprite.attachAndStartRunnable(()->{
                 readWriteLock.writeLock().lock();

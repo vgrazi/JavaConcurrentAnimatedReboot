@@ -57,9 +57,6 @@ public class FutureSprite extends Sprite implements InitializingBean {
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
             graphics.fillRect(getXPosition() - getXMargin() , getYPosition() - getYMargin(), width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
         }
-        else {
-            int debug =0;
-        }
     }
 
     protected ThreadState getState() {

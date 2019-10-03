@@ -35,7 +35,7 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
     /**
      * Draws the ball at the end of the thread
      */
-    protected void drawBall(Graphics2D graphics) {
+    protected void drawThreadCap(Graphics2D graphics) {
         graphics.fillOval(getXPosition() - 6 - arrowLength, getYPosition() - 5, 10, 10);
     }
 

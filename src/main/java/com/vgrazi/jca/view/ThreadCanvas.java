@@ -63,12 +63,10 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         sprite.render(graphics);
     }
 
-
     private void paintMonolith(Graphics2D g) {
         g.setColor(monolithColor);
         g.fill3DRect(leftBorder, initialYPosition - 20, rightBorder - leftBorder, 5000, true);
     }
-
 
     @Override
     public void afterPropertiesSet() {
