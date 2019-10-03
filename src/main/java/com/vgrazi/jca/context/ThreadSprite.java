@@ -13,7 +13,7 @@ import java.awt.*;
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class ThreadSprite extends Sprite implements InitializingBean  {
+public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
     private Thread thread;
     @Value("${arrow-length}")

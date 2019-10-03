@@ -2,10 +2,7 @@ package com.vgrazi.jca;
 
 
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.slides.CompletableFutureSlide;
-import com.vgrazi.jca.slides.PhaserSlide;
-import com.vgrazi.jca.slides.Slide;
-import com.vgrazi.jca.slides.SynchronizedSlide;
+import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.view.ButtonLayout;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +49,9 @@ public class JCAFrame extends JFrame {
     @Autowired()
     private CompletableFutureSlide completableFutureSlide;
 
+    @Autowired()
+    private ReadWriteLockSlide readWriteLockSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -85,6 +85,7 @@ public class JCAFrame extends JFrame {
         addButton("Synchronized", synchronizedSlide, menu);
         addButton("Phaser", phaserSlide, menu);
         addButton("CompletableFuture", completableFutureSlide, menu);
+        addButton("ReadWriteLock", readWriteLockSlide, menu);
 
         menu.setBackground(Color.cyan);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menu, rightSide);

@@ -11,7 +11,7 @@ import java.awt.*;
 /**
  * Base class for sprites, such as ThreadSprite, FutureSprite, ObjectSprite, etc.
  */
-public abstract class Sprite {
+public abstract class Sprite<T> {
     private int xPosition;
 
     private int ID = IDGenerator.next();
@@ -41,7 +41,7 @@ public abstract class Sprite {
     private String action = "default";
 
     private boolean running = true;
-    private Object holder;
+    private T holder;
     private int xRightMargin;
 
     public boolean isRunning() {
@@ -66,7 +66,7 @@ public abstract class Sprite {
 
     public RelativePosition getRelativePosition() {
         int position = getXPosition();
-        if(position < monolithLeftBorder) {
+        if (position < monolithLeftBorder) {
             return RelativePosition.Before;
         }
         else if (position <= monolithLeftBorder + pixelsPerStep) {
@@ -124,15 +124,15 @@ public abstract class Sprite {
 
     public abstract void render(Graphics2D graphics);
 
-    public Object getHolder() {
+    public T getHolder() {
         return holder;
     }
 
     /**
      * A convenience method for holding arbitrary data in a sprite
      */
-    public void setHolder(Object holder) {
-        this.holder =holder;
+    public void setHolder(T holder) {
+        this.holder = holder;
     }
 
     public enum Direction {

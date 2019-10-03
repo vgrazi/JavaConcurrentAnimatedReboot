@@ -29,7 +29,7 @@ import static com.vgrazi.jca.util.ColorParser.parseColor;
  * for all of the threads of a specific state (for example, getRunningThreads)
  */
 @Component
-public class ThreadContext implements InitializingBean {
+public class ThreadContext<S> implements InitializingBean {
     /**
      * We either color by thread state or thread instance (eg in ForkJoin)
      */
@@ -198,7 +198,7 @@ public class ThreadContext implements InitializingBean {
     public synchronized void addSprite(Sprite sprite) {
         sprites.add(sprite);
         if (sprite instanceof ThreadSprite) {
-            threadColors.put(((ThreadSprite) sprite).getThread(), getNextColor());
+            threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
         }
     }
 
@@ -207,7 +207,7 @@ public class ThreadContext implements InitializingBean {
             sprites.add(i, sprite);
         }
         if (sprite instanceof ThreadSprite) {
-            threadColors.put(((ThreadSprite) sprite).getThread(), getNextColor());
+            threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
         }
     }
 
@@ -218,7 +218,7 @@ public class ThreadContext implements InitializingBean {
      *
      * @param threadSprite
      */
-    public synchronized void stopThread(ThreadSprite threadSprite) {
+    public synchronized void stopThread(ThreadSprite<S> threadSprite) {
         threadSprite.setRunning(false);
         new Thread(() -> {
             try {
@@ -242,10 +242,10 @@ public class ThreadContext implements InitializingBean {
     /**
      * Returns the first running thread, or null if none
      */
-    public ThreadSprite getRunningThread() {
-        List<ThreadSprite> threads = getThreadsOfState(runnable);
+    public ThreadSprite<S> getRunningThread() {
+        List<ThreadSprite<S>> threads = getThreadsOfState(runnable);
 
-        ThreadSprite threadSprite = null;
+        ThreadSprite<S> threadSprite = null;
         if (!threads.isEmpty()) {
             threadSprite = threads.get(0);
         }
@@ -266,8 +266,8 @@ public class ThreadContext implements InitializingBean {
      *
      * @return
      */
-    public List<ThreadSprite> getRunningThreads() {
-        List<ThreadSprite> threads = getThreadsOfState(runnable);
+    public List<ThreadSprite<S>> getRunningThreads() {
+        List<ThreadSprite<S>> threads = getThreadsOfState(runnable);
         return threads;
     }
 
@@ -275,10 +275,10 @@ public class ThreadContext implements InitializingBean {
     /**
      * Returns a list of all threads that are not of the specified state
      */
-    public List<ThreadSprite> getThreadsNotOfState(ThreadState threadState) {
-        List<ThreadSprite> collect = sprites.stream()
+    public List<ThreadSprite<S>> getThreadsNotOfState(ThreadState threadState) {
+        List<ThreadSprite<S>> collect = sprites.stream()
                 .filter(sprite -> sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite) sprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
                 .filter(sprite -> sprite.getState() != threadState).collect(Collectors.toList());
         return collect;
     }
@@ -290,10 +290,10 @@ public class ThreadContext implements InitializingBean {
     /**
      * Returns a list of all threads in the supplied state
      */
-    private List<ThreadSprite> getThreadsOfState(ThreadState threadState) {
-        List<ThreadSprite> collect = sprites.stream()
+    private List<ThreadSprite<S>> getThreadsOfState(ThreadState threadState) {
+        List<ThreadSprite<S>> collect = sprites.stream()
                 .filter(sprite -> sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite) sprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
                 .filter(sprite -> sprite.getState() == threadState)
                 .collect(Collectors.toList());
         return collect;
@@ -329,10 +329,10 @@ public class ThreadContext implements InitializingBean {
         return initialBottomYPos;
     }
 
-    public List<ThreadSprite> getAllThreads() {
+    public List<ThreadSprite<S>> getAllThreads() {
         return sprites.stream()
                 .filter(sprite -> sprite instanceof ThreadSprite)
-                .map(sprite -> (ThreadSprite) sprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
                 .collect(Collectors.toList());
     }
 
@@ -357,7 +357,7 @@ public class ThreadContext implements InitializingBean {
         frame.setVisible(true);
     }
 
-    public Color getColor(ThreadSprite threadSprite) {
+    public Color getColor(ThreadSprite<S> threadSprite) {
         Color color;
 
         if (isColorByThreadState()) {
@@ -387,7 +387,7 @@ public class ThreadContext implements InitializingBean {
      *
      * @param threadSprite
      */
-    private Color getColorByThreadState(ThreadSprite threadSprite) {
+    private Color getColorByThreadState(ThreadSprite<S> threadSprite) {
         Color color;
         Thread.State state = threadSprite.getThreadState();
         if (state == Thread.State.BLOCKED) {

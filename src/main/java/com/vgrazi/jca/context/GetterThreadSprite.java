@@ -7,7 +7,7 @@ import java.awt.*;
 /**
  * This sprite renders a "getter" thread - a thread that called a potentially blocking get method
  */
-public class GetterThreadSprite extends ThreadSprite {
+public class GetterThreadSprite<S> extends ThreadSprite<S> {
     public GetterThreadSprite() {
 
     }

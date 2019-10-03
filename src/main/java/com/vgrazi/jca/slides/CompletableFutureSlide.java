@@ -29,7 +29,7 @@ public class CompletableFutureSlide extends Slide {
      * Then every time we create a new future, we set firstThread = null
      * so that the next thread will be the first thread, to be used in the next future
      */
-    private ThreadSprite firstThread;
+    private ThreadSprite<Boolean> firstThread;
     private int threadCount;
     private final List<FutureSprite> bigFutures = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class CompletableFutureSlide extends Slide {
 //            threadContext.colorByThreadInstance();
         reset();
         threadContext.addButton("runAsync", () -> {
-            ThreadSprite threadSprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("threadSprite");
             if(firstThread == null) {
                 firstThread = threadSprite;
             }
@@ -113,7 +113,7 @@ public class CompletableFutureSlide extends Slide {
         });
 
         threadContext.addButton("Done", () -> {
-            ThreadSprite runningSprite = threadContext.getRunningThread();
+            ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 runningSprite.setHolder(false);
             }
