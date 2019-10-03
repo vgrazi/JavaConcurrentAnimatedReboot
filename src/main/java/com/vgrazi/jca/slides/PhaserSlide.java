@@ -14,11 +14,10 @@ public class PhaserSlide extends Slide {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Autowired
-    ThreadContext threadContext;
     private Phaser phaser = new Phaser(4);
 
     public void run() {
+        reset();
         threadContext.addButton("await()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
@@ -45,14 +44,12 @@ public class PhaserSlide extends Slide {
             addRunnable(phaser, sprite);
         });
 
-        threadContext.addButton("reset", ()-> {
-            threadContext.reset();
-            reset();
-        });
+        threadContext.addButton("reset", this::reset);
         threadContext.setVisible();
     }
 
-    private void reset() {
+    protected void reset() {
+        super.reset();
         phaser = new Phaser(4);
     }
 

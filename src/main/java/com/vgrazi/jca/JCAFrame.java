@@ -1,9 +1,15 @@
 package com.vgrazi.jca;
 
 
+import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.slides.CompletableFutureSlide;
+import com.vgrazi.jca.slides.PhaserSlide;
+import com.vgrazi.jca.slides.Slide;
 import com.vgrazi.jca.slides.SynchronizedSlide;
+import com.vgrazi.jca.view.ButtonLayout;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -33,9 +39,21 @@ public class JCAFrame extends JFrame {
      */
 
     @Autowired
+    ThreadContext threadContext;
+
+    @Autowired
     private ThreadCanvas threadCanvas;
     @Autowired()
     private SynchronizedSlide synchronizedSlide;
+
+    @Autowired()
+    private PhaserSlide phaserSlide;
+
+    @Autowired()
+    private CompletableFutureSlide completableFutureSlide;
+
+    @Value("${menu-button-vgap}")
+    private int vgap;
 
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     private final JLabel messages = new JLabel();
@@ -62,37 +80,43 @@ public class JCAFrame extends JFrame {
         JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, animationAndSnippet);
 
         JPanel menu = new JPanel();
-        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
-        Button aSynchronized = new Button("Synchronized");
-        aSynchronized.addActionListener(e -> {
-            synchronizedSlide.run();
-        });
-        menu.add(aSynchronized);
-        menu.add(new Button("Phaser"));
-        menu.add(new Button("CompletableFuture"));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
-        menu.add(new Button(""));
+        menu.setLayout(new ButtonLayout(vgap));
+
+        addButton("Synchronized", synchronizedSlide, menu);
+        addButton("Phaser", phaserSlide, menu);
+        addButton("CompletableFuture", completableFutureSlide, menu);
+
         menu.setBackground(Color.cyan);
-
-
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menu, rightSide);
 
-        addComponentListener(new ComponentAdapter() {
+        ComponentAdapter adapter = new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
                 animationAndSnippet.setDividerLocation(.6);
-                wholePane.setDividerLocation(.20);
+                wholePane.setDividerLocation(100);
             }
-        });
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                animationAndSnippet.setDividerLocation(.6);
+                wholePane.setDividerLocation(150);
+            }
+        };
+        addComponentListener(adapter);
+        menu.addComponentListener(adapter);
         add(wholePane);
+    }
+
+    private void addButton(String label, Slide slide, JPanel menu) {
+        JButton button = new JButton(label);
+        button.addActionListener(e -> {
+            buttonPanel.removeAll();
+            repaint();
+            slide.run();
+        });
+        menu.add(button);
     }
 
     public JPanel getButtonPanel() {

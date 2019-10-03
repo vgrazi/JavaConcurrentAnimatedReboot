@@ -19,29 +19,29 @@ public class ReadWriteLockSlide extends Slide {
     @Autowired
     ThreadContext threadContext;
 
-    public void run() throws InterruptedException {
+    public void run() {
         ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-        Logging.logAndSleep("Created RW Lock");
+        Logging.log("Created RW Lock");
         ThreadSprite sprite1 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite1.setAction("readLock");
         addRunnable(readWriteLock, sprite1);
-        Logging.logAndSleep("Added first read lock " + sprite1);
+        Logging.log("Added first read lock " + sprite1);
 
         ThreadSprite sprite2 = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite2.setAction("readLock");
         addRunnable(readWriteLock, sprite2);
-        Logging.logAndSleep("Added second read lock " + sprite2);
+        Logging.log("Added second read lock " + sprite2);
 
         ThreadSprite spriteWriteLock = (ThreadSprite) applicationContext.getBean("threadSprite");
         spriteWriteLock.setAction("writeLock");
         addRunnable(readWriteLock, spriteWriteLock);
-        Logging.logAndSleep("Added write lock runnable " + spriteWriteLock);
+        Logging.log("Added write lock runnable " + spriteWriteLock);
 
         sprite1.setAction("releaseReadLock");
-        Logging.logAndSleep("Released readlock 1");
+        Logging.log("Released readlock 1");
 
         sprite2.setAction("releaseReadLock");
-        Logging.logAndSleep("Released readlock 2");
+        Logging.log("Released readlock 2");
 
 //        ThreadSprite sprite4 = (ThreadSprite) applicationContext.getBean("threadSprite");
 //        sprite4.setAction(ThreadSprite.TargetState.readLock);

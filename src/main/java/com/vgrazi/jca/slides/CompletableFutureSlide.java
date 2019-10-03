@@ -19,9 +19,6 @@ public class CompletableFutureSlide extends Slide {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Autowired
-    ThreadContext threadContext;
-
     @Value("${completable-future-height}")
     private int completableFutureHeight;
 
@@ -51,7 +48,7 @@ public class CompletableFutureSlide extends Slide {
     public void run() {
 //        try {
 //            threadContext.colorByThreadInstance();
-
+        reset();
         threadContext.addButton("runAsync", () -> {
             ThreadSprite threadSprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             if(firstThread == null) {
@@ -123,15 +120,17 @@ public class CompletableFutureSlide extends Slide {
             log("Set release on ", runningSprite);
         });
 
-        threadContext.addButton("Reset",()-> {
-            threadContext.reset();
-            firstThread = null;
-            threadCount = 0;
-            completableFutures.clear();
-            bigFutures.clear();
-        });
+        threadContext.addButton("Reset", this::reset);
 
         threadContext.setVisible();
+    }
+
+    protected void reset() {
+        super.reset();
+        firstThread = null;
+        threadCount = 0;
+        completableFutures.clear();
+        bigFutures.clear();
     }
 
     private void addCompletableFutureSprite(CompletableFuture future) {

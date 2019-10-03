@@ -1,6 +1,5 @@
 package com.vgrazi.jca.slides;
 
-import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.context.ThreadSprite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -12,16 +11,13 @@ public class SynchronizedSlide extends Slide {
 
     private final ApplicationContext applicationContext;
 
-    private final ThreadContext threadContext;
-
-    public SynchronizedSlide(ApplicationContext applicationContext, ThreadContext threadContext) {
+    public SynchronizedSlide(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        this.threadContext = threadContext;
     }
-
+    private Object mutex = new Object();
     public void run() {
-        Object mutex = new Object();
-        log("Created mutex");
+        reset();
+
 
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
@@ -69,10 +65,15 @@ public class SynchronizedSlide extends Slide {
                log("Set release on ", runningSprite);
            }
        });
-        threadContext.addButton("reset", ()-> threadContext.reset());
+        threadContext.addButton("reset", this::reset);
 
         threadContext.setVisible();
 
+    }
+
+    protected void reset() {
+        super.reset();
+        mutex = new Object();
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
