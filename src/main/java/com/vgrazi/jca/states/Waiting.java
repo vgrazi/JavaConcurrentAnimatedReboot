@@ -31,8 +31,13 @@ public class Waiting extends ThreadState implements InitializingBean {
                 // nothing to do, this thread is waiting
                 break;
             case In:
-                // todo: only stop when it arrives at the waitingXPos
+                // if sprite hasn't reached its final resting place, let it keep inching forward. (If it is already backing up to the left, just force it to its resting position)
+                if (sprite.getDirection() == Sprite.Direction.left || sprite.getXPosition() + arrowLength >= waitingXPos) {
                     sprite.setXPosition(waitingXPos);
+                }
+                else {
+                    calculateNextPositionIn(sprite);
+                }
                 break;
         }
     }
