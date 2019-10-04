@@ -52,6 +52,9 @@ public class Main implements CommandLineRunner {
             case "completable-future":
                 completableFutureSlide.run();
                 break;
+            case "cyclic-barrier":
+                completableFutureSlide.run();
+                break;
         }
 
     }

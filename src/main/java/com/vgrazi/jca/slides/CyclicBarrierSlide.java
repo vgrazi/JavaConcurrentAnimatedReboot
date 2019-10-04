@@ -16,7 +16,8 @@ public class CyclicBarrierSlide extends Slide {
     ApplicationContext applicationContext;
 
     private CyclicBarrier cyclicBarrier = new CyclicBarrier(4);
-
+    private ThreadSprite firstThread;
+    private int count;
     public void run() {
         reset();
         threadContext.addButton("await()", () -> {
@@ -24,7 +25,18 @@ public class CyclicBarrierSlide extends Slide {
             sprite.setAction("await");
             sprite.attachAndStartRunnable(() -> {
                 try {
+                    if (firstThread == null) {
+                        firstThread = sprite;
+                    }
+                    else {
+                        sprite.setXPosition(firstThread.getXPosition()-20);
+                    }
+                    count++;
                     cyclicBarrier.await();
+                    count--;
+                    if(count == 0) {
+                        firstThread = null;
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (BrokenBarrierException e) {
