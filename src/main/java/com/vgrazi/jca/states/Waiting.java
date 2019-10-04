@@ -26,15 +26,16 @@ public class Waiting extends ThreadState implements InitializingBean {
                 calculateNextPositionBefore(sprite);
                 break;
             case At:
+            case After:
+                // nothing to do, this thread is waiting
+                break;
             case In:
                 // todo: only stop when it arrives at the waitingXPos
                 sprite.setXPosition(waitingXPos);
                 break;
-            case After:
-                // nothing to do, this thread is waiting
-                break;
         }
     }
+
 
     @Override
     public void afterPropertiesSet() {
