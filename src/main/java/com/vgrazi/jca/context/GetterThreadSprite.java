@@ -22,11 +22,12 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
             case WAITING:
             case TIMED_WAITING:
             case BLOCKED:
-                return getThreadContext().getting;
             case RUNNABLE:
                 return getThreadContext().getting;
             case TERMINATED:
-                return getThreadContext().terminated;
+                if (getRelativePosition() == RelativePosition.After)
+                    return getThreadContext().terminated;
+                else return getThreadContext().getting;
             default:
                 throw new IllegalArgumentException("Unknown thread state " + thread.getState());
         }

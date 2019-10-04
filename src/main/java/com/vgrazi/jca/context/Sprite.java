@@ -1,8 +1,6 @@
 package com.vgrazi.jca.context;
 
-import com.vgrazi.jca.states.ThreadState;
 import com.vgrazi.jca.util.IDGenerator;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 

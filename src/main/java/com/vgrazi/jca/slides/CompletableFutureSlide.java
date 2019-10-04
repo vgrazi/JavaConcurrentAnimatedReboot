@@ -22,6 +22,10 @@ public class CompletableFutureSlide extends Slide {
     @Value("${completable-future-height}")
     private int completableFutureHeight;
 
+    @Value("${monolith-left-border}")
+    private int leftBorder;
+    @Value("${arrow-length}")
+    private int arrowLength;
     private final List<CompletableFuture> completableFutures = new ArrayList<>();
 
     /**
@@ -55,9 +59,11 @@ public class CompletableFutureSlide extends Slide {
             if(firstThread == null) {
                 firstThread = threadSprite;
             }
+            threadSprite.setXPosition(leftBorder + arrowLength);
             threadCount++;
             // we need to create a future, a thread to attach to it, and sprites for each of those
             FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+            futureSprite.setXMargin(15);
             futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
             // the holder contains the running status. When it is done, will be set to false
             threadSprite.setHolder(true);
@@ -142,7 +148,7 @@ public class CompletableFutureSlide extends Slide {
         int width = futureSprite.getWidth();
         futureSprite.setWidth(width +5);
         futureSprite.setYMargin(15);
-        futureSprite.setXMargin(5);
+        futureSprite.setXMargin(20);
         // waste a Y space
         threadContext.getNextYPosition();
         firstThread = null;

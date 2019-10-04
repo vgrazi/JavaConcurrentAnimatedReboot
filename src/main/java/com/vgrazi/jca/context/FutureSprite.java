@@ -17,8 +17,6 @@ import static com.vgrazi.jca.util.ColorParser.parseColor;
  * running flag. So construct the sprite, then add the Runnable.
  */
 public class FutureSprite extends Sprite implements InitializingBean {
-
-    private Thread thread;
     private Color futureDefaultColor;
     private Color futureDoneColor;
     @Value("${monolith-left-border}")
@@ -59,26 +57,6 @@ public class FutureSprite extends Sprite implements InitializingBean {
         }
     }
 
-    protected ThreadState getState() {
-        if (thread == null) {
-            return null;
-        }
-        switch (thread.getState()) {
-            case NEW:
-            case RUNNABLE:
-                return getThreadContext().runnable;
-            case WAITING:
-            case TIMED_WAITING:
-                return getThreadContext().waiting;
-            case BLOCKED:
-                return getThreadContext().blocked;
-            case TERMINATED:
-                return getThreadContext().terminated;
-            default:
-                throw new IllegalArgumentException("Unknown thread state " + thread.getState());
-        }
-    }
-
     @Value("${FUTURE-DEFAULT-COLOR}")
     private void setFutureDefaultColor(String color) {
         futureDefaultColor = parseColor(color);
@@ -110,7 +88,6 @@ public class FutureSprite extends Sprite implements InitializingBean {
     public String toString() {
         return "FutureSprite{" +
                 "ID=" + getID() +
-                ", state=" + getState() +
 //                ", x-position=" + xPosition +
 //                ", y-position=" + yPosition +
                 ", relative_position=" + getRelativePosition() +
