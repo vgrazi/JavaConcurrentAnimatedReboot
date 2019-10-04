@@ -47,6 +47,9 @@ public class JCAFrame extends JFrame {
     private PhaserSlide phaserSlide;
 
     @Autowired()
+    private CyclicBarrierSlide cyclicBarrierSlide;
+
+    @Autowired()
     private CompletableFutureSlide completableFutureSlide;
 
     @Autowired()
@@ -86,6 +89,7 @@ public class JCAFrame extends JFrame {
 
         addButton("Synchronized", synchronizedSlide, menu);
         addButton("Phaser", phaserSlide, menu);
+        addButton("CyclicBarrier", cyclicBarrierSlide, menu);
         addButton("CompletableFuture", completableFutureSlide, menu);
         addButton("ReadWriteLock", readWriteLockSlide, menu);
 
