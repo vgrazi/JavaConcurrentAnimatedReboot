@@ -65,9 +65,10 @@ public class JCAFrame extends JFrame {
     @PostConstruct
     public void afterPropertiesSet() {
         JPanel snippetPanel = new JPanel();
-        snippetPanel.setBackground(Color.yellow);
+        snippetPanel.setBackground(Color.white);
 
         JSplitPane animationAndSnippet = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, threadCanvas, snippetPanel);
+        animationAndSnippet.setDividerSize(2);
         animationAndSnippet.setDividerLocation(.67);
 
         JPanel messagePanel = new JPanel(new BorderLayout());
@@ -78,6 +79,7 @@ public class JCAFrame extends JFrame {
         buttonsAndMessages.add(messagePanel);
 
         JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, animationAndSnippet);
+        rightSide.setDividerSize(2);
 
         JPanel menu = new JPanel();
         menu.setLayout(new ButtonLayout(vgap));
@@ -87,8 +89,9 @@ public class JCAFrame extends JFrame {
         addButton("CompletableFuture", completableFutureSlide, menu);
         addButton("ReadWriteLock", readWriteLockSlide, menu);
 
-        menu.setBackground(Color.cyan);
+        menu.setBackground(Color.black);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menu, rightSide);
+        wholePane.setDividerSize(2);
 
         ComponentAdapter adapter = new ComponentAdapter() {
             @Override
