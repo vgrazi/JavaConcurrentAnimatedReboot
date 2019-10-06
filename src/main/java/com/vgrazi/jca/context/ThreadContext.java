@@ -1,9 +1,7 @@
 package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.JCAFrame;
-import com.vgrazi.jca.sprites.FutureSprite;
-import com.vgrazi.jca.sprites.Sprite;
-import com.vgrazi.jca.sprites.ThreadSprite;
+import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
 import com.vgrazi.jca.util.Logging;
 import com.vgrazi.jca.view.ThreadCanvas;
@@ -42,12 +40,17 @@ public class ThreadContext<S> implements InitializingBean {
         return sprites;
     }
 
-    private enum ColorationScheme {
-        byState, byInstance
+    public Color getUnknownColor() {
+        return unknownColor;
     }
 
+
+    private enum ColorationScheme {
+        byState, byInstance;
+    }
     @Autowired
     public Blocked blocked;
+
     @Autowired
     public Running runnable;
     @Autowired
@@ -56,7 +59,6 @@ public class ThreadContext<S> implements InitializingBean {
     public Terminated terminated;
     @Autowired
     public Getting getting;
-
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
 
@@ -75,19 +77,19 @@ public class ThreadContext<S> implements InitializingBean {
     private int initialBottomYPos;
 
     private Color blockedColor;
+
     private Color runnableColor;
     private Color waitingColor;
     private Color timedWaitingColor;
     private Color terminatedColor;
     private Color defaultColor;
     private Color unknownColor;
-
     private List<Sprite> sprites = new CopyOnWriteArrayList<>();
 
     private final Map<Thread, Color> threadColors = new HashMap<>();
+
     @Autowired
     ApplicationContext context;
-
     @Autowired
     ThreadCanvas canvas;
 
@@ -99,13 +101,14 @@ public class ThreadContext<S> implements InitializingBean {
 
     @Value("${monolith-left-border}")
     public int monolithLeftBorder;
+
     @Value("${monolith-right-border}")
     private int monolithRightBorder;
     @Value("${pixels-per-step}")
     public int pixelsPerStep;
-
     @Value("${arrow-length}")
     private int arrowLength;
+
     @Value("${frame-x}")
     private int frameX;
     @Value("${frame-y}")
@@ -114,7 +117,6 @@ public class ThreadContext<S> implements InitializingBean {
     private int frameWidth;
     @Value("${frame-height}")
     private int frameHeight;
-
     public ThreadContext() {
     }
 
@@ -163,6 +165,7 @@ public class ThreadContext<S> implements InitializingBean {
     public void setSlideLabel(String label) {
         canvas.setSlideLabel(label);
     }
+
     /**
      * Continually repaints the canvas
      */
@@ -181,7 +184,6 @@ public class ThreadContext<S> implements InitializingBean {
         });
         thread.start();
     }
-
     private final Color[] colors = {Color.red, Color.CYAN, Color.BLUE, Color.DARK_GRAY,
             Color.gray, Color.GREEN, Color.YELLOW
     };
@@ -247,6 +249,46 @@ public class ThreadContext<S> implements InitializingBean {
         ThreadSprite<S> threadSprite = getThreadOfState(runnable);
 
         return threadSprite;
+    }
+
+    public List<ObjectSprite> getAllObjectSprites() {
+        List<ObjectSprite> collect = sprites.stream()
+                .filter(sprite -> sprite instanceof FutureSprite)
+                .map(sprite -> (ObjectSprite) sprite)
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    public List<ObjectSprite> getAllWaitingObjectSprites() {
+        List<ObjectSprite> collect = sprites.stream()
+                .filter(sprite -> sprite instanceof ObjectSprite)
+                .map(sprite -> (ObjectSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    /**
+     * Returns the first object sprite that is in the waiting state, or null
+     */
+    public ObjectSprite getFirstWaitingObjectSprite() {
+        ObjectSprite objectSprite = sprites.stream()
+                .filter(sprite -> sprite instanceof ObjectSprite)
+                .map(sprite -> (ObjectSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .findFirst().orElse(null);
+        return objectSprite;
+    }
+    /**
+     * Returns the first thread sprite that is in the waiting state, or null
+     */
+    public GetterThreadSprite getFirstGetterThreadSprite() {
+        GetterThreadSprite getterThreadSprite = sprites.stream()
+                .filter(sprite -> sprite instanceof GetterThreadSprite)
+                .map(sprite -> (GetterThreadSprite) sprite)
+                .filter(sprite -> sprite.getState() == getting)
+                .findFirst().orElse(null);
+        return getterThreadSprite;
     }
 
     private List<FutureSprite> getAllFutureSprites() {

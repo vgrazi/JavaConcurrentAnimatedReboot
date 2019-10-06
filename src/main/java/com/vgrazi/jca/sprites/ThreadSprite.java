@@ -25,7 +25,11 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
     private int height;
 
     public Thread.State getThreadState() {
-        return thread.getState();
+        Thread.State state = null;
+        if (thread != null) {
+            state = thread.getState();
+        }
+        return state;
     }
     /**
      * Create the thread associated with this runnable, and starts it
