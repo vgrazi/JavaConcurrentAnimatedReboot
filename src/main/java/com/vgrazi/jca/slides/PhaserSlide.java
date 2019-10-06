@@ -11,7 +11,7 @@ import java.util.concurrent.Phaser;
 public class PhaserSlide extends Slide {
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     private Phaser phaser = new Phaser(4);
 

@@ -53,6 +53,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      * Draws the ball (or whatever) at the end of the thread line
      */
     protected void drawThreadCap(Graphics2D graphics) {
+        graphics.setColor(getThreadContext().getColorByInstance(this));
         graphics.fillOval(getXPosition() -8, getYPosition()-5, 10, 10);
     }
 

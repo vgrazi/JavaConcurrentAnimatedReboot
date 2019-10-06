@@ -12,7 +12,7 @@ import java.util.concurrent.CyclicBarrier;
 public class CyclicBarrierSlide extends Slide {
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     private CyclicBarrier cyclicBarrier = new CyclicBarrier(4);
     private ThreadSprite firstThread;
@@ -32,6 +32,7 @@ public class CyclicBarrierSlide extends Slide {
                     }
                     count++;
                     cyclicBarrier.await();
+                    threadContext.stopThread(sprite);
                     count--;
                     if(count == 0) {
                         firstThread = null;

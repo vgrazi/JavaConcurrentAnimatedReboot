@@ -19,7 +19,7 @@ import static com.vgrazi.jca.util.Logging.log;
 public class CompletableFutureSlide extends Slide {
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Value("${completable-future-height}")
     private int completableFutureHeight;
@@ -52,8 +52,6 @@ public class CompletableFutureSlide extends Slide {
     }
 
     public void run() {
-//        try {
-//            threadContext.colorByThreadInstance();
         reset();
         threadCanvas.hideMonolith(true);
         threadContext.addButton("runAsync", () -> {

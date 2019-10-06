@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ReadWriteLockSlide extends Slide {
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Autowired
     ThreadContext threadContext;
@@ -45,6 +45,7 @@ public class ReadWriteLockSlide extends Slide {
                     Thread.yield();
                 }
                 readWriteLock.writeLock().unlock();
+                threadContext.stopThread(sprite);
 
             });
             threadContext.addSprite(sprite);
@@ -55,6 +56,8 @@ public class ReadWriteLockSlide extends Slide {
             if (runningThread != null) {
                 runningThread.setHolder("release");
             }
+            threadContext.stopThread(runningThread);
+
         });
 
         threadContext.addButton("reset", this::reset);

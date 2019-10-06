@@ -15,7 +15,7 @@ import java.util.concurrent.TransferQueue;
 public class TransferQueueSlide extends Slide {
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     private TransferQueue transferQueue = new LinkedTransferQueue();
     public void run() {

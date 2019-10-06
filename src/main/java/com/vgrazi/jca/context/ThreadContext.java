@@ -46,14 +46,6 @@ public class ThreadContext<S> implements InitializingBean {
         byState, byInstance
     }
 
-    public void colorByThreadState() {
-        this.colorScheme = ColorationScheme.byState;
-    }
-
-    public void colorByThreadInstance() {
-        this.colorScheme = ColorationScheme.byInstance;
-    }
-
     @Autowired
     public Blocked blocked;
     @Autowired
@@ -248,12 +240,8 @@ public class ThreadContext<S> implements InitializingBean {
      * Returns the first running thread, or null if none
      */
     public ThreadSprite<S> getRunningThread() {
-        List<ThreadSprite<S>> threads = getThreadsOfState(runnable);
+        ThreadSprite<S> threadSprite = getThreadOfState(runnable);
 
-        ThreadSprite<S> threadSprite = null;
-        if (!threads.isEmpty()) {
-            threadSprite = threads.get(0);
-        }
         return threadSprite;
     }
 
@@ -302,6 +290,18 @@ public class ThreadContext<S> implements InitializingBean {
                 .filter(sprite -> sprite.getState() == threadState)
                 .collect(Collectors.toList());
         return collect;
+    }
+
+    /**
+     * Returns a list of all threads in the supplied state
+     */
+    private ThreadSprite<S> getThreadOfState(ThreadState threadState) {
+        ThreadSprite<S> first = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
+                .filter(sprite -> sprite.getState() == threadState)
+                .findFirst().orElse(null);
+        return first;
     }
 
 
@@ -368,10 +368,7 @@ public class ThreadContext<S> implements InitializingBean {
         if (isColorByThreadState()) {
             color = getColorByThreadState(threadSprite);
         } else if (isColorByThreadInstance()) {
-            color = threadColors.get(threadSprite.getThread());
-            if (color == null) {
-                color = unknownColor;
-            }
+            color = getColorByInstance(threadSprite);
         } else {
             throw new IllegalArgumentException("Must set coloration scheme - by state or by instance");
         }
@@ -392,7 +389,7 @@ public class ThreadContext<S> implements InitializingBean {
      *
      * @param threadSprite
      */
-    private Color getColorByThreadState(ThreadSprite<S> threadSprite) {
+    public Color getColorByThreadState(ThreadSprite<S> threadSprite) {
         Color color;
         Thread.State state = threadSprite.getThreadState();
         if (state == Thread.State.BLOCKED) {
@@ -413,6 +410,14 @@ public class ThreadContext<S> implements InitializingBean {
             }
         } else {
             color = defaultColor;
+        }
+        return color;
+    }
+
+    public Color getColorByInstance(ThreadSprite<S> threadSprite) {
+        Color color = threadColors.get(threadSprite.getThread());
+        if (color == null) {
+            color = unknownColor;
         }
         return color;
     }

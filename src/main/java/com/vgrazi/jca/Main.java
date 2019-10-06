@@ -16,19 +16,22 @@ public class Main implements CommandLineRunner {
     private ThreadContext threadContext;
 
     @Autowired()
-    SynchronizedSlide synchronizedSlide;
+    private SynchronizedSlide synchronizedSlide;
 
     @Autowired
-    ReadWriteLockSlide readWriteLockSlide;
+    private ReadWriteLockSlide readWriteLockSlide;
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Autowired
-    PhaserSlide phaserSlide;
+    private PhaserSlide phaserSlide;
 
     @Autowired
-    CompletableFutureSlide completableFutureSlide;
+    private CyclicBarrierSlide cyclicBarrierSlide;
+
+    @Autowired
+    private CompletableFutureSlide completableFutureSlide;
 
     @Override
     public void run(String... args) throws InterruptedException {
@@ -53,7 +56,7 @@ public class Main implements CommandLineRunner {
                 completableFutureSlide.run();
                 break;
             case "cyclic-barrier":
-                completableFutureSlide.run();
+                cyclicBarrierSlide.run();
                 break;
         }
 
