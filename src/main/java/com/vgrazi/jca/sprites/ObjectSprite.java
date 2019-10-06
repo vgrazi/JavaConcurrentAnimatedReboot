@@ -56,7 +56,6 @@ public class ObjectSprite extends ThreadSprite implements InitializingBean {
 //                ", x-position=" + getXPosition() +
 //                ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
-                ", " + super.toString() +
                 '}';
     }
 }
