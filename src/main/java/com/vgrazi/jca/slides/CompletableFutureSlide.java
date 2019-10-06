@@ -99,7 +99,9 @@ public class CompletableFutureSlide extends Slide {
         });
         threadContext.addButton("CompletableFuture.anyOf()", () -> {
             CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[0]));
-            addCompletableFutureSprite(future);
+            if (future != null) {
+                addCompletableFutureSprite(future);
+            }
         });
 
         threadContext.addButton("get()", () -> {

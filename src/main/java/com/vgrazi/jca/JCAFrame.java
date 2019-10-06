@@ -55,6 +55,9 @@ public class JCAFrame extends JFrame {
     @Autowired()
     private ReadWriteLockSlide readWriteLockSlide;
 
+    @Autowired()
+    private TransferQueueSlide transferQueueSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -92,6 +95,7 @@ public class JCAFrame extends JFrame {
         addButton("CyclicBarrier", cyclicBarrierSlide, menu);
         addButton("CompletableFuture", completableFutureSlide, menu);
         addButton("ReadWriteLock", readWriteLockSlide, menu);
+        addButton("TransferQueue", transferQueueSlide, menu);
 
         menu.setBackground(Color.black);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menu, rightSide);

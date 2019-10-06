@@ -224,7 +224,10 @@ public class ThreadContext<S> implements InitializingBean {
         threadSprite.setRunning(false);
         new Thread(() -> {
             try {
-                Thread.sleep(5000);
+                // todo: the measurement to the right border of the frame
+                while (threadSprite.getXPosition() < 600) {
+                    Thread.sleep(100);
+                }
                 sprites.remove(threadSprite);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

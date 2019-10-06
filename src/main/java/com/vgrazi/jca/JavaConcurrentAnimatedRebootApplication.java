@@ -1,9 +1,6 @@
 package com.vgrazi.jca;
 
-import com.vgrazi.jca.sprites.FutureSprite;
-import com.vgrazi.jca.sprites.GetterThreadSprite;
-import com.vgrazi.jca.sprites.ThreadSprite;
-import com.vgrazi.jca.sprites.WriteThreadSprite;
+import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +18,12 @@ public class JavaConcurrentAnimatedRebootApplication {
     @Scope("prototype")
     ThreadSprite threadSprite() {
         return new ThreadSprite();
+    }
+
+    @Bean
+    @Scope("prototype")
+    ObjectSprite objectSprite() {
+        return new ObjectSprite();
     }
 
     @Bean

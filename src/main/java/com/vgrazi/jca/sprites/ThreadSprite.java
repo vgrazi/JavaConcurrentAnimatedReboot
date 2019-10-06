@@ -82,9 +82,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
     @Override
     public void afterPropertiesSet() {
-        if (!(this instanceof GetterThreadSprite)) {
-            setYPosition(getThreadContext().getNextYPosition(height));
-        }
+        setYPosition(getThreadContext().getNextYPosition(height));
     }
 
     @Override
