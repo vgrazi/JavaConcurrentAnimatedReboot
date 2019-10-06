@@ -1,8 +1,8 @@
 package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.context.ThreadSprite;
-import com.vgrazi.jca.context.WriteThreadSprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
+import com.vgrazi.jca.sprites.WriteThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.context.Sprite;
+import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

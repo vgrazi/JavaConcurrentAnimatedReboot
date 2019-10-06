@@ -1,6 +1,4 @@
-package com.vgrazi.jca.context;
-
-import com.vgrazi.jca.states.ThreadState;
+package com.vgrazi.jca.sprites;
 
 import java.awt.*;
 
@@ -10,7 +8,7 @@ import java.awt.*;
  */
 public class PhantomSprite extends Sprite{
     @Override
-    protected void setNextXPosition() {
+    public void setNextXPosition() {
 
     }
 

@@ -1,6 +1,9 @@
 package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.JCAFrame;
+import com.vgrazi.jca.sprites.FutureSprite;
+import com.vgrazi.jca.sprites.Sprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
 import com.vgrazi.jca.states.*;
 import com.vgrazi.jca.util.Logging;
 import com.vgrazi.jca.view.ThreadCanvas;
@@ -52,16 +55,15 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     @Autowired
-    Blocked blocked;
+    public Blocked blocked;
     @Autowired
-    Running runnable;
+    public Running runnable;
     @Autowired
-    Waiting waiting;
+    public Waiting waiting;
     @Autowired
-    Terminated terminated;
-
+    public Terminated terminated;
     @Autowired
-    Getting getting;
+    public Getting getting;
 
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;

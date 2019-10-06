@@ -1,7 +1,6 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.context.Sprite;
-import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.sprites.Sprite;
 
 public interface State {
     /**

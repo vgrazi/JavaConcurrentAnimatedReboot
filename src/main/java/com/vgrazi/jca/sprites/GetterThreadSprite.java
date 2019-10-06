@@ -1,5 +1,6 @@
-package com.vgrazi.jca.context;
+package com.vgrazi.jca.sprites;
 
+import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.states.ThreadState;
 
 import java.awt.*;
@@ -12,7 +13,7 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
 
     }
 
-    protected ThreadState getState() {
+    public ThreadState getState() {
         Thread thread = getThread();
         if (thread == null) {
             return null;
@@ -42,7 +43,7 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
 
 
     @Override
-    protected void setNextXPosition() {
+    public void setNextXPosition() {
         ThreadState state = getState();
         // todo: center this in our future
         state.advancePosition(this);

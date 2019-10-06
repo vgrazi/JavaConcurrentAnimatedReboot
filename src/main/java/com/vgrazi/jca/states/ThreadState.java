@@ -1,8 +1,8 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.context.Sprite;
+import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
-import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

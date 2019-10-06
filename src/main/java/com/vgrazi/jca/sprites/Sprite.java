@@ -1,5 +1,7 @@
-package com.vgrazi.jca.context;
+package com.vgrazi.jca.sprites;
 
+import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.util.IDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +48,7 @@ public abstract class Sprite<T> {
         return running;
     }
 
-    void setRunning(boolean running) {
+    public void setRunning(boolean running) {
         this.running = running;
     }
 
@@ -78,7 +80,7 @@ public abstract class Sprite<T> {
         }
     }
 
-    protected abstract void setNextXPosition();
+    public abstract void setNextXPosition();
 
     public int getXMargin() {
         return xMargin;

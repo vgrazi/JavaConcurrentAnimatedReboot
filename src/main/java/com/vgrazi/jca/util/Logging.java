@@ -1,7 +1,7 @@
 package com.vgrazi.jca.util;
 
-import com.vgrazi.jca.context.Sprite;
-import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.sprites.Sprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
 
 import java.time.LocalTime;
 import java.util.HashMap;

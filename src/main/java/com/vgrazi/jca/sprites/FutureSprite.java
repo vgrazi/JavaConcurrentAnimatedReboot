@@ -1,6 +1,5 @@
-package com.vgrazi.jca.context;
+package com.vgrazi.jca.sprites;
 
-import com.vgrazi.jca.states.ThreadState;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -32,7 +31,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
     @Value("${future-height}")
     private int height;
 
-    protected void setNextXPosition() {
+    public void setNextXPosition() {
     }
 
     public int getWidth() {

@@ -1,6 +1,8 @@
 package com.vgrazi.jca.slides;
 
-import com.vgrazi.jca.context.*;
+import com.vgrazi.jca.sprites.FutureSprite;
+import com.vgrazi.jca.sprites.GetterThreadSprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;

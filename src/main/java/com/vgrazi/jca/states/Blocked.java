@@ -1,7 +1,7 @@
 package com.vgrazi.jca.states;
 
 import com.vgrazi.jca.context.RelativePosition;
-import com.vgrazi.jca.context.Sprite;
+import com.vgrazi.jca.sprites.Sprite;
 
 public class Blocked extends ThreadState {
 

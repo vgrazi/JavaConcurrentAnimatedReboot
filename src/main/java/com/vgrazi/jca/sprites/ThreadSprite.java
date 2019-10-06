@@ -1,4 +1,4 @@
-package com.vgrazi.jca.context;
+package com.vgrazi.jca.sprites;
 
 import com.vgrazi.jca.states.ThreadState;
 import org.springframework.beans.factory.InitializingBean;
@@ -35,7 +35,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         thread.start();
     }
 
-    protected void setNextXPosition() {
+    public void setNextXPosition() {
         getState().advancePosition(this);
     }
 
@@ -60,7 +60,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      * Returns our internal thread state, reflecting the native thread state, with some adjustments (new and runnable
      * are both considered runnable, and waiting and timed-waiting are both considered waiting.
      */
-    protected ThreadState getState() {
+    public ThreadState getState() {
         if(thread == null) {
             return null;
         }

@@ -1,6 +1,6 @@
 package com.vgrazi.jca.slides;
 
-import com.vgrazi.jca.context.ThreadSprite;
+import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

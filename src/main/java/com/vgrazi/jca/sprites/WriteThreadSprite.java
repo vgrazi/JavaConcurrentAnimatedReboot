@@ -1,4 +1,4 @@
-package com.vgrazi.jca.context;
+package com.vgrazi.jca.sprites;
 
 import java.awt.*;
 
