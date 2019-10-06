@@ -23,6 +23,7 @@ public class ReadWriteLockSlide extends Slide {
 
     public void run() {
         reset();
+        threadContext.setSlideLabel("ReadWriteLock");
         threadContext.addButton("readLock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("threadSprite");
             sprite.setHolder("running");

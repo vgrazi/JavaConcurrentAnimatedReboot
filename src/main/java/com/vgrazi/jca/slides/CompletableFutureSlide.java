@@ -53,6 +53,7 @@ public class CompletableFutureSlide extends Slide {
 
     public void run() {
         reset();
+        threadContext.setSlideLabel("CompletableFuture");
         threadCanvas.hideMonolith(true);
         threadContext.addButton("runAsync", () -> {
             ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("threadSprite");

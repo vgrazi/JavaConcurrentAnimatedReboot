@@ -31,12 +31,27 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${arrow-length}")
     private int arrowLength;
 
+    @Value("${slide-label-font-name}")
+    private String labelFontName;
+
+    private int labelFontStyle;
+
+    @Value("${slide-label-font-size}")
+    private int labelFontSize;
+
     private Color monolithColor;
     private boolean hideMonolith;
+    private Color slideLabelColor;
+    private String slideLabel = "";
 
     @Value("${MONOLITH-COLOR}")
     public void setMonolithColor(String color) {
         this.monolithColor = parseColor(color);
+    }
+
+    @Value("${SLIDE-LABEL-COLOR}")
+    public void setSlideLabelColor(String color) {
+        this.slideLabelColor = parseColor(color);
     }
 
     @Override
@@ -48,6 +63,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+        paintSlideLabel(graphics);
         // todo: make this a case statement depending on the kind of monolith
         if (!hideMonolith) {
             paintMonolith(graphics);
@@ -64,6 +80,15 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         sprite.render(graphics);
     }
 
+    private void paintSlideLabel(Graphics2D g) {
+        g.setColor(slideLabelColor);
+        g.setFont(new Font(labelFontName, labelFontStyle, labelFontSize));
+        FontMetrics fm = g.getFontMetrics();
+        int width = fm.stringWidth(slideLabel);
+        int height = fm.getHeight();
+        g.drawString(slideLabel, (rightBorder + leftBorder - width)/2, initialYPosition - 20-height/2 + fm.getDescent());
+    }
+
     private void paintMonolith(Graphics2D g) {
         g.setColor(monolithColor);
         g.fill3DRect(leftBorder, initialYPosition - 20, rightBorder - leftBorder, 5000, true);
@@ -73,10 +98,33 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     public void afterPropertiesSet() {
     }
 
+    @Value("${slide-label-font-style}")
+    public void setFontStyle(String style) {
+        String lcStyle = style.toLowerCase();
+        switch (lcStyle) {
+            case "plain":
+                labelFontStyle = Font.PLAIN;
+                break;
+            case "bold":
+                labelFontStyle = Font.BOLD;
+                break;
+            case "italic":
+                labelFontStyle = Font.ITALIC;
+                break;
+            case "bold-italic":
+                labelFontStyle = Font.BOLD+Font.ITALIC;
+                break;
+        }
+    }
+
     /**
      * False by default, call this with true to prevent the monolith from drawing
      */
     public void hideMonolith(boolean b) {
         hideMonolith = b;
+    }
+
+    public void setSlideLabel(String slideLabel) {
+        this.slideLabel = slideLabel;
     }
 }

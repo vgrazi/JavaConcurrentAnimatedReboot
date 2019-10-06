@@ -20,6 +20,7 @@ public class TransferQueueSlide extends Slide {
     private TransferQueue transferQueue = new LinkedTransferQueue();
     public void run() {
         reset();
+        threadContext.setSlideLabel("TransferQueue");
         threadContext.addButton("transfer()", () -> {
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             objectSprite.attachAndStartRunnable(() -> {

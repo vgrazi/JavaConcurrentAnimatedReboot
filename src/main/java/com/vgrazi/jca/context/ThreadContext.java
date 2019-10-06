@@ -121,6 +121,7 @@ public class ThreadContext<S> implements InitializingBean {
     public void reset() {
         threadColors.clear();
         getAllThreads().forEach(sprite -> sprite.getThread().stop());
+        canvas.setSlideLabel("");
         sprites.clear();
     }
 
@@ -159,6 +160,9 @@ public class ThreadContext<S> implements InitializingBean {
         this.unknownColor = parseColor(color);
     }
 
+    public void setSlideLabel(String label) {
+        canvas.setSlideLabel(label);
+    }
     /**
      * Continually repaints the canvas
      */

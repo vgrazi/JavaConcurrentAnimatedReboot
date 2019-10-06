@@ -17,6 +17,7 @@ public class PhaserSlide extends Slide {
 
     public void run() {
         reset();
+        threadContext.setSlideLabel("Phaser");
         threadContext.addButton("await()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
