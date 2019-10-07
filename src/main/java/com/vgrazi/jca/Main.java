@@ -42,7 +42,14 @@ public class Main implements CommandLineRunner {
                 Thread.currentThread().interrupt();
             }
         }).start();
-        switch (args[0]) {
+        String param;
+        if(args.length == 0) {
+            param = "synchronized";
+        }
+        else {
+            param = args[0];
+        }
+        switch (param) {
             case "synchronized":
                 synchronizedSlide.run();
                 break;
