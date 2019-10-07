@@ -59,6 +59,8 @@ public class ThreadContext<S> implements InitializingBean {
     public Terminated terminated;
     @Autowired
     public Getting getting;
+    @Autowired
+    public Retreating retreating;
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
 
@@ -172,7 +174,6 @@ public class ThreadContext<S> implements InitializingBean {
     private void render() {
         Thread thread = new Thread(() -> {
             while (true) {
-//                canvas.paintImmediately(canvas.getBounds());
                 canvas.repaint(canvas.getBounds());
                 try {
                     Thread.sleep(10);
@@ -222,8 +223,10 @@ public class ThreadContext<S> implements InitializingBean {
         threadSprite.setRunning(false);
         new Thread(() -> {
             try {
+                // while the sprite is visible, render it. Otherwise remove it
+                // remember, retreating sprites move from right to left
                 // todo: the measurement to the right border of the frame
-                while (threadSprite.getXPosition() < 600) {
+                while (threadSprite.getXPosition() >= 0 && threadSprite.getXPosition() < 600) {
                     Thread.sleep(100);
                 }
                 sprites.remove(threadSprite);
@@ -438,7 +441,10 @@ public class ThreadContext<S> implements InitializingBean {
     public Color getColorByThreadState(ThreadSprite<S> threadSprite) {
         Color color;
         Thread.State state = threadSprite.getThreadState();
-        if (state == Thread.State.BLOCKED) {
+        if(threadSprite.isRetreating()) {
+            return terminatedColor;
+        }
+        else if (state == Thread.State.BLOCKED) {
             color = blockedColor;
         } else if (state == Thread.State.RUNNABLE) {
             color = runnableColor;

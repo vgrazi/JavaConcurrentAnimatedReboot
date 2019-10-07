@@ -18,6 +18,11 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
     private Thread thread;
     @Value("${arrow-length}")
     protected int arrowLength;
+    /**
+     * set to true to have the sprite animate from right to left when failed
+     */
+    private boolean retreating;
+
     public Thread getThread() {
         return thread;
     }
@@ -58,7 +63,8 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
-        graphics.fillOval(getXPosition() -8, getYPosition()-5, 10, 10);
+        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
+        graphics.fillOval(getXPosition() -8 -offset, getYPosition()-5, 10, 10);
     }
 
     /**
@@ -68,6 +74,9 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
     public ThreadState getState() {
         if(thread == null) {
             return null;
+        }
+        if(isRetreating()) {
+            return getThreadContext().retreating;
         }
         switch (thread.getState()) {
             case NEW:
@@ -95,11 +104,18 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         return "ThreadSprite{" +
                 "ID=" + getID() +
                 ", state=" + getState() +
-//                ", x-position=" + xPosition +
-//                ", y-position=" + yPosition +
+//                ", x-position=" + getXPosition() +
+//                ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
                 ", " + super.toString() +
                 '}';
     }
 
+    public boolean isRetreating() {
+        return retreating;
+    }
+
+    public void setRetreating(boolean retreating) {
+        this.retreating = retreating;
+    }
 }

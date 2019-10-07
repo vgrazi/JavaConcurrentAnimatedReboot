@@ -19,7 +19,6 @@ public class CyclicBarrierSlide extends Slide {
     private int count;
     public void run() {
         reset();
-        threadContext.setSlideLabel("CyclicBarrier");
         threadContext.addButton("await()", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("await");
@@ -54,6 +53,7 @@ public class CyclicBarrierSlide extends Slide {
 
     protected void reset() {
         super.reset();
+        threadContext.setSlideLabel("CyclicBarrier");
         cyclicBarrier = new CyclicBarrier(4);
     }
 }

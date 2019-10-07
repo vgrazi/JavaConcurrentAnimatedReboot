@@ -27,7 +27,6 @@ public class TransferQueueSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.setSlideLabel("TransferQueue");
         threadContext.addButton("transfer()", () -> {
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
@@ -93,6 +92,7 @@ public class TransferQueueSlide extends Slide {
 
     protected void reset() {
         super.reset();
+        threadContext.setSlideLabel("TransferQueue");
         transferQueue = new LinkedTransferQueue();
     }
 }

@@ -17,7 +17,6 @@ public class SynchronizedSlide extends Slide {
     private Object mutex = new Object();
     public void run() {
         reset();
-        threadContext.setSlideLabel("synchronized/wait/notify");
 
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
@@ -73,6 +72,7 @@ public class SynchronizedSlide extends Slide {
 
     protected void reset() {
         super.reset();
+        threadContext.setSlideLabel("synchronized/wait/notify");
         mutex = new Object();
     }
 

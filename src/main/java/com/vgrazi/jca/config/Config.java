@@ -61,4 +61,9 @@ public class Config {
     public Getting getting () {
         return new Getting();
     }
+
+    @Bean
+    public Retreating retreating() {
+        return new Retreating();
+    }
 }

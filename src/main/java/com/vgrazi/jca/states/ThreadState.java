@@ -42,6 +42,15 @@ public abstract class ThreadState implements State {
         sprite.setXPosition(position);
     }
 
+    void calculatePreviousPosition(ThreadSprite sprite) {
+        int position = sprite.getXPosition();
+        position -= pixelsPerStep;
+        sprite.setXPosition(position);
+        if (position <0) {
+            threadContext.stopThread(sprite);
+        }
+    }
+
     /**
      * Given a sprite inside the monolith, calculates the next position
      * and stores it in the sprite
