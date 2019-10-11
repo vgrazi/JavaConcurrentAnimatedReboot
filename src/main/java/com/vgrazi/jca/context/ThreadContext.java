@@ -364,6 +364,14 @@ public class ThreadContext<S> implements InitializingBean {
     public int getNextYPosition() {
         return getNextYPosition(pixelsPerYStep);
     }
+
+    /**
+     * Add a few pixels to the next y position
+     * @param pixels
+     */
+    public void addYPixels(int pixels) {
+        nextYPos += pixels;
+    }
     public int getNextYPosition(int height) {
         if(sprites.isEmpty()) {
             nextYPos = initialYPos;

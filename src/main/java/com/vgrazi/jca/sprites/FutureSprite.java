@@ -50,9 +50,9 @@ public class FutureSprite extends Sprite implements InitializingBean {
     public void render(Graphics2D graphics) {
         if (future != null) {
             graphics.setColor(Color.black);
-            graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin(), width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+            graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
-            graphics.fillRect(getXPosition() - getXMargin() , getYPosition() - getYMargin(), width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+            graphics.fillRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
         }
     }
 

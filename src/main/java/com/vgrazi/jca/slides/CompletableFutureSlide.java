@@ -54,7 +54,7 @@ public class CompletableFutureSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("runAsync", () -> {
-            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("threadSprite");
+            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
             if(firstThread == null) {
                 firstThread = threadSprite;
             }
@@ -63,6 +63,8 @@ public class CompletableFutureSlide extends Slide {
             // we need to create a future, a thread to attach to it, and sprites for each of those
             FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
             futureSprite.setXMargin(15);
+            futureSprite.setXRightMargin(15);
+            futureSprite.setYMargin(+6);
             futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
             // the holder contains the running status. When it is done, will be set to false
             threadSprite.setHolder(true);
@@ -92,9 +94,7 @@ public class CompletableFutureSlide extends Slide {
         });
         threadContext.addButton("CompletableFuture.anyOf()", () -> {
             CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[0]));
-            if (future != null) {
-                addCompletableFutureSprite(future);
-            }
+            addCompletableFutureSprite(future);
         });
 
         threadContext.addButton("get()", () -> {
@@ -143,13 +143,13 @@ public class CompletableFutureSlide extends Slide {
         completableFutures.clear();
         futureSprite.setFuture(future);
         futureSprite.setYPosition(firstThread.getYPosition());
-        futureSprite.setHeight((threadCount-1) * pixelsPerYStep + futureTopMargin);
+        futureSprite.setHeight((threadCount-1) * pixelsPerYStep);
         int width = futureSprite.getWidth();
-        futureSprite.setWidth(width +5);
-        futureSprite.setYMargin(15);
+        futureSprite.setWidth(width +20);
+        futureSprite.setYMargin(20);
         futureSprite.setXMargin(20);
-        // waste a Y space
-        threadContext.getNextYPosition();
+        // waste some Y space
+        threadContext.addYPixels(15);
         firstThread = null;
         threadCount = 0;
         threadContext.addSprite(0, futureSprite);
