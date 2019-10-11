@@ -87,9 +87,11 @@ public class RunnerThreadSprite extends ThreadSprite{
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
+//    graphics.setColor(Color.yellow);
         int yPos = getBallYPosition(leftBound, rightBound, topBound, bottomBound, this);
-//        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
-        graphics.fillOval(getXPosition() - 8, yPos, ballRadius, ballRadius);
+        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
+        graphics.fillOval(getXPosition() -8 -offset, yPos, ballRadius, ballRadius);
+
     }
 
 //      <------------------------W------------------------->

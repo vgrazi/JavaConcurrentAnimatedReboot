@@ -81,10 +81,12 @@ public class SemaphoreSlide extends Slide {
 
         threadContext.addButton("release()", () -> {
             ThreadSprite sprite = threadContext.getRunningThread();
-            semaphore.release();
-            sprite.attachAndStartRunnable(()-> {
-                threadContext.stopThread(sprite);
-            });
+            if (sprite != null) {
+                semaphore.release();
+                sprite.attachAndStartRunnable(()-> {
+                    threadContext.stopThread(sprite);
+                });
+            }
         });
 
 //
