@@ -30,7 +30,11 @@ public class ObjectSprite extends ThreadSprite implements InitializingBean {
     public void render(Graphics2D graphics) {
         Color color = getThreadContext().getColor(this);
         graphics.setColor(color);
-        graphics.fillOval(getXPosition() + getXMargin() , getYPosition() + getYMargin(), width, height);
+        int yCenter = getYPosition();
+//        Draw a positioning line, for diagnostics
+//        graphics.drawLine(0, yCenter, 1000, yCenter);
+        int yPos = yCenter - height/2;
+        graphics.fillOval(getXPosition() + getXMargin() , yPos + getYMargin(), width, height);
     }
 
     @Override

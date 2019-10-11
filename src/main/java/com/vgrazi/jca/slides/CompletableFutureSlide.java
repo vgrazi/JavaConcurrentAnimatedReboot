@@ -68,11 +68,7 @@ public class CompletableFutureSlide extends Slide {
             threadSprite.setHolder(true);
             Runnable runnable = () -> {
                 while (threadSprite.getHolder()) {
-                    try {
-                        Thread.sleep(25);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
+                    Thread.yield();
                 }
                 threadContext.stopThread(threadSprite);
             };

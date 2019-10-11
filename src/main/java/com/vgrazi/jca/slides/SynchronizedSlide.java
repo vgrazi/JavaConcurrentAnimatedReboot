@@ -19,7 +19,7 @@ public class SynchronizedSlide extends Slide {
         reset();
 
         threadContext.addButton("Add thread", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             addYieldRunnable(mutex, sprite);
 
         });

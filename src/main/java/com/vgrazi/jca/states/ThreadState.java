@@ -1,7 +1,7 @@
 package com.vgrazi.jca.states;
 
-import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +23,12 @@ public abstract class ThreadState implements State {
     public int monolithRightBorder;
     @Value("${pixels-per-step}")
     private int pixelsPerStep;
+
+    @Value("${pixels-per-step-runner}")
+    private int pixelsPerStepRunner;
+
+    @Value("${arrow-length}")
+    private int arrowLength;
 
     @Override
     public String toString() {
@@ -46,7 +52,7 @@ public abstract class ThreadState implements State {
         int position = sprite.getXPosition();
         position -= pixelsPerStep;
         sprite.setXPosition(position);
-        if (position <0) {
+        if (position < 0) {
             threadContext.stopThread(sprite);
         }
     }
@@ -60,7 +66,7 @@ public abstract class ThreadState implements State {
         ThreadSprite.Direction direction = sprite.getDirection();
         switch (direction) {
             case right:
-                position += pixelsPerStep;
+                position += pixelsPerStepRunner;
                 if (position > monolithRightBorder - 5) {
                     position = monolithRightBorder - 5;
                     // todo: build the rotational animation here
@@ -71,9 +77,9 @@ public abstract class ThreadState implements State {
                 }
                 break;
             case left:
-                position -= pixelsPerStep;
-                if (position < monolithLeftBorder + pixelsPerStep*2) {
-                    position = monolithLeftBorder + pixelsPerStep*2;
+                position -= pixelsPerStepRunner;
+                if (position < monolithLeftBorder + pixelsPerStepRunner*2) {
+                    position = monolithLeftBorder + pixelsPerStepRunner*2;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.right);

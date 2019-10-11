@@ -32,7 +32,7 @@ public class TransferQueueSlide extends Slide {
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
             if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition() - pixelsPerYStep / 2);
+                objectSprite.setYPosition(getter.getYPosition());
                 objectSprite.setXPosition(leftBorder);
             }
             objectSprite.attachAndStartRunnable(() -> {
@@ -46,6 +46,12 @@ public class TransferQueueSlide extends Slide {
         });
         threadContext.addButton("tryTransfer()", () -> {
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+            threadContext.addSprite(objectSprite);
+            if (getter != null) {
+                objectSprite.setYPosition(getter.getYPosition());
+                objectSprite.setXPosition(leftBorder);
+            }
             objectSprite.attachAndStartRunnable(() -> {
                 try {
                     transferQueue.tryTransfer("xxx", 5000, TimeUnit.MILLISECONDS);
@@ -73,7 +79,7 @@ public class TransferQueueSlide extends Slide {
                     } else {
                         getter.attachAndStartRunnable(() -> {
                             try {
-                                getter.setYPosition(objectSprite.getYPosition() + pixelsPerYStep / 2);
+                                getter.setYPosition(objectSprite.getYPosition());
                                 transferQueue.take();
                                 threadContext.stopThread(objectSprite);
                                 threadContext.stopThread(getter);

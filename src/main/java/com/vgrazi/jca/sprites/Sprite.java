@@ -69,10 +69,10 @@ public abstract class Sprite<T> {
         if (position < monolithLeftBorder) {
             return RelativePosition.Before;
         }
-        else if (position <= monolithLeftBorder + pixelsPerStep) {
+        else if (position == monolithLeftBorder) {
             return RelativePosition.At;
         }
-        else if (position > monolithLeftBorder +  pixelsPerStep && position < monolithRightBorder) {
+        else if (position > monolithLeftBorder && position < monolithRightBorder) {
             return RelativePosition.In;
         }
         else {
@@ -136,7 +136,7 @@ public abstract class Sprite<T> {
     }
 
     public enum Direction {
-        right, down, left, up;
+        right, left;
     }
 
     public Direction getDirection() {

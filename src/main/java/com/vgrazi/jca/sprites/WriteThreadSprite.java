@@ -2,7 +2,7 @@ package com.vgrazi.jca.sprites;
 
 import java.awt.*;
 
-public class WriteThreadSprite<S> extends ThreadSprite<S> {
+public class WriteThreadSprite<S> extends RunnerThreadSprite {
     @Override
     protected void drawThreadCap(Graphics2D g) {
         Graphics2D graphics = (Graphics2D) g.create();

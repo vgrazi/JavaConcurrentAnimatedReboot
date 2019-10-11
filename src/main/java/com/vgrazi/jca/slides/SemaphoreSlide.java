@@ -22,7 +22,7 @@ public class SemaphoreSlide extends Slide {
         reset();
 
         threadContext.addButton("acquire()", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
                 try {
@@ -39,7 +39,7 @@ public class SemaphoreSlide extends Slide {
             });
         });
         threadContext.addButton("tryAcquire()", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
                 boolean b = semaphore.tryAcquire();
@@ -57,7 +57,7 @@ public class SemaphoreSlide extends Slide {
             });
         });
         threadContext.addButton("tryAcquire(3, TimeUnit.SECONDS)", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
                 try {
