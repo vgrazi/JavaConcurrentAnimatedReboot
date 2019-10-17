@@ -34,8 +34,8 @@ public class SnippetCanvas extends JTextPane {
                     ""
             );
 
-            styleSheet = htmlEditorKit.getStyleSheet();
-            // todo: change styles in the stylesheet do bold selected parts of code
+//            styleSheet = htmlEditorKit.getStyleSheet();
+            // todo: change styles in the stylesheet to bold selected parts of code
 //            HtmlUtils.displayHtml(htmlDocument, null, 0);
 //            changer();
 
