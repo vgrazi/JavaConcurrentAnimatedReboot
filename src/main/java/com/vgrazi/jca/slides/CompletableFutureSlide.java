@@ -123,7 +123,7 @@ public class CompletableFutureSlide extends Slide {
             log("Set release on ", runningSprite);
         });
 
-        threadContext.addButton("Reset", this::reset);
+        threadContext.addResetButton();
 
         threadContext.setVisible();
     }

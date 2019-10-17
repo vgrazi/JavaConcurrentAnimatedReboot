@@ -130,7 +130,7 @@ public class JCAFrame extends JFrame {
         button.addActionListener(e -> {
             buttonPanel.removeAll();
             repaint();
-            slide.run();
+                slide.run();
         });
         menu.add(button);
     }

@@ -18,6 +18,5 @@ public abstract class Slide {
     protected void reset() {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
-
     }
 }

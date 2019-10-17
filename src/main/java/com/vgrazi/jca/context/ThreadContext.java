@@ -4,15 +4,20 @@ import com.vgrazi.jca.JCAFrame;
 import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
 import com.vgrazi.jca.util.Logging;
+import com.vgrazi.jca.view.SnippetCanvas;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +25,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.vgrazi.jca.util.ColorParser.parseColor;
@@ -36,14 +43,18 @@ public class ThreadContext<S> implements InitializingBean {
      */
     private ColorationScheme colorScheme = ColorationScheme.byState;
 
-    public List<Sprite> getAllSprites() {
-        return sprites;
-    }
+    @Autowired
+    private ResourceLoader resourceLoader;
 
-    public Color getUnknownColor() {
-        return unknownColor;
-    }
+    private String snippet;
 
+    private final Pattern ADD_BR = Pattern.compile("(.+)$", Pattern.MULTILINE);
+    private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s+)", Pattern.MULTILINE);
+    private String snippetFile;
+
+    public void addResetButton() {
+        addButton("Reset", () -> reset());
+    }
 
     private enum ColorationScheme {
         byState, byInstance;
@@ -91,12 +102,13 @@ public class ThreadContext<S> implements InitializingBean {
     private final Map<Thread, Color> threadColors = new HashMap<>();
 
     @Autowired
-    ApplicationContext context;
-    @Autowired
-    ThreadCanvas canvas;
+    private ThreadCanvas canvas;
 
     @Autowired
-    JCAFrame frame;
+    private SnippetCanvas snippetCanvas;
+
+    @Autowired
+    private JCAFrame frame;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -127,6 +139,8 @@ public class ThreadContext<S> implements InitializingBean {
         getAllThreads().forEach(sprite -> sprite.getThread().stop());
         canvas.setSlideLabel("");
         sprites.clear();
+        snippetFile = null;
+        snippetCanvas.removeContent();
     }
 
     @Value("${BLOCKED_COLOR}")
@@ -210,6 +224,10 @@ public class ThreadContext<S> implements InitializingBean {
         if (sprite instanceof ThreadSprite) {
             threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
         }
+    }
+
+    public List<Sprite> getAllSprites() {
+        return sprites;
     }
 
 
@@ -401,7 +419,9 @@ public class ThreadContext<S> implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setBounds(frameX, frameY, frameWidth, frameHeight);
+        frame.setSize(frameWidth, frameHeight);
+        // center the frame
+        frame.setLocationRelativeTo(null);
         nextYPos = initialYPos;
         render();
     }
@@ -413,6 +433,39 @@ public class ThreadContext<S> implements InitializingBean {
         frame.getButtonPanel().revalidate();
         frame.revalidate();
         frame.addNotify();
+    }
+
+    /**
+     * Reads the snippet from the specified filename, and adds a <br> to the end of every line, and replaces leading whitespace with &nbsp;
+     * @param fileName
+     * @throws IOException if IO Exception or bad HTML parsing
+     */
+    public void setSnippet(String fileName) throws IllegalArgumentException {
+        try {
+            if (!fileName.equals(snippetFile)) {
+                Resource resource = resourceLoader.getResource(fileName);
+                byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
+                String transformed = new String(bytes);
+                // replace leading white space with &nbsp;
+                Matcher matcher = REPLACE_WHITE.matcher(transformed);
+                if (matcher.find()) {
+                    String blanks = matcher.group(1);
+                    String spaces = blanks.replaceAll(" ", "&nbsp;");
+                    // would prefer to use <pre>$1</pre> but apparently this is not supported :(
+                    transformed = matcher.replaceAll(spaces + "$1");
+                }
+                // add a <br> after all line breaks
+                matcher = ADD_BR.matcher(transformed);
+                transformed = matcher.replaceAll("$1<br>");
+                String snippet = transformed;
+                this.snippet = snippet;
+                System.out.println(snippet);
+                snippetCanvas.setSnippet(snippet);
+                snippetFile = fileName;
+            }
+        } catch (IOException | BadLocationException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public void setVisible() {

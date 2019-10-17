@@ -64,7 +64,7 @@ public class SynchronizedSlide extends Slide {
                log("Set release on ", runningSprite);
            }
        });
-        threadContext.addButton("reset", this::reset);
+        threadContext.addResetButton();
 
         threadContext.setVisible();
 
@@ -73,6 +73,7 @@ public class SynchronizedSlide extends Slide {
     protected void reset() {
         super.reset();
         threadContext.setSlideLabel("synchronized/wait/notify");
+        threadContext.setSnippet("synchronized.html");
         mutex = new Object();
     }
 
