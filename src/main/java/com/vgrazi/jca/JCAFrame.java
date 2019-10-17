@@ -66,6 +66,8 @@ public class JCAFrame extends JFrame {
 
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     private final JLabel messages = new JLabel();
+    @Autowired
+    private JTextPane snippetPanel;
 
     public JCAFrame() throws HeadlessException {
         super("Java Concurrent Animated - Reboot!");
@@ -73,7 +75,6 @@ public class JCAFrame extends JFrame {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        JPanel snippetPanel = new JPanel();
         snippetPanel.setBackground(Color.white);
 
         JSplitPane animationAndSnippet = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, threadCanvas, snippetPanel);
