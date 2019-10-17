@@ -44,11 +44,20 @@ public class SnippetCanvas extends JTextPane {
         }
     }
 
+    public void setSnippet(String content) throws IOException, BadLocationException {
+        Element divElement = htmlDocument.getElement("Contents");
+        String divContent = String.format("<div>%s</div>", content);
+        htmlDocument.setInnerHTML(divElement, divContent);
+        System.out.println("displaying " + divContent);
+//        HtmlUtils.displayHtml(htmlDocument, null, 0);
+        reapplyStyles();
+    }
+
     public void removeContent() {
         System.out.println("Removing box");
         try {
             Element divElement = htmlDocument.getElement("Contents");
-            htmlDocument.setInnerHTML(divElement,"<div id='Contents'></div>");
+            htmlDocument.setInnerHTML(divElement, "<div></div>");
         } catch (BadLocationException | IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -103,14 +112,6 @@ public class SnippetCanvas extends JTextPane {
 //        }
 //        reapplyStyles();
 //    }
-
-    public void setSnippet(String content) throws IOException, BadLocationException {
-        Element divElement = htmlDocument.getElement("Contents");
-        htmlDocument.setInnerHTML(divElement, content);
-        System.out.println("displaying " +content);
-//        HtmlUtils.displayHtml(htmlDocument, null, 0);
-        reapplyStyles();
-    }
 
 
 }
