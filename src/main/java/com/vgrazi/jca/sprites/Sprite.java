@@ -41,7 +41,7 @@ public abstract class Sprite<T> {
     private String action = "default";
 
     private boolean running = true;
-    private T holder;
+    private volatile T holder;
     private int xRightMargin;
 
     public boolean isRunning() {
