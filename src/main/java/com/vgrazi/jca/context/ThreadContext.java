@@ -18,9 +18,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,17 +47,18 @@ public class ThreadContext<S> implements InitializingBean {
 
     private String snippet;
 
-    private final Pattern ADD_BR = Pattern.compile("(.+)$", Pattern.MULTILINE);
-    private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s+)", Pattern.MULTILINE);
+    private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s*)(.*)", Pattern.MULTILINE);
+    private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
     private String snippetFile;
 
-    public void addResetButton() {
-        addButton("Reset", () -> reset());
+    public void addStyleRule(String rule) {
+        snippetCanvas.addStyleRule(rule);
     }
 
     private enum ColorationScheme {
         byState, byInstance;
     }
+
     @Autowired
     public Blocked blocked;
 
@@ -131,6 +131,7 @@ public class ThreadContext<S> implements InitializingBean {
     private int frameWidth;
     @Value("${frame-height}")
     private int frameHeight;
+
     public ThreadContext() {
     }
 
@@ -199,6 +200,7 @@ public class ThreadContext<S> implements InitializingBean {
         });
         thread.start();
     }
+
     private final Color[] colors = {Color.red, Color.CYAN, Color.BLUE, Color.DARK_GRAY,
             Color.gray, Color.GREEN, Color.YELLOW
     };
@@ -218,7 +220,7 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     public void addSprite(int i, Sprite sprite) {
-        if (i >=0 && i <= sprites.size()){
+        if (i >= 0 && i <= sprites.size()) {
             sprites.add(i, sprite);
         }
         if (sprite instanceof ThreadSprite) {
@@ -300,6 +302,7 @@ public class ThreadContext<S> implements InitializingBean {
                 .findFirst().orElse(null);
         return objectSprite;
     }
+
     /**
      * Returns the first thread sprite that is in the waiting state, or null
      */
@@ -390,8 +393,9 @@ public class ThreadContext<S> implements InitializingBean {
     public void addYPixels(int pixels) {
         nextYPos += pixels;
     }
+
     public int getNextYPosition(int height) {
-        if(sprites.isEmpty()) {
+        if (sprites.isEmpty()) {
             nextYPos = initialYPos;
         }
         int nextYPos = this.nextYPos;
@@ -437,35 +441,54 @@ public class ThreadContext<S> implements InitializingBean {
 
     /**
      * Reads the snippet from the specified filename, and adds a <br> to the end of every line, and replaces leading whitespace with &nbsp;
+     * Returns a Set of the CSS class style selectors from the file
      * @param fileName
      * @throws IOException if IO Exception or bad HTML parsing
      */
-    public void setSnippet(String fileName) throws IllegalArgumentException {
+    public Set<String> setSnippetFile(String fileName) throws IllegalArgumentException {
         try {
-            if (!fileName.equals(snippetFile)) {
-                Resource resource = resourceLoader.getResource(fileName);
-                byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
-                String transformed = new String(bytes);
-                // replace leading white space with &nbsp;
-                Matcher matcher = REPLACE_WHITE.matcher(transformed);
-                if (matcher.find()) {
-                    String blanks = matcher.group(1);
-                    String spaces = blanks.replaceAll(" ", "&nbsp;");
-                    // would prefer to use <pre>$1</pre> but apparently this is not supported :(
-                    transformed = matcher.replaceAll(spaces + "$1");
-                }
-                // add a <br> after all line breaks
-                matcher = ADD_BR.matcher(transformed);
-                transformed = matcher.replaceAll("$1<br>");
-                String snippet = transformed;
-                this.snippet = snippet;
-                System.out.println(snippet);
-                snippetCanvas.setSnippet(snippet);
-                snippetFile = fileName;
-            }
+            Resource resource = resourceLoader.getResource(fileName);
+            byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
+            String snippetFileContent = new String(bytes);
+            // replace leading white space with &nbsp;
+            prepareSnippet(fileName, snippetFileContent);
+            Set<String> styles = extractStyleSelectors(snippetFileContent);
+            return styles;
         } catch (IOException | BadLocationException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Finds all instances of class="xxx" or class='xxx'
+     */
+    private Set<String> extractStyleSelectors(String snippetFileContent) {
+        Set<String> styles = new HashSet<>();
+        Matcher matcher = CLASS_LOCATOR.matcher(snippetFileContent);
+        while(matcher.find()) {
+            styles.add(matcher.group(1));
+        }
+        return styles;
+    }
+
+    /**
+     * loads the snippet file, replaces spaces with &nbsp; and ends all lines with <br/>\n
+     */
+    private void prepareSnippet(String fileName, String snippetFileContent) throws IOException, BadLocationException {
+        Matcher matcher = REPLACE_WHITE.matcher(snippetFileContent);
+        StringBuilder builder = new StringBuilder();
+        while (matcher.find()) {
+            String blanks = matcher.group(1);
+            String spaces = blanks.replaceAll(" ", "&nbsp;");
+            builder.append(spaces).append(matcher.group(2)).append("<br/>\n");
+            // would prefer to use <pre>$1</pre> but apparently this is not supported :(
+//                snippetFileContent = matcher.replaceAll(spaces + "$1");
+        }
+        String snippet = builder.toString();
+        this.snippet = snippet;
+        System.out.println(snippet);
+        snippetCanvas.setSnippet(snippet);
+        this.snippetFile = fileName;
     }
 
     public void setVisible() {
@@ -502,10 +525,9 @@ public class ThreadContext<S> implements InitializingBean {
     public Color getColorByThreadState(ThreadSprite<S> threadSprite) {
         Color color;
         Thread.State state = threadSprite.getThreadState();
-        if(threadSprite.isRetreating()) {
+        if (threadSprite.isRetreating()) {
             return terminatedColor;
-        }
-        else if (state == Thread.State.BLOCKED) {
+        } else if (state == Thread.State.BLOCKED) {
             color = blockedColor;
         } else if (state == Thread.State.RUNNABLE) {
             color = runnableColor;

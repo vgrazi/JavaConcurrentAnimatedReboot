@@ -92,7 +92,7 @@ public class TransferQueueSlide extends Slide {
                 }
         );
 
-        threadContext.addResetButton();
+        threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
     }
 

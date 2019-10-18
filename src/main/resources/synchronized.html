@@ -1,6 +1,21 @@
-<span class="synchronized">
-synchronized(some_object) {
-    ...do something
-    some_object.wait();
+<span class="synchronized">synchronized(some_object) {
+    ...do some work
+    </span><span class="wait">try {
+            while(some_condition) {
+                some_object.wait();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    </span><span class="release">
+        // releasing lock
 }
-</span>
+</span><span class="notify">synchronized(some_object) {
+    some_condition = false;
+    some_object.notify();
+}
+</span><span class="notify-all">synchronized(some_object) {
+    some_condition = false;
+    some_object.notifyAll();
+}</span>
+thread.interrupt();

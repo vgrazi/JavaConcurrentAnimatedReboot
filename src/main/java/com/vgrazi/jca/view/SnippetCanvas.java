@@ -1,5 +1,7 @@
 package com.vgrazi.jca.view;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -8,37 +10,34 @@ import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import java.awt.*;
 import java.io.IOException;
 
 @Component
-public class SnippetCanvas extends JTextPane {
+public class SnippetCanvas extends JTextPane implements InitializingBean {
     private final HTMLDocument htmlDocument;
+    @Value("${snippet-font-name}")
+    private String fontName;
+
+    private int fontStyle;
+
+    @Value("${snippet-font-size}")
+    private int fontSize;
+
+    private StyleSheet styleSheet;
+
+    private Element htmlElement;
 
     public SnippetCanvas() {
         HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-        StyleSheet styleSheet = new StyleSheet();
+        styleSheet = new StyleSheet();
         htmlEditorKit.setStyleSheet(styleSheet);
         htmlDocument = (HTMLDocument) htmlEditorKit.createDefaultDocument();
         this.setEditorKit(htmlEditorKit);
         this.setDocument(htmlDocument);
         try {
-            Element htmlElement = htmlDocument.getRootElements()[0];
+            htmlElement = htmlDocument.getRootElements()[0];
             // set a skeleton div. This is where our snippet will go
-            htmlDocument.setInnerHTML(htmlElement, "" +
-                    " <html>\n" +
-                    "   <body>\n" +
-                    "     <div id=\"Contents\">\n" +
-                    "     </div>\n" +
-                    "   </body>\n" +
-                    " </html>" +
-                    ""
-            );
-
-//            styleSheet = htmlEditorKit.getStyleSheet();
-            // todo: change styles in the stylesheet to bold selected parts of code
-//            HtmlUtils.displayHtml(htmlDocument, null, 0);
-//            changer();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,7 +49,7 @@ public class SnippetCanvas extends JTextPane {
         htmlDocument.setInnerHTML(divElement, divContent);
         System.out.println("displaying " + divContent);
 //        HtmlUtils.displayHtml(htmlDocument, null, 0);
-        reapplyStyles();
+        applyStyles();
     }
 
     public void removeContent() {
@@ -64,8 +63,19 @@ public class SnippetCanvas extends JTextPane {
 //        HtmlUtils.displayHtml(htmlDocument, null, 0);
     }
 
+    /**
+     * rule is a selector followed by a bracket-enclosed style, eg
+     * ".synchronized {background-color: yellow; color: green;}"
+     * Important - after all style rules are added, call {@link #applyStyles()}
+     */
+    public void addStyleRule(String rule) {
+        styleSheet.addRule(rule);
+    }
 
-    private void reapplyStyles() {
+    /**
+     * To be called after adding content or style rules, to apply the styles
+     */
+    public void applyStyles() {
         Element sectionElem = htmlDocument.getRootElements()[0];
 
         int paraCount = sectionElem.getElementCount();
@@ -78,13 +88,60 @@ public class SnippetCanvas extends JTextPane {
         }
     }
 
+    @Value("${snippet-font-style}")
+    public void setFontStyle(String style) {
+        String lcStyle = style.toLowerCase();
+        switch (lcStyle) {
+            case "plain":
+                fontStyle = Font.PLAIN;
+                break;
+            case "bold":
+                fontStyle = Font.BOLD;
+                break;
+            case "italic":
+                fontStyle = Font.ITALIC;
+                break;
+            case "bold-italic":
+                fontStyle = Font.BOLD + Font.ITALIC;
+                break;
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        try {
+            htmlDocument.setInnerHTML(htmlElement, "" +
+                    " <html>\n" +
+                    "  <header>" +
+                    "    <style type=\"text/css\">\n" +
+                    "       div { font-size: " + fontSize + " pt; }\n" +
+                    "     </style" +
+                    "  </header>" +
+                    "   <body>\n" +
+                    "     <div id=\"Contents\">\n" +
+                    "     </div>\n" +
+                    "   </body>\n" +
+                    " </html>" +
+                    ""
+            );
+
+//            styleSheet = htmlEditorKit.getStyleSheet();
+            // todo: change styles in the stylesheet to bold selected parts of code
+//            HtmlUtils.displayHtml(htmlDocument, null, 0);
+//            changer();
+        } catch (BadLocationException | IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
 //    int counter;
+//
 //    public void changer() {
 //        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 //        scheduledExecutorService.scheduleAtFixedRate(this::change, 2000, 500, TimeUnit.MILLISECONDS);
 //    }
-
-    // Diagnostic code: todo: remove
+//
+//    // Diagnostic code: todo: remove
 //    public void change() {
 //        System.out.println("Counter:" + counter);
 //        if (counter == 4) {

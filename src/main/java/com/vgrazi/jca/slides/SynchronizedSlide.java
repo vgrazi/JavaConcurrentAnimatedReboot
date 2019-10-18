@@ -4,6 +4,8 @@ import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 import static com.vgrazi.jca.util.Logging.log;
 
 @Component
@@ -14,14 +16,16 @@ public class SynchronizedSlide extends Slide {
     public SynchronizedSlide(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
+
     private Object mutex = new Object();
+
     public void run() {
         reset();
 
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             addYieldRunnable(mutex, sprite);
-
+            setCssSelected("synchronized");
         });
 
 
@@ -34,38 +38,39 @@ public class SynchronizedSlide extends Slide {
                 runningSprite.setAction("waiting");
                 log("Calling wait() on Runnable", runningSprite);
             }
-
-
+            setCssSelected("wait");
         });
 
-       threadContext.addButton("notify()", () -> {
-           ThreadSprite runningSprite = threadContext.getRunningThread();
-           if (runningSprite != null) {
-               // The new running thread should call notify
-               runningSprite.setAction("notifying");
-               log("Set notifying on ", runningSprite);
-           }
-       });
+        threadContext.addButton("notify()", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+                // The new running thread should call notify
+                runningSprite.setAction("notifying");
+                log("Set notifying on ", runningSprite);
+                setCssSelected("notify");
+            }
+        });
 
-       threadContext.addButton("notifyAll()", () -> {
-           ThreadSprite runningSprite = threadContext.getRunningThread();
-           if (runningSprite != null) {
-               // The new running thread should call notify
-               runningSprite.setAction("notifyingAll");
-               log("Set notifyAll on ", runningSprite);
-           }
-       });
+        threadContext.addButton("notifyAll()", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+                // The new running thread should call notify
+                runningSprite.setAction("notifyingAll");
+                log("Set notifyAll on ", runningSprite);
+                setCssSelected("notify-all");
+            }
+        });
 
-       threadContext.addButton("Release", () -> {
-           ThreadSprite runningSprite = threadContext.getRunningThread();
-           if (runningSprite != null) {
-               // The new running thread should call notify
-               runningSprite.setAction("release");
-               log("Set release on ", runningSprite);
-           }
-       });
-        threadContext.addResetButton();
-
+        threadContext.addButton("Release", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+                // The new running thread should call notify
+                runningSprite.setAction("release");
+                log("Set release on ", runningSprite);
+                setCssSelected("release");
+            }
+        });
+        threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
 
     }
@@ -73,7 +78,8 @@ public class SynchronizedSlide extends Slide {
     protected void reset() {
         super.reset();
         threadContext.setSlideLabel("synchronized/wait/notify");
-        threadContext.setSnippet("synchronized.html");
+        Set styleSelectors = threadContext.setSnippetFile("synchronized.html");
+        setStyleSelectors(styleSelectors);
         mutex = new Object();
     }
 
