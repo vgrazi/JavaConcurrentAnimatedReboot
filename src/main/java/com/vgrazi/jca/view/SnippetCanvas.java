@@ -10,16 +10,16 @@ import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import java.awt.*;
 import java.io.IOException;
 
 @Component
 public class SnippetCanvas extends JTextPane implements InitializingBean {
     private final HTMLDocument htmlDocument;
-    @Value("${snippet-font-name}")
-    private String fontName;
+    @Value("${snippet-font-family}")
+    private String fontFamily;
 
-    private int fontStyle;
+    @Value("${snippet-font-style}")
+    private String fontStyle;
 
     @Value("${snippet-font-size}")
     private int fontSize;
@@ -88,41 +88,21 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
         }
     }
 
-    @Value("${snippet-font-style}")
-    public void setFontStyle(String style) {
-        String lcStyle = style.toLowerCase();
-        switch (lcStyle) {
-            case "plain":
-                fontStyle = Font.PLAIN;
-                break;
-            case "bold":
-                fontStyle = Font.BOLD;
-                break;
-            case "italic":
-                fontStyle = Font.ITALIC;
-                break;
-            case "bold-italic":
-                fontStyle = Font.BOLD + Font.ITALIC;
-                break;
-        }
-    }
-
     @Override
     public void afterPropertiesSet() {
         try {
-            htmlDocument.setInnerHTML(htmlElement, "" +
-                    " <html>\n" +
+            htmlDocument.setInnerHTML(htmlElement, String.format("" +
+                    "<html>" +
                     "  <header>" +
-                    "    <style type=\"text/css\">\n" +
-                    "       div { font-size: " + fontSize + " pt; }\n" +
-                    "     </style" +
+                    "    <style type=\"text/css\">" +
+                    "       div { font-family:'%s'; font-size: %d pt; font-style:'%s'}" +
+                    "     </style>" +
                     "  </header>" +
-                    "   <body>\n" +
-                    "     <div id=\"Contents\">\n" +
-                    "     </div>\n" +
-                    "   </body>\n" +
-                    " </html>" +
-                    ""
+                    "  <body>" +
+                    "    <div id=\"Contents\">" +
+                    "    </div>" +
+                    "  </body>" +
+                    " </html>", fontFamily, fontSize, fontStyle)
             );
 
 //            styleSheet = htmlEditorKit.getStyleSheet();

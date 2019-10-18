@@ -61,7 +61,7 @@ public class SynchronizedSlide extends Slide {
             }
         });
 
-        threadContext.addButton("Release", () -> {
+        threadContext.addButton("exit synchronized", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 // The new running thread should call notify

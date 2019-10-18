@@ -291,6 +291,24 @@ public class ThreadContext<S> implements InitializingBean {
         return collect;
     }
 
+    public List<ThreadSprite> getAllWaitingThreads() {
+        List<ThreadSprite> collect = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    public ThreadSprite getFirstWaitingThread() {
+        ThreadSprite threadSprites = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .findFirst().orElse(null);
+        return threadSprites;
+    }
+
     /**
      * Returns the first object sprite that is in the waiting state, or null
      */
