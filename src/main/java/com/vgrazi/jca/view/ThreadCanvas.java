@@ -76,7 +76,8 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     }
 
     private void render(Sprite sprite, Graphics2D graphics) {
-        graphics.setStroke(sprite.getStroke());
+        Stroke stroke = sprite.getStroke();
+        graphics.setStroke(stroke);
         sprite.render(graphics);
     }
 

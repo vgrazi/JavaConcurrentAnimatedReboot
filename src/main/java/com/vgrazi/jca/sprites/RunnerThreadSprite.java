@@ -9,7 +9,7 @@ import java.awt.*;
  * This is a regular thread sprite, except that when it is running (inside the monolith), it renders as a round rectangle
  * instead of as a thread
  */
-public class RunnerThreadSprite extends ThreadSprite{
+public class RunnerThreadSprite<S> extends ThreadSprite<S>{
     private int margin;
     protected int leftBound;
     protected int rightBound;

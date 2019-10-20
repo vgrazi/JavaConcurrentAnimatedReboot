@@ -44,6 +44,9 @@ public class JCAFrame extends JFrame {
     private SynchronizedSlide synchronizedSlide;
 
     @Autowired()
+    private ExecutorsSlide executorsSlide;
+
+    @Autowired()
     private PhaserSlide phaserSlide;
 
     @Autowired()
@@ -94,20 +97,21 @@ public class JCAFrame extends JFrame {
         JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, animationAndSnippet);
         rightSide.setDividerSize(2);
 
-        JPanel menu = new JPanel();
-        menu.setLayout(new ButtonLayout(vgap));
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new ButtonLayout(vgap));
 
-        addButton("Synchronized", synchronizedSlide, menu);
-        addButton("ReentrantLock", reentrantLockSlide, menu);
-        addButton("Phaser", phaserSlide, menu);
-        addButton("CyclicBarrier", cyclicBarrierSlide, menu);
-        addButton("CompletableFuture", completableFutureSlide, menu);
-        addButton("ReadWriteLock", readWriteLockSlide, menu);
-        addButton("TransferQueue", transferQueueSlide, menu);
-        addButton("Semaphore", semaphoreSlide, menu);
+        addButton("Executors", executorsSlide, menuPanel);
+        addButton("Synchronized", synchronizedSlide, menuPanel);
+        addButton("ReentrantLock", reentrantLockSlide, menuPanel);
+        addButton("Phaser", phaserSlide, menuPanel);
+        addButton("CyclicBarrier", cyclicBarrierSlide, menuPanel);
+        addButton("CompletableFuture", completableFutureSlide, menuPanel);
+        addButton("ReadWriteLock", readWriteLockSlide, menuPanel);
+        addButton("TransferQueue", transferQueueSlide, menuPanel);
+        addButton("Semaphore", semaphoreSlide, menuPanel);
 
-        menu.setBackground(Color.black);
-        JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menu, rightSide);
+        menuPanel.setBackground(Color.black);
+        JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuPanel, rightSide);
         wholePane.setDividerSize(2);
 
         ComponentAdapter adapter = new ComponentAdapter() {
@@ -126,7 +130,7 @@ public class JCAFrame extends JFrame {
             }
         };
         addComponentListener(adapter);
-        menu.addComponentListener(adapter);
+        menuPanel.addComponentListener(adapter);
         add(wholePane);
     }
 

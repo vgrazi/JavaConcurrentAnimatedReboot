@@ -47,6 +47,12 @@ public class Config {
     }
 
     @Bean
+    @Scope("prototype")
+    PooledThreadSprite pooledThreadSprite() {
+        return new PooledThreadSprite();
+    }
+
+    @Bean
     public Blocked blocked() {
         return new Blocked();
     }
@@ -90,7 +96,8 @@ public class Config {
                 0.0f);
     }
 
-    @Bean Stroke writerHeadStroke() {
+    @Bean
+    public Stroke writerHeadStroke() {
         return new BasicStroke(1);
     }
 

@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
-    private Thread thread;
+    protected Thread thread;
     @Value("${arrow-length}")
     protected int arrowLength;
     /**
@@ -27,7 +27,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         return thread;
     }
     @Value("${pixels-per-y-step}")
-    private int height;
+    protected int height;
 
     public Thread.State getThreadState() {
         Thread.State state = null;
@@ -77,6 +77,9 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         if(isRetreating()) {
             return getThreadContext().retreating;
         }
+        if(this instanceof PooledThreadSprite) {
+            return getThreadContext().pooled;
+        }
         switch (thread.getState()) {
             case NEW:
             case RUNNABLE:
@@ -103,8 +106,9 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         return "ThreadSprite{" +
                 "ID=" + getID() +
                 ", state=" + getState() +
+                ", native-state=" + thread.getState() +
 //                ", x-position=" + getXPosition() +
-//                ", y-position=" + getYPosition() +
+                ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
                 ", " + super.toString() +
                 '}';
