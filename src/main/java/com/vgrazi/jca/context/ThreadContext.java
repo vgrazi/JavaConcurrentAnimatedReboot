@@ -55,6 +55,26 @@ public class ThreadContext<S> implements InitializingBean {
         snippetCanvas.addStyleRule(rule);
     }
 
+    /**
+     * Returns the thread sprite bound to the supplied thread
+     */
+    public ThreadSprite getThreadSprite(Thread thread) {
+        return (ThreadSprite) sprites.stream().filter(sprite -> sprite instanceof ThreadSprite)
+                .filter(sprite -> ((ThreadSprite) sprite).getThread() == thread)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Returns the first pooled thread that is actually running a task
+     */
+    public PooledThreadSprite<String> getRunningPooledThread() {
+        return (PooledThreadSprite) sprites.stream().filter(sprite -> sprite instanceof PooledThreadSprite)
+                .filter(sprite -> sprite.isRunning())
+                .findFirst()
+                .orElse(null);
+    }
+
     private enum ColorationScheme {
         byState, byInstance;
     }
@@ -423,7 +443,6 @@ public class ThreadContext<S> implements InitializingBean {
         return first;
     }
 
-
     /**
      * Advance the position of each sprite, based on its current position and state
      */
@@ -528,7 +547,7 @@ public class ThreadContext<S> implements InitializingBean {
     private Set<String> extractStyleSelectors(String snippetFileContent) {
         Set<String> styles = new HashSet<>();
         Matcher matcher = CLASS_LOCATOR.matcher(snippetFileContent);
-        while(matcher.find()) {
+        while (matcher.find()) {
             styles.add(matcher.group(1));
         }
         return styles;
