@@ -22,6 +22,10 @@ public class Terminated extends ThreadState {
         if(xPosition < monolithRightBorder) {
             xPosition = monolithRightBorder;
         }
+        // Some sprites, eg ReadWriteLock the direction is important - we don't want the arrow point left, when the sprite is moving right!
+        if(sprite.getDirection() == Sprite.Direction.left) {
+            sprite.setDirection(Sprite.Direction.right);
+        }
         sprite.setXPosition(xPosition + threadContext.pixelsPerStep);
     }
 }

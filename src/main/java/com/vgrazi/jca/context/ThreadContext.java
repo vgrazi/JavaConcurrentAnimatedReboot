@@ -393,7 +393,7 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     /**
-     * Returns the first thread of specified special id, or null if none
+     * Returns the first waiting thread of specified special id, or null if none
      */
     public ThreadSprite<S> getFirstWaitingThreadOfSpecialId(int specialId) {
         ThreadSprite<S> first = sprites.stream()
@@ -401,6 +401,19 @@ public class ThreadContext<S> implements InitializingBean {
                 .map(sprite -> (ThreadSprite<S>) sprite)
                 .filter(sprite -> sprite.getSpecialId() == specialId)
                 .filter(sprite -> sprite.getState() == waiting)
+                .findFirst().orElse(null);
+        return first;
+    }
+
+    /**
+     * Returns the first running thread of specified special id, or null if none
+     */
+    public ThreadSprite<S> getFirstRunningThreadOfSpecialId(int specialId) {
+        ThreadSprite<S> first = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
+                .filter(sprite -> sprite.getSpecialId() == specialId)
+                .filter(sprite -> sprite.getState() == runnable)
                 .findFirst().orElse(null);
         return first;
     }
