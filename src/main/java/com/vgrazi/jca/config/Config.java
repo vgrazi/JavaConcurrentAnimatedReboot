@@ -81,6 +81,19 @@ public class Config {
         return new BasicStroke(4);
     }
 
+    @Bean Stroke writerStroke() {
+        return new BasicStroke(3.0f, // Width
+                BasicStroke.CAP_SQUARE, // End cap
+                BasicStroke.JOIN_MITER, // Join style
+                10.0f, // Miter limit
+                new float[]{2.0f, 4.0f}, // Dash pattern
+                0.0f);
+    }
+
+    @Bean Stroke writerHeadStroke() {
+        return new BasicStroke(1);
+    }
+
     @Bean
     public Stroke dottedStroke() {
         return new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0);

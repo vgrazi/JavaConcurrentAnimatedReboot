@@ -11,11 +11,10 @@ import java.awt.*;
  */
 public class RunnerThreadSprite extends ThreadSprite{
     private int margin;
-    private int leftBound;
-    private int rightBound;
-    private int width;
-    private int topBound;
-    private int bottomBound;
+    protected int leftBound;
+    protected int rightBound;
+    protected int topBound;
+    protected int bottomBound;
     private int ellipseRadius;
     private int lineStart;
     private int lineEnd;
@@ -46,7 +45,6 @@ public class RunnerThreadSprite extends ThreadSprite{
         margin = (pixelsPerYStep - runnerEllipseHeight) / 2;
         leftBound = monolithLeftBorder + margin;// + strokeWidth;
         rightBound = monolithRightBorder - margin;// - strokeWidth;
-        width = rightBound - leftBound;
         topBound = yPosition - runnerEllipseHeight / 2;
         bottomBound = yPosition + runnerEllipseHeight / 2;
         ellipseRadius = (bottomBound - topBound) / 2;
@@ -88,8 +86,7 @@ public class RunnerThreadSprite extends ThreadSprite{
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
-//    graphics.setColor(Color.yellow);
-        int yPos = getBallYPosition(leftBound, rightBound, topBound, bottomBound, this);
+        int yPos = getCapYPosition(leftBound, rightBound, topBound, bottomBound, this);
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
         graphics.fillOval(getXPosition() -8 -offset, yPos, ballRadius, ballRadius);
 
@@ -118,7 +115,7 @@ public class RunnerThreadSprite extends ThreadSprite{
      * @param bottomBound the y position of the bottom-most position of the ellipse
      * @param sprite      the sprite we are animating
      */
-    private int getBallYPosition(int leftBound, int rightBound, int topBound, int bottomBound, Sprite sprite) {
+    protected int getCapYPosition(int leftBound, int rightBound, int topBound, int bottomBound, Sprite sprite) {
         int xPos = sprite.getXPosition();
         int ellipseRadius = (bottomBound - topBound) / 2;
         int xAxis = (bottomBound + topBound) / 2;

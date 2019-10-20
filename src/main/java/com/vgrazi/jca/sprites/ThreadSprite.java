@@ -51,8 +51,6 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
     @Override
     public void render(Graphics2D graphics) {
         Color color = getThreadContext().getColor(this);
-        graphics.setStroke(getStroke());
-//        Color color = getColorByThreadState();
         graphics.setColor(color);
         graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
         drawThreadCap(graphics);
