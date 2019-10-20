@@ -79,6 +79,7 @@ public class RunnerThreadSprite extends ThreadSprite{
             graphics.drawLine(lineStart, topBound, lineEnd, topBound);
             graphics.drawLine(lineStart, bottomBound, lineEnd, bottomBound);
         }
+        renderMessage(graphics);
         drawThreadCap(graphics);
     }
 

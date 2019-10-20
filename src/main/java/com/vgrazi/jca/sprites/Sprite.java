@@ -4,15 +4,23 @@ import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.util.IDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
+
+import static com.vgrazi.jca.util.Parsers.parseFont;
 
 /**
  * Base class for sprites, such as ThreadSprite, FutureSprite, ObjectSprite, etc.
  */
 public abstract class Sprite<T> {
     private int xPosition;
+    @Autowired
+    @Qualifier("basicStroke")
+    private Stroke stroke;
+
+    private Font messageFont;
 
     private int ID = IDGenerator.next();
 
@@ -23,6 +31,8 @@ public abstract class Sprite<T> {
     private int monolithRightBorder;
     @Value("${pixels-per-step}")
     private int pixelsPerStep;
+
+    private String message;
 
     /**
      * Number of pixels to allow at top - this is subtracted from the set ypos
@@ -43,6 +53,10 @@ public abstract class Sprite<T> {
     private boolean running = true;
     private volatile T holder;
     private int xRightMargin;
+    private int specialId;
+
+    @Value("${arrow-length}")
+    private int arrowLength;
 
     public boolean isRunning() {
         return running;
@@ -129,10 +143,52 @@ public abstract class Sprite<T> {
     }
 
     /**
+     * If the message is non-null, renders the message above the thread
+     * @param graphics
+     */
+    public void renderMessage(Graphics2D graphics) {
+        if(getMessage() != null) {
+            Graphics graphics1 = graphics.create();
+            graphics1.setColor(Color.white);
+            graphics1.setFont(messageFont);
+            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() - 8);
+            graphics1.dispose();
+        }
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
      * A convenience method for holding arbitrary data in a sprite
      */
     public void setHolder(T holder) {
         this.holder = holder;
+    }
+
+    public int getSpecialId() {
+        return specialId;
+    }
+
+    /**
+     * Some slides require distinguishing kinds of threads. For example, ReentrantLockSlide requires special handling of interruptible threads
+     * Use this method to set a special id, that distinguishes threads of the special type
+     */
+    public void setSpecialId(int specialId) {
+        this.specialId = specialId;
+    }
+
+    public Stroke getStroke() {
+        return stroke;
+    }
+
+    public void setStroke(Stroke stroke) {
+        this.stroke = stroke;
     }
 
     public enum Direction {
@@ -176,6 +232,11 @@ public abstract class Sprite<T> {
                 ", relative_position=" + getRelativePosition() +
                 ", " + super.toString() +
                 '}';
+    }
+
+    @Value("${thread-message-font}")
+    public void setMessageFont(String fontDescriptor) {
+        messageFont = parseFont(fontDescriptor);
     }
 
 }

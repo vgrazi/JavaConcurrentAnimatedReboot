@@ -78,12 +78,12 @@ public class Config {
 
     @Bean
     public Stroke basicStroke() {
-        return new BasicStroke(3);
+        return new BasicStroke(4);
     }
 
     @Bean
     public Stroke dottedStroke() {
-        return new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0);
+        return new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0);
     }
 
     @Bean

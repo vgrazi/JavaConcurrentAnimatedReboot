@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vgrazi.jca.util.ColorParser.parseColor;
+import static com.vgrazi.jca.util.Parsers.parseColor;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,

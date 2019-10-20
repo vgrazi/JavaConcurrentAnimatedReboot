@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.vgrazi.jca.util.ColorParser.parseColor;
+import static com.vgrazi.jca.util.Parsers.parseColor;
 
 /**
  * Maintains the list of ThreadSprites, position of monolith, color schemes,
@@ -388,6 +388,19 @@ public class ThreadContext<S> implements InitializingBean {
                 .filter(sprite -> sprite instanceof ThreadSprite)
                 .map(sprite -> (ThreadSprite<S>) sprite)
                 .filter(sprite -> sprite.getState() == threadState)
+                .findFirst().orElse(null);
+        return first;
+    }
+
+    /**
+     * Returns the first thread of specified special id, or null if none
+     */
+    public ThreadSprite<S> getFirstWaitingThreadOfSpecialId(int specialId) {
+        ThreadSprite<S> first = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite<S>) sprite)
+                .filter(sprite -> sprite.getSpecialId() == specialId)
+                .filter(sprite -> sprite.getState() == waiting)
                 .findFirst().orElse(null);
         return first;
     }

@@ -31,3 +31,6 @@ build/
 .vscode/
 mvnw*
 .mvn/
+/src/main/java/com/vgrazi/jca/play/
+!/src/main/java/com/vgrazi/jca/play/Main.java
+!/src/main/java/com/vgrazi/jca/play/StylePlay.java

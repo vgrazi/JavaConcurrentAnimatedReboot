@@ -61,6 +61,9 @@ public class JCAFrame extends JFrame {
     @Autowired()
     private SemaphoreSlide semaphoreSlide;
 
+    @Autowired()
+    private ReentrantLockSlide reentrantLockSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -95,6 +98,7 @@ public class JCAFrame extends JFrame {
         menu.setLayout(new ButtonLayout(vgap));
 
         addButton("Synchronized", synchronizedSlide, menu);
+        addButton("ReentrantLock", reentrantLockSlide, menu);
         addButton("Phaser", phaserSlide, menu);
         addButton("CyclicBarrier", cyclicBarrierSlide, menu);
         addButton("CompletableFuture", completableFutureSlide, menu);

@@ -1,7 +1,8 @@
 package com.vgrazi.jca.view;
 
-import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.sprites.Sprite;
+import com.vgrazi.jca.util.Parsers;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +12,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-import static com.vgrazi.jca.util.ColorParser.parseColor;
+import static com.vgrazi.jca.util.Parsers.parseColor;
 
 @Component
 public class ThreadCanvas extends JPanel implements InitializingBean {
-
     @Autowired
     private ThreadContext threadContext;
 
@@ -71,12 +71,12 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         graphics.setColor(Color.CYAN);
 
         List<Sprite> threads = threadContext.getAllSprites();
-        graphics.setStroke(new BasicStroke(4));
         threads.forEach(sprite -> render(sprite, graphics));
         graphics.dispose();
     }
 
     private void render(Sprite sprite, Graphics2D graphics) {
+//        graphics.setStroke(sprite.getStroke());
         sprite.render(graphics);
     }
 
@@ -100,21 +100,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     @Value("${slide-label-font-style}")
     public void setFontStyle(String style) {
-        String lcStyle = style.toLowerCase();
-        switch (lcStyle) {
-            case "plain":
-                labelFontStyle = Font.PLAIN;
-                break;
-            case "bold":
-                labelFontStyle = Font.BOLD;
-                break;
-            case "italic":
-                labelFontStyle = Font.ITALIC;
-                break;
-            case "bold-italic":
-                labelFontStyle = Font.BOLD+Font.ITALIC;
-                break;
-        }
+        labelFontStyle = Parsers.parseFontStyle(style);
     }
 
     /**
