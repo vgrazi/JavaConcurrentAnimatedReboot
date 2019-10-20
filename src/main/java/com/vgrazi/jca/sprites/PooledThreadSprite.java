@@ -13,47 +13,34 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
     @Autowired
     ApplicationContext context;
 
-    public int getyPositionPooled() {
-        return yPositionPooled;
-    }
-
-    public boolean isPooled() {
-        return pooled;
-    }
-
     /**
      * Sets the pooled status, and also re-initializes all of the positioning fields in the super class
-     * @param pooled
      */
     public void setPooled(boolean pooled) {
         this.pooled = pooled;
 //        re-initialize all of the positioning fields in the super class, based on if we are rendering above or below
         if(pooled) {
-            setYPosition(getyPositionPooled());
+            setYPosition(yPositionPooled);
         }
         else {
-            setYPosition(getYPositionActive());
+            setYPosition(yPositionActive);
         }
     }
 
     @Override
     public int getYPosition() {
-        if(isPooled()) {
-            return getyPositionPooled();
+        if(pooled) {
+            return yPositionPooled;
         }
         else {
-            return getYPositionActive();
+            return yPositionActive;
         }
-    }
-
-    public int getYPositionActive() {
-        return yPositionActive;
     }
 
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-        this.yPositionPooled = getThreadContext().getNextPooledYPosition(pixelsPerYStep);
+        this.yPositionPooled = getThreadContext().getNextPooledYPosition();
 
         // yPosition is already set by superclass
         this.yPositionActive = yPosition;
@@ -74,7 +61,7 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
                 "ID=" + getID() +
                 ", state=" + getState() +
                 ", native-state=" + thread.getState() +
-                ", pooled=" + isPooled() +
+                ", pooled=" + pooled +
 //                ", x-position=" + getXPosition() +
                 ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +

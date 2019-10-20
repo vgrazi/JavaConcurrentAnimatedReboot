@@ -72,6 +72,10 @@ public class ThreadContext<S> implements InitializingBean {
     public Getting getting;
     @Autowired
     public Retreating retreating;
+
+    @Autowired
+    public Pooled pooled;
+
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
 
@@ -87,10 +91,11 @@ public class ThreadContext<S> implements InitializingBean {
     private int nextYPos;
 
     @Value("${initial-bottom-y-position}")
-    private int initialBottomYPos;
+    private int initialPooledYPos;
+
+    private int nextPooledYPos;
 
     private Color blockedColor;
-
     private Color runnableColor;
     private Color waitingColor;
     private Color timedWaitingColor;
@@ -447,14 +452,28 @@ public class ThreadContext<S> implements InitializingBean {
         return nextYPos;
     }
 
-    public int getYPosition() {
-        return initialYPos;
+    /**
+     * Get the next pooled thread position
+     */
+    public int getNextPooledYPosition() {
+        return getNextPooledYPosition(pixelsPerYStep);
+    }
+    /**
+     * Get the next pooled thread position
+     * @param height
+     * @return
+     */
+    public int getNextPooledYPosition(int height) {
+        if (sprites.isEmpty()) {
+            nextPooledYPos = initialPooledYPos;
+        }
+        int nextPooledYPos = this.nextPooledYPos;
+        this.nextPooledYPos += height;
+        return nextPooledYPos;
     }
 
-    public int getNextBottomYPosition(int height) {
-        int initialBottomYPos = this.initialBottomYPos;
-        this.initialBottomYPos += height;
-        return initialBottomYPos;
+    public int getYPosition() {
+        return initialYPos;
     }
 
     public List<ThreadSprite<S>> getAllThreads() {

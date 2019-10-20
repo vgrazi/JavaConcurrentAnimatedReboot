@@ -58,16 +58,17 @@ public class ExecutorsSlide extends Slide {
     }
 
     protected void reset() {
-        threadContext.setSlideLabel("Executors");
         if (executor != null) {
             executor.shutdownNow();
         }
         super.reset();
+        threadContext.setSlideLabel("Executors");
         executor = Executors.newFixedThreadPool(4, r -> {
             PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
-            sprite.setThread(new Thread(r));
+            Thread thread = new Thread(r);
+            sprite.setThread(thread);
             sprite.setPooled(true);
-            Thread thread = sprite.getThread();
+            sprite.setRunning(false);
             threadContext.addSprite(sprite);
             return thread;
         });
