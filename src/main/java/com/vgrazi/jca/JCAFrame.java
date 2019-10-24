@@ -40,32 +40,35 @@ public class JCAFrame extends JFrame {
 
     @Autowired
     private ThreadCanvas threadCanvas;
-    @Autowired()
+    @Autowired
     private SynchronizedSlide synchronizedSlide;
 
-    @Autowired()
+    @Autowired
     private ExecutorsSlide executorsSlide;
 
-    @Autowired()
+    @Autowired
     private PhaserSlide phaserSlide;
 
-    @Autowired()
+    @Autowired
     private CyclicBarrierSlide cyclicBarrierSlide;
 
-    @Autowired()
+    @Autowired
     private CompletableFutureSlide completableFutureSlide;
 
-    @Autowired()
+    @Autowired
     private ReadWriteLockSlide readWriteLockSlide;
 
-    @Autowired()
+    @Autowired
     private TransferQueueSlide transferQueueSlide;
 
-    @Autowired()
+    @Autowired
     private SemaphoreSlide semaphoreSlide;
 
-    @Autowired()
+    @Autowired
     private ReentrantLockSlide reentrantLockSlide;
+
+    @Autowired
+    private AtomicIntegerSlide atomicIntegerSlide;
 
     @Value("${menu-button-vgap}")
     private int vgap;
@@ -109,6 +112,7 @@ public class JCAFrame extends JFrame {
         addButton("ReadWriteLock", readWriteLockSlide, menuPanel);
         addButton("TransferQueue", transferQueueSlide, menuPanel);
         addButton("Semaphore", semaphoreSlide, menuPanel);
+        addButton("AtomicInteger", atomicIntegerSlide, menuPanel);
 
         menuPanel.setBackground(Color.black);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuPanel, rightSide);
