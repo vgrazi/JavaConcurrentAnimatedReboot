@@ -97,7 +97,7 @@ public class TransferQueueSlide extends Slide {
         threadContext.setVisible();
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("TransferQueue");
         transferQueue = new LinkedTransferQueue();

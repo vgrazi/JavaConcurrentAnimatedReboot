@@ -135,7 +135,7 @@ public class SemaphoreSlide extends Slide {
 
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         semaphore = new Semaphore(4);
         threadContext.setSlideLabel("Semaphore");

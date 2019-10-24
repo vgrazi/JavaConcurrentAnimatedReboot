@@ -53,6 +53,12 @@ public class Config {
     }
 
     @Bean
+    @Scope("prototype")
+    RunnableSprite runnableSprite() {
+        return new RunnableSprite();
+    }
+
+    @Bean
     public Blocked blocked() {
         return new Blocked();
     }

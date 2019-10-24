@@ -70,12 +70,12 @@ public class SynchronizedSlide extends Slide {
                 setCssSelected("release");
             }
         });
+
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
-
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("synchronized/wait/notify");
         Set styleSelectors = threadContext.setSnippetFile("synchronized.html");

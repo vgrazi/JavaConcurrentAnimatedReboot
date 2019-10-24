@@ -3,6 +3,8 @@ package com.vgrazi.jca.sprites;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.awt.*;
+
 public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
     /**
      * If the sprite is pooled (ie not in action) then set to true. Otherwise it is active
@@ -47,8 +49,16 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
     }
 
     @Override
-    public void setXPosition(int xPosition) {
-        super.setXPosition(xPosition);
+    protected void drawThreadCap(Graphics2D graphics) {
+        if (!pooled) {
+            super.drawThreadCap(graphics);
+        }
+    }
+
+    @Override
+    protected int getNextYPositionFromContext() {
+        // do nothing - y position is set from the runnable
+        return 0;
     }
 
     public void setThread(Thread thread) {
@@ -65,7 +75,7 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
 //                ", x-position=" + getXPosition() +
                 ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
-                ", " + super.toString() +
+                ", " +
                 '}';
     }
 }

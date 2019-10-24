@@ -28,6 +28,10 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${initial-y-position}")
     private int initialYPosition;
 
+    @Value("${initial-bottom-y-position}")
+    private int initialBottomYPosition;
+
+    private String bottomLabel;
     @Value("${arrow-length}")
     private int arrowLength;
 
@@ -38,6 +42,14 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     @Value("${slide-label-font-size}")
     private int labelFontSize;
+
+    @Value("${slide-bottom-label-font-name}")
+    private String bottomLabelFontName;
+
+    private int bottomLabelFontStyle;
+
+    @Value("${slide-bottom-label-font-size}")
+    private int bottomLabelFontSize;
 
     private Color monolithColor;
     private boolean hideMonolith;
@@ -70,6 +82,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         }
         graphics.setColor(Color.CYAN);
 
+        paintBottomLabel(graphics);
         List<Sprite> threads = threadContext.getAllSprites();
         threads.forEach(sprite -> render(sprite, graphics));
         graphics.dispose();
@@ -87,7 +100,24 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         FontMetrics fm = g.getFontMetrics();
         int width = fm.stringWidth(slideLabel);
         int height = fm.getHeight();
-        g.drawString(slideLabel, (rightBorder + leftBorder - width)/2, initialYPosition - 20-height/2 + fm.getDescent());
+        g.drawString(slideLabel, (rightBorder + leftBorder - width) / 2, initialYPosition - 20 - height / 2 + fm.getDescent());
+    }
+
+    private void paintBottomLabel(Graphics2D g) {
+        if (bottomLabel != null) {
+            String[] split = bottomLabel.split("\n");
+            // todo: create bottom label font properies
+            g.setColor(slideLabelColor);
+            g.setFont(new Font(bottomLabelFontName, bottomLabelFontStyle, bottomLabelFontSize));
+            FontMetrics fm = g.getFontMetrics();
+            int height = fm.getHeight();
+            int fontHeight = 20 + height / 2 - fm.getDescent();
+            for (int i = 0; i < split.length; i++) {
+                int width = fm.stringWidth(split[i]);
+                g.drawString(split[i], (rightBorder + leftBorder - width) / 2, initialBottomYPosition + (i-2) * fontHeight);
+            }
+            g.fillRect(leftBorder + 2, initialBottomYPosition - fontHeight + 2,  rightBorder - leftBorder - 4, 3);
+        }
     }
 
     private void paintMonolith(Graphics2D g) {
@@ -104,6 +134,11 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         labelFontStyle = Parsers.parseFontStyle(style);
     }
 
+    @Value("${slide-bottom-label-font-style}")
+    public void setBottomFontStyle(String style) {
+        bottomLabelFontStyle = Parsers.parseFontStyle(style);
+    }
+
     /**
      * False by default, call this with true to prevent the monolith from drawing
      */
@@ -113,5 +148,9 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     public void setSlideLabel(String slideLabel) {
         this.slideLabel = slideLabel;
+    }
+
+    public void setBottomLabel(String label) {
+        this.bottomLabel = label;
     }
 }

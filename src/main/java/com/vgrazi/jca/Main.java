@@ -33,8 +33,11 @@ public class Main implements CommandLineRunner {
     @Autowired
     private CompletableFutureSlide completableFutureSlide;
 
+    @Autowired
+    private ExecutorsSlide executorsSlide;
+
     @Override
-    public void run(String... args) throws InterruptedException {
+    public void run(String... args) {
         new Thread(() -> {
             try {
                 threadContext.run();
@@ -51,19 +54,22 @@ public class Main implements CommandLineRunner {
         }
         switch (param) {
             case "synchronized":
-                synchronizedSlide.run();
+                threadContext.registerSlide(synchronizedSlide);
                 break;
             case "read-write-lock":
-                readWriteLockSlide.run();
+                threadContext.registerSlide(readWriteLockSlide);
                 break;
             case "phaser":
-                phaserSlide.run();
+                threadContext.registerSlide(phaserSlide);
                 break;
             case "completable-future":
-                completableFutureSlide.run();
+                threadContext.registerSlide(completableFutureSlide);
                 break;
             case "cyclic-barrier":
-                cyclicBarrierSlide.run();
+                threadContext.registerSlide(cyclicBarrierSlide);
+                break;
+            case "executors":
+                threadContext.registerSlide(executorsSlide);
                 break;
         }
 

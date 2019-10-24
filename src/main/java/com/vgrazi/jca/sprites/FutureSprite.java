@@ -90,7 +90,6 @@ public class FutureSprite extends Sprite implements InitializingBean {
 //                ", x-position=" + xPosition +
 //                ", y-position=" + yPosition +
                 ", relative_position=" + getRelativePosition() +
-                ", " + super.toString() +
                 '}';
     }
 

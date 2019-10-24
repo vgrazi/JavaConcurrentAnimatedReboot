@@ -89,7 +89,7 @@ public class ReadWriteLockSlide extends Slide {
     }
 
     @Override
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("ReadWriteLock");
         readWriteLock = new ReentrantReadWriteLock();

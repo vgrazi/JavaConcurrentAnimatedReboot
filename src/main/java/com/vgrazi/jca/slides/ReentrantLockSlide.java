@@ -99,7 +99,8 @@ public class ReentrantLockSlide extends Slide {
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
-        threadContext.addButton("wait()", () -> {
+// todo: replace with await
+        threadContext.addButton("await()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
 
             if (runningSprite != null) {
@@ -109,7 +110,8 @@ public class ReentrantLockSlide extends Slide {
 //            setCssSelected("wait");
         });
 
-        threadContext.addButton("notify()", () -> {
+// todo: replace with signal
+        threadContext.addButton("signal()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 // The new running thread should call notify
@@ -119,7 +121,8 @@ public class ReentrantLockSlide extends Slide {
             }
         });
 
-        threadContext.addButton("notifyAll()", () -> {
+// todo: replace with signal
+        threadContext.addButton("signal()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 // The new running thread should call notify
@@ -145,7 +148,7 @@ public class ReentrantLockSlide extends Slide {
 
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("ReentrantLock");
 //        Set styleSelectors = threadContext.setSnippetFile("synchronized.html");

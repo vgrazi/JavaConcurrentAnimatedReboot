@@ -47,10 +47,6 @@ public class CompletableFutureSlide extends Slide {
     public CompletableFutureSlide() {
     }
 
-    public static void main(String[] args) {
-        new CompletableFutureSlide().run();
-    }
-
     public void run() {
         reset();
         threadContext.addButton("runAsync", () -> {
@@ -128,7 +124,7 @@ public class CompletableFutureSlide extends Slide {
         threadContext.setVisible();
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("CompletableFuture");

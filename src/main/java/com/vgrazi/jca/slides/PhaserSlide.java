@@ -47,7 +47,7 @@ public class PhaserSlide extends Slide {
         threadContext.setVisible();
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("Phaser");
         phaser = new Phaser(4);

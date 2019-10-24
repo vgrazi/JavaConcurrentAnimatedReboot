@@ -1,6 +1,7 @@
 package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.JCAFrame;
+import com.vgrazi.jca.slides.Slide;
 import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
 import com.vgrazi.jca.util.Logging;
@@ -50,6 +51,7 @@ public class ThreadContext<S> implements InitializingBean {
     private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s*)(.*)", Pattern.MULTILINE);
     private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
     private String snippetFile;
+    private Slide slide;
 
     public void addStyleRule(String rule) {
         snippetCanvas.addStyleRule(rule);
@@ -73,6 +75,14 @@ public class ThreadContext<S> implements InitializingBean {
                 .filter(sprite -> sprite.isRunning())
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Diagnostic - attach to a button to list sprites on demand
+     */
+    public void listSprites() {
+        System.out.println("SPRITES");
+        sprites.forEach(System.out::println);
     }
 
     private enum ColorationScheme {
@@ -160,13 +170,31 @@ public class ThreadContext<S> implements InitializingBean {
     public ThreadContext() {
     }
 
+    /**
+     * Reset the previous slide, if any, and register and run the supplied one
+     */
+    public void registerSlide(Slide slide) {
+        if(this.slide != null) {
+            this.slide.dispose();
+        }
+        this.slide = slide;
+        this.slide.run();
+    }
+
     public void reset() {
         threadColors.clear();
-        getAllThreads().forEach(sprite -> sprite.getThread().stop());
+        nextYPos = initialYPos;
+        nextPooledYPos = initialPooledYPos;
+        getAllThreads().stream().filter(sprite->sprite.getThread() != null).forEach(sprite -> sprite.getThread().stop());
         canvas.setSlideLabel("");
-        sprites.clear();
+        canvas.setBottomLabel(null);
+        clearSprites();
         snippetFile = null;
         snippetCanvas.removeContent();
+    }
+
+    public void clearSprites() {
+        sprites.clear();
     }
 
     @Value("${BLOCKED_COLOR}")
@@ -206,6 +234,10 @@ public class ThreadContext<S> implements InitializingBean {
 
     public void setSlideLabel(String label) {
         canvas.setSlideLabel(label);
+    }
+
+    public void setBottomLabel(String label) {
+        canvas.setBottomLabel(label);
     }
 
     /**
@@ -483,7 +515,8 @@ public class ThreadContext<S> implements InitializingBean {
      * @return
      */
     public int getNextPooledYPosition(int height) {
-        if (sprites.isEmpty()) {
+        if(nextPooledYPos == 0)
+        {
             nextPooledYPos = initialPooledYPos;
         }
         int nextPooledYPos = this.nextPooledYPos;
@@ -568,7 +601,7 @@ public class ThreadContext<S> implements InitializingBean {
         }
         String snippet = builder.toString();
         this.snippet = snippet;
-        System.out.println(snippet);
+//        System.out.println(snippet);
         snippetCanvas.setSnippet(snippet);
         this.snippetFile = fileName;
     }

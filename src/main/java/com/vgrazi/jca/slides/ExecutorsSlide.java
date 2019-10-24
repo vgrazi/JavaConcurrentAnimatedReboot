@@ -1,6 +1,7 @@
 package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.PooledThreadSprite;
+import com.vgrazi.jca.sprites.RunnableSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -12,9 +13,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 public class ExecutorsSlide extends Slide {
-// todo: Pooled threads cap should not rotate
-// todo: Create runnable sprite, to visualize a queued runnable
-// todo: add a label above the pooled aread "Pooled Threads"
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -29,16 +27,22 @@ public class ExecutorsSlide extends Slide {
         threadContext.addButton("prestartAllCoreThreads()", () -> ((ThreadPoolExecutor) executor).prestartAllCoreThreads());
 
         threadContext.addButton("submit", () -> {
+            RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
+            threadContext.addSprite(runnableSprite);
+
             executor.submit(() -> {
                 Thread thread = Thread.currentThread();
                 PooledThreadSprite<String> sprite = (PooledThreadSprite) threadContext.getThreadSprite(thread);
                 if (sprite != null) {
                     sprite.setPooled(false);
                     sprite.setRunning(true);
+                    sprite.setYPosition(runnableSprite.getYPosition());
+                    runnableSprite.setThread(thread);
                     while (sprite.isRunning()) {
                         Thread.yield();
                     }
                     sprite.setPooled(true);
+                    runnableSprite.setDone();
                 } else {
                     System.out.printf("Thread %s not known to context%n", thread);
                 }
@@ -57,12 +61,13 @@ public class ExecutorsSlide extends Slide {
         threadContext.setVisible();
     }
 
-    protected void reset() {
+    public void reset() {
         if (executor != null) {
             executor.shutdownNow();
         }
         super.reset();
         threadContext.setSlideLabel("Executors");
+        threadContext.setBottomLabel("Pooled\nThreads");
         executor = Executors.newFixedThreadPool(4, r -> {
             PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
             Thread thread = new Thread(r);

@@ -68,7 +68,7 @@ public abstract class Slide {
         snippetCanvas.applyStyles();
     }
 
-    protected void reset() {
+    public void reset() {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
     }

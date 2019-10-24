@@ -47,7 +47,7 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
         Element divElement = htmlDocument.getElement("Contents");
         String divContent = String.format("<div>%s</div>", content);
         htmlDocument.setInnerHTML(divElement, divContent);
-        System.out.println("displaying " + divContent);
+//        System.out.println("displaying " + divContent);
 //        HtmlUtils.displayHtml(htmlDocument, null, 0);
         applyStyles();
     }

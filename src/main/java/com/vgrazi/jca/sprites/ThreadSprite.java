@@ -26,6 +26,11 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
     public Thread getThread() {
         return thread;
     }
+
+    public void setThread(Thread thread) {
+        this.thread = thread;
+    }
+
     @Value("${pixels-per-y-step}")
     protected int height;
 
@@ -98,7 +103,11 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
     @Override
     public void afterPropertiesSet() {
-        setYPosition(getThreadContext().getNextYPosition(height));
+        setYPosition(getNextYPositionFromContext());
+    }
+
+    protected int getNextYPositionFromContext() {
+        return getThreadContext().getNextYPosition(height);
     }
 
     @Override

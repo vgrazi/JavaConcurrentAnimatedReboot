@@ -138,8 +138,8 @@ public class JCAFrame extends JFrame {
         JButton button = new JButton(label);
         button.addActionListener(e -> {
             buttonPanel.removeAll();
+            threadContext.registerSlide(slide);
             repaint();
-                slide.run();
         });
         menu.add(button);
     }

@@ -51,7 +51,7 @@ public class CyclicBarrierSlide extends Slide {
         threadContext.setVisible();
     }
 
-    protected void reset() {
+    public void reset() {
         super.reset();
         threadContext.setSlideLabel("CyclicBarrier");
         cyclicBarrier = new CyclicBarrier(4);
