@@ -175,7 +175,7 @@ public class ThreadContext<S> implements InitializingBean {
      */
     public void registerSlide(Slide slide) {
         if(this.slide != null) {
-            this.slide.dispose();
+            this.slide.reset();
         }
         this.slide = slide;
         this.slide.run();
