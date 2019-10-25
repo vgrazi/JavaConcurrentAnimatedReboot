@@ -142,7 +142,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
                 }
                 break;
             case left:
-                if (xPos < lineStart) {
+                if (xPos <= lineStart) {
                     // we are in the left bottom semicircle
                     int legLength = ellipseRadius - (xPos - leftBound);
                     yPos = xAxis + (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);

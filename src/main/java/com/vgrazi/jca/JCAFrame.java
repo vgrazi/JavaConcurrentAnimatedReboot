@@ -53,6 +53,9 @@ public class JCAFrame extends JFrame {
     private CyclicBarrierSlide cyclicBarrierSlide;
 
     @Autowired
+    private CountdownLatchSlide countdownLatchSlide;
+
+    @Autowired
     private CompletableFutureSlide completableFutureSlide;
 
     @Autowired
@@ -112,6 +115,7 @@ public class JCAFrame extends JFrame {
         addButton("ReentrantLock", reentrantLockSlide);
         addButton("Phaser", phaserSlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
+        addButton("CountdownLatch", countdownLatchSlide);
         addButton("CompletableFuture", completableFutureSlide);
         addButton("ReadWriteLock", readWriteLockSlide);
         addButton("StampedLock", stampedLockSlide);
