@@ -38,6 +38,9 @@ import static com.vgrazi.jca.util.Parsers.parseColor;
  */
 @Component
 public class ThreadContext<S> implements InitializingBean {
+    @Value("${pixels-per-step-runner}")
+    public int pixelsPerStepRunner;
+
     /**
      * We either color by thread state or thread instance (eg in ForkJoin)
      */
@@ -240,6 +243,32 @@ public class ThreadContext<S> implements InitializingBean {
         canvas.setBottomLabel(label);
     }
 
+    private volatile int speed = 10;
+
+    // todo: propagate the new speed to sprites
+    public void setSpeed(int speed) {
+        switch(speed) {
+            case 10:
+                pixelsPerStep = 20;
+                pixelsPerStepRunner = 10;
+                break;
+            case 100:
+                pixelsPerStep = 10;
+                pixelsPerStepRunner = 5;
+                break;
+            case 1000:
+                pixelsPerStep = 5;
+                pixelsPerStepRunner = 2;
+                break;
+            default:
+                pixelsPerStep = 0;
+                pixelsPerStepRunner = 0;
+                break;
+
+        }
+    }
+
+    private final Object mutex = new Object();
     /**
      * Continually repaints the canvas
      */
@@ -465,7 +494,7 @@ public class ThreadContext<S> implements InitializingBean {
     /**
      * Returns the first running thread of specified special id, or null if none
      */
-    public ThreadSprite<S> getFirstRunningThreadOfSpecialId(int specialId) {
+    public ThreadSprite<S> getFirstRunningThreadOfSpecialId(long specialId) {
         ThreadSprite<S> first = sprites.stream()
                 .filter(sprite -> sprite instanceof ThreadSprite)
                 .map(sprite -> (ThreadSprite<S>) sprite)

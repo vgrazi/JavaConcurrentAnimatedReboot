@@ -70,11 +70,16 @@ public class JCAFrame extends JFrame {
     @Autowired
     private AtomicIntegerSlide atomicIntegerSlide;
 
+    @Autowired
+    private StampedLockSlide stampedLockSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     private final JLabel messages = new JLabel();
+    private final JPanel menuPanel = new JPanel();
+
     @Autowired
     private JTextPane snippetPanel;
 
@@ -100,19 +105,19 @@ public class JCAFrame extends JFrame {
         JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, animationAndSnippet);
         rightSide.setDividerSize(2);
 
-        JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new ButtonLayout(vgap));
 
-        addButton("Executors", executorsSlide, menuPanel);
-        addButton("Synchronized", synchronizedSlide, menuPanel);
-        addButton("ReentrantLock", reentrantLockSlide, menuPanel);
-        addButton("Phaser", phaserSlide, menuPanel);
-        addButton("CyclicBarrier", cyclicBarrierSlide, menuPanel);
-        addButton("CompletableFuture", completableFutureSlide, menuPanel);
-        addButton("ReadWriteLock", readWriteLockSlide, menuPanel);
-        addButton("TransferQueue", transferQueueSlide, menuPanel);
-        addButton("Semaphore", semaphoreSlide, menuPanel);
-        addButton("AtomicInteger", atomicIntegerSlide, menuPanel);
+        addButton("Executors", executorsSlide);
+        addButton("Synchronized", synchronizedSlide);
+        addButton("ReentrantLock", reentrantLockSlide);
+        addButton("Phaser", phaserSlide);
+        addButton("CyclicBarrier", cyclicBarrierSlide);
+        addButton("CompletableFuture", completableFutureSlide);
+        addButton("ReadWriteLock", readWriteLockSlide);
+        addButton("StampedLock", stampedLockSlide);
+        addButton("TransferQueue", transferQueueSlide);
+        addButton("Semaphore", semaphoreSlide);
+        addButton("AtomicInteger", atomicIntegerSlide);
 
         menuPanel.setBackground(Color.black);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuPanel, rightSide);
@@ -138,14 +143,14 @@ public class JCAFrame extends JFrame {
         add(wholePane);
     }
 
-    private void addButton(String label, Slide slide, JPanel menu) {
+    private void addButton(String label, Slide slide) {
         JButton button = new JButton(label);
         button.addActionListener(e -> {
             buttonPanel.removeAll();
             threadContext.registerSlide(slide);
             repaint();
         });
-        menu.add(button);
+        menuPanel.add(button);
     }
 
     public JPanel getButtonPanel() {

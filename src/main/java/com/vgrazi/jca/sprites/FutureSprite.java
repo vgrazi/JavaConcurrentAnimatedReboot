@@ -52,7 +52,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
             graphics.setColor(Color.black);
             graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
-            graphics.fillRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+            graphics.fill3DRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
         }
     }
 

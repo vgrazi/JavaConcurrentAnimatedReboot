@@ -21,11 +21,6 @@ public abstract class ThreadState implements State {
     public int monolithLeftBorder;
     @Value("${monolith-right-border}")
     public int monolithRightBorder;
-    @Value("${pixels-per-step}")
-    private int pixelsPerStep;
-
-    @Value("${pixels-per-step-runner}")
-    private int pixelsPerStepRunner;
 
     @Value("${arrow-length}")
     private int arrowLength;
@@ -41,7 +36,7 @@ public abstract class ThreadState implements State {
      */
     void calculateNextPositionBefore(Sprite sprite) {
         int position = sprite.getXPosition();
-        position += pixelsPerStep;
+        position += threadContext.pixelsPerStep;
         if (position > monolithLeftBorder) {
             position = monolithLeftBorder;
         }
@@ -50,7 +45,7 @@ public abstract class ThreadState implements State {
 
     void calculatePreviousPosition(ThreadSprite sprite) {
         int position = sprite.getXPosition();
-        position -= pixelsPerStep;
+        position -= threadContext.pixelsPerStep;
         sprite.setXPosition(position);
         if (position < 0) {
             threadContext.stopThread(sprite);
@@ -66,7 +61,7 @@ public abstract class ThreadState implements State {
         ThreadSprite.Direction direction = sprite.getDirection();
         switch (direction) {
             case right:
-                position += pixelsPerStepRunner;
+                position += threadContext.pixelsPerStepRunner;
                 if (position > monolithRightBorder - 5) {
                     position = monolithRightBorder - 5;
                     // todo: build the rotational animation here
@@ -77,9 +72,9 @@ public abstract class ThreadState implements State {
                 }
                 break;
             case left:
-                position -= pixelsPerStepRunner;
-                if (position < monolithLeftBorder + pixelsPerStepRunner*2) {
-                    position = monolithLeftBorder + pixelsPerStepRunner*2;
+                position -= threadContext.pixelsPerStepRunner;
+                if (position < monolithLeftBorder + threadContext.pixelsPerStepRunner*2) {
+                    position = monolithLeftBorder + threadContext.pixelsPerStepRunner*2;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.right);

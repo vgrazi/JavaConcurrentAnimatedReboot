@@ -29,8 +29,6 @@ public abstract class Sprite<T> {
     private int monolithLeftBorder;
     @Value("${monolith-right-border}")
     private int monolithRightBorder;
-    @Value("${pixels-per-step}")
-    private int pixelsPerStep;
 
     private String message;
 
@@ -53,7 +51,7 @@ public abstract class Sprite<T> {
     private boolean running = true;
     private volatile T holder;
     private int xRightMargin;
-    private int specialId;
+    private long specialId;
 
     @Value("${arrow-length}")
     private int arrowLength;
@@ -171,7 +169,7 @@ public abstract class Sprite<T> {
         this.holder = holder;
     }
 
-    public int getSpecialId() {
+    public long getSpecialId() {
         return specialId;
     }
 
@@ -179,7 +177,7 @@ public abstract class Sprite<T> {
      * Some slides require distinguishing kinds of threads. For example, ReentrantLockSlide requires special handling of interruptible threads
      * Use this method to set a special id, that distinguishes threads of the special type
      */
-    public void setSpecialId(int specialId) {
+    public void setSpecialId(long specialId) {
         this.specialId = specialId;
     }
 

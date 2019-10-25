@@ -54,6 +54,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private Color monolithColor;
     private boolean hideMonolith;
     private Color slideLabelColor;
+    private Color bottomLabelColor;
     private String slideLabel = "";
 
     @Value("${MONOLITH-COLOR}")
@@ -64,6 +65,11 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${SLIDE-LABEL-COLOR}")
     public void setSlideLabelColor(String color) {
         this.slideLabelColor = parseColor(color);
+    }
+
+    @Value("${BOTTOM-LABEL-COLOR}")
+    public void setBottomLabelColor(String color) {
+        this.bottomLabelColor = parseColor(color);
     }
 
     @Override
@@ -106,8 +112,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private void paintBottomLabel(Graphics2D g) {
         if (bottomLabel != null) {
             String[] split = bottomLabel.split("\n");
-            // todo: create bottom label font properies
-            g.setColor(slideLabelColor);
+            g.setColor(bottomLabelColor);
             g.setFont(new Font(bottomLabelFontName, bottomLabelFontStyle, bottomLabelFontSize));
             FontMetrics fm = g.getFontMetrics();
             int height = fm.getHeight();

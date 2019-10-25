@@ -92,19 +92,15 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
 
     }
 
-//      <------------------------W------------------------->
-//              (-W, 0)
-//               ___________________________________(0,0)
-//            . |lineStart         ^        lineEnd|    .
-//       .      |                  |               |       .
-//     .        |                  |               |         .
-//    . ________|________________  | ______________|_________ .
-//    .         |                  2R = yDelta     |          .
-//     .        |                  |               |         .
-//        .     |                  |               |       .
-//             .| _________________V_______________|__  .
-
-//             (-W, 2R)                              (0,2R)
+// leftBound     ___________________________________     rightBound
+//    |       . |lineStart         ^        lineEnd|   .      |
+//    |   .     |                  |               |      .   |
+//    | .       |                  |               |        . |
+//    |. _______|________________  | ______________|________ .|
+//    |.        |                  |               |         .|
+//    | .       |                  |               |        . |
+//    |    .    |                  |               |      .   |
+//    |        .| _________________V_______________|__ .      |
 
     /**
      * Renders the ball at the correct position
@@ -117,34 +113,44 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
      */
     protected int getCapYPosition(int leftBound, int rightBound, int topBound, int bottomBound, Sprite sprite) {
         int xPos = sprite.getXPosition();
+        // note that the "ellipse" is really just 2 semi-circles connected by straight horizontal lines,
+        // and the radius os 1/2 the height
         int ellipseRadius = (bottomBound - topBound) / 2;
         int xAxis = (bottomBound + topBound) / 2;
-        // this is the x-position where the left semi-circle stops and the straight horizontal line start
+
+        // this is the x-position where the left semi-circle stops and the straight horizontal line start:
         int lineStart = leftBound + ellipseRadius;
-        // this is the x-position where the straight horizontal line ends and the right semi-circle starts
+        // this is the x-position where the straight horizontal line ends and the right semi-circle starts"
         int lineEnd = rightBound - ellipseRadius;
         int yPos;
         switch (sprite.getDirection()) {
             case right:
                 if (xPos <= leftBound) {
+                    // we have not entered the left semicircle yet
                     yPos = xAxis;
                 } else if (xPos < lineStart) {
-                    int legLength = ellipseRadius - xPos;
-                    yPos = xAxis + (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
+                    // we are in the left top semicircle
+                    int legLength = ellipseRadius - (xPos - leftBound);
+                    yPos = xAxis - (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
                 } else if (xPos < lineEnd) {
+                    // we are in the top line
                     yPos = topBound;
-                } else { // we are in the right semi circle
+                } else {
+                    // we are in the right semi circle
                     int legLength = xPos - lineEnd;
                     yPos = xAxis - (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
                 }
                 break;
             case left:
                 if (xPos < lineStart) {
-                    int legLength = ellipseRadius - xPos;
-                    yPos = xAxis - (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
+                    // we are in the left bottom semicircle
+                    int legLength = ellipseRadius - (xPos - leftBound);
+                    yPos = xAxis + (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
                 } else if (xPos < lineEnd) {
+                    // we are in the bottom line
                     yPos = bottomBound;
-                } else { // we are in the right bottom semi circle
+                } else {
+                    // we are in the right bottom semicircle
                     int legLength = xPos - lineEnd;
                     yPos = xAxis + (int) Math.sqrt(ellipseRadius * ellipseRadius - legLength * legLength);
                 }
