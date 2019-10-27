@@ -4,6 +4,7 @@ package com.vgrazi.jca;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.view.ButtonLayout;
+import com.vgrazi.jca.view.ControlPanel;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,9 @@ public class JCAFrame extends JFrame {
 
     @Autowired
     ThreadContext threadContext;
+
+    @Autowired
+    ControlPanel controlPanel = new ControlPanel();
 
     @Autowired
     private ThreadCanvas threadCanvas;
@@ -123,23 +127,27 @@ public class JCAFrame extends JFrame {
         addButton("Semaphore", semaphoreSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
 
+        menuPanel.add(controlPanel);
+
         menuPanel.setBackground(Color.black);
         JSplitPane wholePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuPanel, rightSide);
         wholePane.setDividerSize(2);
 
         ComponentAdapter adapter = new ComponentAdapter() {
+            private final int location = 215;
+
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
                 animationAndSnippet.setDividerLocation(.6);
-                wholePane.setDividerLocation(100);
+                wholePane.setDividerLocation(location);
             }
 
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
                 animationAndSnippet.setDividerLocation(.6);
-                wholePane.setDividerLocation(150);
+                wholePane.setDividerLocation(location);
             }
         };
         addComponentListener(adapter);

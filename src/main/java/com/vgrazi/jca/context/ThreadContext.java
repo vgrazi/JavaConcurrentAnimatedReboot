@@ -39,6 +39,7 @@ import static com.vgrazi.jca.util.Parsers.parseColor;
 @Component
 public class ThreadContext<S> implements InitializingBean {
     @Value("${pixels-per-step-runner}")
+    public int initialPixelsPerStepRunner;
     public int pixelsPerStepRunner;
 
     /**
@@ -157,6 +158,7 @@ public class ThreadContext<S> implements InitializingBean {
     @Value("${monolith-right-border}")
     private int monolithRightBorder;
     @Value("${pixels-per-step}")
+    public int initialPixelsPerStep;
     public int pixelsPerStep;
     @Value("${arrow-length}")
     private int arrowLength;
@@ -194,6 +196,8 @@ public class ThreadContext<S> implements InitializingBean {
         clearSprites();
         snippetFile = null;
         snippetCanvas.removeContent();
+        pixelsPerStep = initialPixelsPerStep;
+        pixelsPerStepRunner = initialPixelsPerStepRunner;
     }
 
     public void clearSprites() {
@@ -245,25 +249,26 @@ public class ThreadContext<S> implements InitializingBean {
 
     private volatile int speed = 10;
 
-    // todo: propagate the new speed to sprites
-    public void setSpeed(int speed) {
+    public void setSpeed(String speed) {
         switch(speed) {
-            case 10:
-                pixelsPerStep = 20;
-                pixelsPerStepRunner = 10;
-                break;
-            case 100:
+            case "slow":
                 pixelsPerStep = 10;
                 pixelsPerStepRunner = 5;
                 break;
-            case 1000:
+            case "very-slow":
                 pixelsPerStep = 5;
                 pixelsPerStepRunner = 2;
                 break;
-            default:
+            case "pause":
                 pixelsPerStep = 0;
                 pixelsPerStepRunner = 0;
                 break;
+            case "normal":
+            default:
+                pixelsPerStep = 20;
+                pixelsPerStepRunner = 10;
+                break;
+
 
         }
     }
