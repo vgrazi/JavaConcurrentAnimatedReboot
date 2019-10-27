@@ -62,6 +62,14 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         renderMessage(graphics);
     }
 
+    @Override
+    public void renderMessage(Graphics2D graphics) {
+        if(thread != null && getThreadContext().isDisplayThreadNames()) {
+            setMessage(thread.getName());
+        }
+        super.renderMessage(graphics);
+    }
+
     /**
      * Draws the ball (or whatever) at the end of the thread line
      */

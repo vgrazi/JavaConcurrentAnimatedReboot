@@ -56,6 +56,7 @@ public class ThreadContext<S> implements InitializingBean {
     private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
     private String snippetFile;
     private Slide slide;
+    private boolean displayThreadNames;
 
     public void addStyleRule(String rule) {
         snippetCanvas.addStyleRule(rule);
@@ -87,6 +88,14 @@ public class ThreadContext<S> implements InitializingBean {
     public void listSprites() {
         System.out.println("SPRITES");
         sprites.forEach(System.out::println);
+    }
+
+    public boolean isDisplayThreadNames() {
+        return displayThreadNames;
+    }
+
+    public void setDisplayThreadNames(boolean b) {
+        this.displayThreadNames = b;
     }
 
     private enum ColorationScheme {
@@ -198,6 +207,7 @@ public class ThreadContext<S> implements InitializingBean {
         snippetCanvas.removeContent();
         pixelsPerStep = initialPixelsPerStep;
         pixelsPerStepRunner = initialPixelsPerStepRunner;
+        displayThreadNames = false;
     }
 
     public void clearSprites() {

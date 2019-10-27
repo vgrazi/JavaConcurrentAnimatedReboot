@@ -15,13 +15,12 @@ public class ControlPanel extends JPanel {
         addButton(new JButton("||"), l1 -> context.setSpeed("pause"), "Pause");
         addButton(new JButton(">"), l1 -> context.setSpeed("slow"), "Slow");
         addButton(new JButton(">>"),l->context.setSpeed("normal"), "Normal");
-        addButton(new JButton("T"),l->{}, "Display Thread Names");
+        addButton(new JButton("T"),l->context.setDisplayThreadNames(!context.isDisplayThreadNames()), "Display Thread Names");
     }
 
     private void addButton(JButton button, ActionListener l, String toolTipText) {
         add(button);
         button.addActionListener(l);
-        JToolTip toolTip = button.createToolTip();
-        toolTip.setTipText(toolTipText);
+        button.setToolTipText(toolTipText);
     }
 }
