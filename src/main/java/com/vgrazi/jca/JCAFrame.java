@@ -134,7 +134,7 @@ public class JCAFrame extends JFrame {
         wholePane.setDividerSize(2);
 
         ComponentAdapter adapter = new ComponentAdapter() {
-            private final int location = 215;
+            private final int location = controlPanel.getPreferredSize().width + 6;
 
             @Override
             public void componentShown(ComponentEvent e) {
