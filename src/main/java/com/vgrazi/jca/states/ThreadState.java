@@ -62,8 +62,8 @@ public abstract class ThreadState implements State {
         switch (direction) {
             case right:
                 position += threadContext.pixelsPerStepRunner;
-                if (position > monolithRightBorder - 5) {
-                    position = monolithRightBorder - 5;
+                if (position > monolithRightBorder -1) {
+                    position = monolithRightBorder -1;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.left);
@@ -73,8 +73,8 @@ public abstract class ThreadState implements State {
                 break;
             case left:
                 position -= threadContext.pixelsPerStepRunner;
-                if (position < monolithLeftBorder + threadContext.pixelsPerStepRunner*2) {
-                    position = monolithLeftBorder + threadContext.pixelsPerStepRunner*2;
+                if (position < monolithLeftBorder + 1) {
+                    position = monolithLeftBorder + 1;
                     // todo: build the rotational animation here
                     sprite.setXPosition(position);
                     sprite.setDirection(ThreadSprite.Direction.right);

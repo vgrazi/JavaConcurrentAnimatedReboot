@@ -30,8 +30,8 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
     @Value("${pixels-per-y-step}")
     protected int pixelsPerYStep;
 
-    @Value("${ball-radius}")
-    protected int ballRadius;
+    @Value("${ball-diameter}")
+    protected int ballDiameter;
 
     @Value("${stroke-width}")
     private int strokeWidth;
@@ -88,7 +88,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
         graphics.setColor(getThreadContext().getColorByInstance(this));
         int yPos = getCapYPosition(leftBound, rightBound, topBound, bottomBound, this);
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
-        graphics.fillOval(getXPosition() -8 -offset, yPos, ballRadius, ballRadius);
+        graphics.fillOval(getXPosition() -8 -offset, yPos, ballDiameter, ballDiameter);
 
     }
 
@@ -158,7 +158,9 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
             default:
                 throw new IllegalArgumentException("Unknown direction-should never happen - did you add a direction besides left and right??");
         }
-        yPos-= ballRadius/2;
+        yPos-= ballDiameter /2;
+        System.out.printf("old x-pos:%d new xPos:%d line-start:%d  ypos:%d  ellipse radius:%d  xaxis:%d ball-diameter:%d%n",
+                 this.xPosition, xPos + ballDiameter/2, lineStart, yPos + ballDiameter /2, ellipseRadius, xAxis, ballDiameter);
         return yPos;
     }
 

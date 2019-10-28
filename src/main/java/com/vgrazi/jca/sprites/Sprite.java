@@ -15,7 +15,7 @@ import static com.vgrazi.jca.util.Parsers.parseFont;
  * Base class for sprites, such as ThreadSprite, FutureSprite, ObjectSprite, etc.
  */
 public abstract class Sprite<T> {
-    private int xPosition;
+    protected int xPosition;
     @Autowired
     @Qualifier("basicStroke")
     private Stroke stroke;
