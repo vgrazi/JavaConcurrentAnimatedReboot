@@ -159,8 +159,8 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
                 throw new IllegalArgumentException("Unknown direction-should never happen - did you add a direction besides left and right??");
         }
         yPos-= ballDiameter /2;
-        System.out.printf("old x-pos:%d new xPos:%d line-start:%d  ypos:%d  ellipse radius:%d  xaxis:%d ball-diameter:%d%n",
-                 this.xPosition, xPos + ballDiameter/2, lineStart, yPos + ballDiameter /2, ellipseRadius, xAxis, ballDiameter);
+//        System.out.printf("old x-pos:%d new xPos:%d line-start:%d  ypos:%d  ellipse radius:%d  xaxis:%d ball-diameter:%d%n",
+//                 this.xPosition, xPos + ballDiameter/2, lineStart, yPos + ballDiameter /2, ellipseRadius, xAxis, ballDiameter);
         return yPos;
     }
 
