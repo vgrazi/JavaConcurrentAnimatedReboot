@@ -1,6 +1,7 @@
 package com.vgrazi.jca.context;
 
 import com.vgrazi.jca.JCAFrame;
+import com.vgrazi.jca.engine.AnimationEngine;
 import com.vgrazi.jca.slides.Slide;
 import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
@@ -136,6 +137,9 @@ public class ThreadContext<S> implements InitializingBean {
 
     @Autowired
     public Pooled pooled;
+
+    @Autowired
+    private AnimationEngine engine;
 
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
@@ -301,23 +305,11 @@ public class ThreadContext<S> implements InitializingBean {
         }
     }
 
-    private final Object mutex = new Object();
     /**
      * Continually repaints the canvas
      */
     private void render() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                canvas.repaint(canvas.getBounds());
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-
-        });
-        thread.start();
+        engine.render(canvas);
     }
 
     private final Color[] colors = {Color.red, Color.CYAN, Color.BLUE, Color.DARK_GRAY,
