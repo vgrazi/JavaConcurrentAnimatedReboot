@@ -5,6 +5,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
+import java.util.concurrent.locks.Condition;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
@@ -13,7 +14,7 @@ import java.awt.*;
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
+public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
 
     protected Thread thread;
     @Value("${arrow-length}")
@@ -22,6 +23,9 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      * set to true to have the sprite animate from right to left when failed
      */
     private boolean retreating;
+
+    private Condition condition;
+    private int conditionId;
 
     public Thread getThread() {
         return thread;
@@ -41,6 +45,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
         }
         return state;
     }
+
     /**
      * Create the thread associated with this runnable, and starts it
      */
@@ -64,7 +69,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
     @Override
     public void renderMessage(Graphics2D graphics) {
-        if(thread != null && getThreadContext().isDisplayThreadNames()) {
+        if (thread != null && getThreadContext().isDisplayThreadNames()) {
             setMessage(thread.getName());
         }
         super.renderMessage(graphics);
@@ -75,8 +80,8 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
-        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
-        graphics.fillOval(getXPosition() -8 -offset, getYPosition()-5, 10, 10);
+        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
+        graphics.fillOval(getXPosition() - 8 - offset, getYPosition() - 5, 10, 10);
     }
 
     /**
@@ -84,13 +89,13 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
      * are both considered runnable, and waiting and timed-waiting are both considered waiting.
      */
     public ThreadState getState() {
-        if(thread == null) {
+        if (thread == null) {
             return null;
         }
-        if(isRetreating()) {
+        if (isRetreating()) {
             return getThreadContext().retreating;
         }
-        if(this instanceof PooledThreadSprite) {
+        if (this instanceof PooledThreadSprite) {
             return getThreadContext().pooled;
         }
         switch (thread.getState()) {
@@ -137,5 +142,29 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean  {
 
     public void setRetreating(boolean retreating) {
         this.retreating = retreating;
+    }
+
+    public boolean hasCondition() {
+        return condition != null;
+    }
+
+    /**
+     * ConditionId is used by the animation renderer to draw the "C"
+     */
+    public void setCondition(Condition condition, int conditionId) {
+        this.condition = condition;
+        setConditionId(conditionId);
+    }
+
+    public Condition getCondition() {
+        return condition;
+    }
+
+    public int getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(int conditionId) {
+        this.conditionId = conditionId;
     }
 }

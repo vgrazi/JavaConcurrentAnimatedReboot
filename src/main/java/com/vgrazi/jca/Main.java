@@ -18,6 +18,9 @@ public class Main implements CommandLineRunner {
     @Autowired()
     private SynchronizedSlide synchronizedSlide;
 
+    @Autowired()
+    private ReentrantLockSlide reentrantLockSlide;
+
     @Autowired
     private ReadWriteLockSlide readWriteLockSlide;
 
@@ -55,6 +58,9 @@ public class Main implements CommandLineRunner {
         switch (param) {
             case "synchronized":
                 threadContext.registerSlide(synchronizedSlide);
+                break;
+            case "reentrant-lock":
+                threadContext.registerSlide(reentrantLockSlide);
                 break;
             case "read-write-lock":
                 threadContext.registerSlide(readWriteLockSlide);

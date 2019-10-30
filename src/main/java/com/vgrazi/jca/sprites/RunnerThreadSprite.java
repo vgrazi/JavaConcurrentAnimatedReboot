@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
 
+import static com.vgrazi.jca.util.Parsers.parseFont;
+
 /**
  * This is a regular thread sprite, except that when it is running (inside the monolith), it renders as a round rectangle
  * instead of as a thread
  */
-public class RunnerThreadSprite<S> extends ThreadSprite<S>{
+public class RunnerThreadSprite<S> extends ThreadSprite<S> {
+    private Font conditionFont;
     private int margin;
     protected int leftBound;
     protected int rightBound;
@@ -39,6 +42,10 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
     @Value("${arrow-length}")
     protected int arrowLength;
 
+    @Value("${condition-font}")
+    private void setConditionFont(String font) {
+        conditionFont = parseFont(font);
+    }
     @Override
     public void setYPosition(int yPosition) {
         super.setYPosition(yPosition);
@@ -83,12 +90,25 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
 
     /**
      * Draws the ball (or whatever) at the end of the thread line
+     * If the sprite is attached to a condition, draws a C with the
+     * condition id (1-based serial), instead of the ball
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
         int yPos = getCapYPosition(leftBound, rightBound, topBound, bottomBound, this);
-        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
-        graphics.fillOval(getXPosition() -8 -offset, yPos, ballDiameter, ballDiameter);
+        int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
+        if (hasCondition()) {
+            Graphics2D graphicsCopy = (Graphics2D) graphics.create();
+            // todo:
+            graphicsCopy.setFont(conditionFont);
+            FontMetrics fm = graphicsCopy.getFontMetrics();
+            int height = fm.getHeight();
+
+            graphicsCopy.drawString("C" + getConditionId(), getXPosition() - 8 - offset, yPos + height/2);
+            graphicsCopy.dispose();
+        } else {
+            graphics.fillOval(getXPosition() - 8 - offset, yPos, ballDiameter, ballDiameter);
+        }
 
     }
 
@@ -158,7 +178,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S>{
             default:
                 throw new IllegalArgumentException("Unknown direction-should never happen - did you add a direction besides left and right??");
         }
-        yPos-= ballDiameter /2;
+        yPos -= ballDiameter / 2;
 //        System.out.printf("old x-pos:%d new xPos:%d line-start:%d  ypos:%d  ellipse radius:%d  xaxis:%d ball-diameter:%d%n",
 //                 this.xPosition, xPos + ballDiameter/2, lineStart, yPos + ballDiameter /2, ellipseRadius, xAxis, ballDiameter);
         return yPos;

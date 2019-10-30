@@ -53,7 +53,7 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
     }
 
     public void removeContent() {
-        System.out.println("Removing box");
+//        System.out.println("Removing box");
         try {
             Element divElement = htmlDocument.getElement("Contents");
             htmlDocument.setInnerHTML(divElement, "<div></div>");

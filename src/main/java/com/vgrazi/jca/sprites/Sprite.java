@@ -46,7 +46,7 @@ public abstract class Sprite<T> {
     @Autowired
     private ThreadContext threadContext;
     protected int yPosition;
-    private String action = "default";
+    private volatile String action = "default";
 
     private boolean running = true;
     private volatile T holder;

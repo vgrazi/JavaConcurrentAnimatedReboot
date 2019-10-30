@@ -19,8 +19,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -75,11 +75,29 @@ public class ThreadContext<S> implements InitializingBean {
     /**
      * Returns the first pooled thread that is actually running a task
      */
-    public PooledThreadSprite<String> getRunningPooledThread() {
+    public PooledThreadSprite getRunningPooledThread() {
         return (PooledThreadSprite) sprites.stream().filter(sprite -> sprite instanceof PooledThreadSprite)
-                .filter(sprite -> sprite.isRunning())
+                .filter(Sprite::isRunning)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public RunnerThreadSprite getRunnableThread() {
+        return (RunnerThreadSprite) sprites.stream().filter(sprite -> sprite instanceof RunnerThreadSprite)
+                .filter(sprite1 -> ((RunnerThreadSprite) sprite1).getState() == runnable)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Returns a list of all thread sprites that have conditions
+     */
+    public List<ThreadSprite> getAllConditionSprites() {
+        return sprites.stream()
+                .filter(sprite->sprite instanceof ThreadSprite)
+                .map(sprite->(ThreadSprite)sprite)
+                .filter(ThreadSprite::hasCondition)
+                .collect(Collectors.toList());
     }
 
     /**
