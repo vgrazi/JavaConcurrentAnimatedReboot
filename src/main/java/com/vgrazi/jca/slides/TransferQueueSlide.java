@@ -12,7 +12,6 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
 
-// todo: Not reclaiming vertical position after all objects removed
 @Component
 public class TransferQueueSlide extends Slide {
     @Value("${monolith-left-border}")

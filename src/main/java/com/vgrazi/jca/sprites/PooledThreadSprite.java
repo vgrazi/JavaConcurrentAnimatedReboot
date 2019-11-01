@@ -50,7 +50,11 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
 
     @Override
     protected void drawThreadCap(Graphics2D graphics) {
-        if (!pooled) {
+        if (getThreadState() == Thread.State.WAITING) {
+            graphics.setColor(getThreadContext().getColorByInstance(this));
+            graphics.fillOval(leftBound, topBound, ballDiameter, ballDiameter);
+
+        } else {
             super.drawThreadCap(graphics);
         }
     }

@@ -12,7 +12,7 @@ import static com.vgrazi.jca.util.Parsers.parseFont;
  * instead of as a thread
  */
 public class RunnerThreadSprite<S> extends ThreadSprite<S> {
-    private Font conditionFont;
+    protected Font conditionFont;
     private int margin;
     protected int leftBound;
     protected int rightBound;
@@ -99,7 +99,6 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
         if (hasCondition()) {
             Graphics2D graphicsCopy = (Graphics2D) graphics.create();
-            // todo:
             graphicsCopy.setFont(conditionFont);
             FontMetrics fm = graphicsCopy.getFontMetrics();
             int height = fm.getHeight();
