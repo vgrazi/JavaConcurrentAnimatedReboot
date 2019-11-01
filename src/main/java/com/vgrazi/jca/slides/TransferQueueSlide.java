@@ -24,7 +24,7 @@ public class TransferQueueSlide extends Slide {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private TransferQueue transferQueue = new LinkedTransferQueue();
+    private TransferQueue transferQueue;
 
     public void run() {
         reset();
@@ -39,13 +39,16 @@ public class TransferQueueSlide extends Slide {
             objectSprite.attachAndStartRunnable(() -> {
                 try {
                     transferQueue.transfer("xxx");
-                    threadContext.stopThread(objectSprite);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+                threadContext.stopThread(objectSprite);
+                if (getter != null) {
+                    threadContext.stopThread(getter);
+                }
             });
         });
-        threadContext.addButton("tryTransfer()", () -> {
+        threadContext.addButton("tryTransfer(2,TimeUnit.SECONDS)", () -> {
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
@@ -55,10 +58,16 @@ public class TransferQueueSlide extends Slide {
             }
             objectSprite.attachAndStartRunnable(() -> {
                 try {
-                    transferQueue.tryTransfer("xxx", 5000, TimeUnit.MILLISECONDS);
-//                    threadContext.stopThread(objectSprite);
+                    boolean success = transferQueue.tryTransfer("xxx", 2000, TimeUnit.MILLISECONDS);
+                    if(!success) {
+                        objectSprite.setRetreating(true);
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                }
+                threadContext.stopThread(objectSprite);
+                if (getter != null) {
+                    threadContext.stopThread(getter);
                 }
             });
             threadContext.addSprite(objectSprite);
@@ -72,21 +81,21 @@ public class TransferQueueSlide extends Slide {
                         getter.attachAndStartRunnable(() -> {
                             try {
                                 transferQueue.take();
-                                threadContext.stopThread(getter);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             }
+                            threadContext.stopThread(getter);
                         });
                     } else {
                         getter.attachAndStartRunnable(() -> {
                             try {
                                 getter.setYPosition(objectSprite.getYPosition());
                                 transferQueue.take();
-                                threadContext.stopThread(objectSprite);
-                                threadContext.stopThread(getter);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             }
+                            threadContext.stopThread(objectSprite);
+                            threadContext.stopThread(getter);
                         });
                     }
                     threadContext.addSprite(getter);

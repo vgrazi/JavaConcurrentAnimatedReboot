@@ -1,5 +1,7 @@
 package com.vgrazi.jca.sprites;
 
+import com.vgrazi.jca.context.RelativePosition;
+import com.vgrazi.jca.states.ThreadState;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -12,7 +14,7 @@ import java.awt.*;
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class ObjectSprite extends ThreadSprite implements InitializingBean {
+public class ObjectSprite extends RunnerThreadSprite implements InitializingBean {
     @Value("${monolith-left-border}")
     private int leftBorder;
 
@@ -31,30 +33,42 @@ public class ObjectSprite extends ThreadSprite implements InitializingBean {
         int yCenter = getYPosition();
 //        Draw a positioning line, for diagnostics
 //        graphics.drawLine(0, yCenter, 1000, yCenter);
-        int yPos = yCenter - height/2;
-        graphics.fillOval(getXPosition() + getXMargin() , yPos + getYMargin(), width, height);
+        int yPos = yCenter - height / 2;
+        graphics.fillOval(getXPosition() - width, yPos + getYMargin(), width, height);
+    }
+
+    @Override
+    public void setNextXPosition() {
+        ThreadState state = getState();
+        if (state == getThreadContext().runnable && (getRelativePosition() == RelativePosition.In || getRelativePosition() == RelativePosition.At) && getDirection() == Direction.left) {
+            super.setXPosition(rightBorder - 1 - getXMargin());
+        } else {
+            state.advancePosition(this);
+        }
     }
 
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-        setXMargin((rightBorder - leftBorder - width)/2);
+        setXMargin((rightBorder - leftBorder - width) / 2);
     }
 
     /**
      * Override the default height
-     * @param height
-     * todo: add a specialized object height property
+     *
+     * @param height todo: add a specialized object height property
      */
     @Value("${future-height}")
     public void setHeight(int height) {
-        this.height = height/2;
+        this.height = height / 2;
     }
 
     @Override
     public String toString() {
         return "ObjectSprite{" +
                 "ID=" + getID() +
+                ", state=" + getState() +
+//                ", native-state=" + thread.getState() +
 //                ", x-position=" + getXPosition() +
 //                ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
