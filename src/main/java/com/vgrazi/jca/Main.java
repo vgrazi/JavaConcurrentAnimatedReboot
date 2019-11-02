@@ -25,6 +25,12 @@ public class Main implements CommandLineRunner {
     private ReadWriteLockSlide readWriteLockSlide;
 
     @Autowired
+    private BlockingQueueSlide blockingQueueSlide;
+
+    @Autowired
+    private TransferQueueSlide transferQueueSlide;
+
+    @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
@@ -64,6 +70,12 @@ public class Main implements CommandLineRunner {
                 break;
             case "read-write-lock":
                 threadContext.registerSlide(readWriteLockSlide);
+                break;
+            case "blocking-queue":
+                threadContext.registerSlide(blockingQueueSlide);
+                break;
+            case "transfer-queue":
+                threadContext.registerSlide(transferQueueSlide);
                 break;
             case "phaser":
                 threadContext.registerSlide(phaserSlide);

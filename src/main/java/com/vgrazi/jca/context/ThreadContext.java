@@ -431,6 +431,17 @@ public class ThreadContext<S> implements InitializingBean {
                 .findFirst().orElse(null);
         return objectSprite;
     }
+    /**
+     * Returns the first object sprite that is in the waiting state, or null
+     */
+    public ObjectSprite getFirstRunningObjectSprite() {
+        ObjectSprite objectSprite = sprites.stream()
+                .filter(sprite -> sprite instanceof ObjectSprite)
+                .map(sprite -> (ObjectSprite) sprite)
+                .filter(sprite -> sprite.getState() == runnable)
+                .findFirst().orElse(null);
+        return objectSprite;
+    }
 
     /**
      * Returns the first thread sprite that is in the waiting state, or null

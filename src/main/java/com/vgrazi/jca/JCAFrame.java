@@ -80,6 +80,9 @@ public class JCAFrame extends JFrame {
     @Autowired
     private StampedLockSlide stampedLockSlide;
 
+    @Autowired
+    private BlockingQueueSlide blockingQueueSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -123,6 +126,7 @@ public class JCAFrame extends JFrame {
         addButton("CompletableFuture", completableFutureSlide);
         addButton("ReadWriteLock", readWriteLockSlide);
         addButton("StampedLock", stampedLockSlide);
+        addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
         addButton("Semaphore", semaphoreSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
