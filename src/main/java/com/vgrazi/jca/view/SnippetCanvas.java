@@ -21,9 +21,6 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
     @Value("${snippet-font-style}")
     private String fontStyle;
 
-    @Value("${snippet-font-size}")
-    private int fontSize;
-
     private StyleSheet styleSheet;
 
     private Element htmlElement;
@@ -73,6 +70,14 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
     }
 
     /**
+     * Sets the font size in px for the "outer" dimv
+     */
+    public void setFontSize(int fontSize) {
+        styleSheet.addRule(String.format(".outer{font-style:\"bold\";font-size:%d px;}", fontSize));
+        applyStyles();
+    }
+
+    /**
      * To be called after adding content or style rules, to apply the styles
      */
     public void applyStyles() {
@@ -95,14 +100,17 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
                     "<html>" +
                     "  <header>" +
                     "    <style type=\"text/css\">" +
-                    "       div { font-family:'%s'; font-size: %d pt; font-style:'%s'}" +
+                    "       div { font-family:'%s'; " +
+// Note: Can't specify font size here, or it will be immutable
+//                    "font-size: 20 pt;" +
+                    " font-style:'%s';}" +
                     "     </style>" +
                     "  </header>" +
                     "  <body>" +
                     "    <div id=\"Contents\">" +
                     "    </div>" +
                     "  </body>" +
-                    " </html>", fontFamily, fontSize, fontStyle)
+                    " </html>", fontFamily, fontStyle)
             );
 
 //            styleSheet = htmlEditorKit.getStyleSheet();

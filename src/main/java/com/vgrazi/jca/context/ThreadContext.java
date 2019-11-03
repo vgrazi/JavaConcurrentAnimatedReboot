@@ -43,6 +43,10 @@ public class ThreadContext<S> implements InitializingBean {
     public int initialPixelsPerStepRunner;
     public int pixelsPerStepRunner;
 
+    @Value("${snippet-font-size}")
+    private int initialFontSize;
+    private int fontSize;
+
     /**
      * We either color by thread state or thread instance (eg in ForkJoin)
      */
@@ -218,6 +222,7 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     public void reset() {
+        snippetCanvas.setFontSize(fontSize);
         threadColors.clear();
         nextYPos = initialYPos;
         nextPooledYPos = initialPooledYPos;
@@ -607,6 +612,7 @@ public class ThreadContext<S> implements InitializingBean {
         // center the frame
         frame.setLocationRelativeTo(null);
         nextYPos = initialYPos;
+        fontSize = initialFontSize;
         render();
     }
 

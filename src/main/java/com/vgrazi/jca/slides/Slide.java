@@ -39,7 +39,7 @@ public abstract class Slide {
     }
 
     /**
-     * Sets the specified selectors as selected, and everything else unselected
+     * Sets the specified selectorS as selected, and everything else unselected
      */
     protected void setCssSelected(Set<String> selectors) {
         styleSelectors.forEach(selector-> {
