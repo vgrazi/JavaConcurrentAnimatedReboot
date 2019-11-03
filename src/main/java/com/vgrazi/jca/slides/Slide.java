@@ -68,8 +68,19 @@ public abstract class Slide {
         snippetCanvas.applyStyles();
     }
 
+    /**
+     * Selects all of this slide's selectors, enabling all fonts
+     */
+    protected void resetCss() {
+        if (styleSelectors != null) {
+            styleSelectors.forEach(selector-> threadContext.addStyleRule("." + selector + selectedFontColorStyle));
+        }
+        snippetCanvas.applyStyles();
+    }
+
     public void reset() {
         threadContext.reset();
+        resetCss();
         threadCanvas.hideMonolith(false);
     }
 }
