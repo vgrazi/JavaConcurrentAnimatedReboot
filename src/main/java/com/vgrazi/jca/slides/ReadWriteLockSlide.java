@@ -74,7 +74,7 @@ public class ReadWriteLockSlide extends Slide {
             }
         });
 
-        threadContext.addButton("release", ()->{
+        threadContext.addButton("lock.unlock()", () -> {
             ThreadSprite<String> runningThread = (ThreadSprite<String>) threadContext.getRunningThread();
             if (runningThread != null) {
                 runningThread.setHolder("release");

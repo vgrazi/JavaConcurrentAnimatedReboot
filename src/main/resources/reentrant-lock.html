@@ -1,0 +1,47 @@
+<div class="outer">
+ReentrantLock lock = new ReentrantLock();
+<span class="lock">lock.lock();
+
+/// do work</span>
+<span class="condition">Condition condition = lock.newCondition();</span>
+<span class="await">
+try {
+  condition.await();
+} catch (InterruptedException e) {
+  Thread.currentThread().interrupt();
+}
+lock.unlock();
+</span>
+<span class="signal signalAll">
+lock.lock();
+
+/// do work
+<span class="signal">condition.signal();</span>
+<span class="signalAll">condition.signalAll();</span>
+lock.unlock();
+</span>
+<span class="lock-interruptibly">
+try {
+  lock.lockInterruptibly();
+  // do work
+  lock.unlock();
+} catch (InterruptedException e) {
+  // interrupted
+} finally {
+  if(lock.isHeldByCurrentThread()){
+    lock.unlock();
+  }
+}
+</span>
+
+<span class="interrupt">
+Thread.currentThread().interrupt();
+</span>
+<span class="try-lock">
+boolean success = lock.tryLock();
+if(success) {
+  // do work
+  lock.unlock();
+}
+</span>
+</div>

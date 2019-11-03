@@ -50,6 +50,7 @@ public class ReentrantLockSlide extends Slide {
         reset();
 
         threadContext.addButton("lock()", () -> {
+            setCssSelected("lock");
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
@@ -67,6 +68,7 @@ public class ReentrantLockSlide extends Slide {
 //            setCssSelected("synchronized");
         });
         threadContext.addButton("lockInterrubtibly()", () -> {
+            setCssSelected("lock-interruptibly");
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.setSpecialId(1);
             // set the holder to true for running
@@ -89,6 +91,7 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("tryLock()", () -> {
+            setCssSelected("try-lock");
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
@@ -111,17 +114,18 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("interrupt()", () -> {
-//            ThreadSprite sprite = threadContext.getFirstWaitingInterruptibleThread();
+            setCssSelected("interrupt");
+
             ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(1);
             sprite.setRetreating(true);
             sprite.getThread().interrupt();
-//            setCssSelected("synchronized");
         });
 
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
         threadContext.addButton("newCondition()", () -> {
+            setCssSelected("condition");
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (!runningSprite.hasCondition()) {
                 runningSprite.setAction("newCondition");
@@ -135,6 +139,7 @@ public class ReentrantLockSlide extends Slide {
         addAwaitSignalButton("signalAll()", "signalAll");
 
         threadContext.addButton("unlock()", () -> {
+            setCssSelected("unlock");
             ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
             runningSprite.setHolder(false);
             // The new running thread should call notify
@@ -193,7 +198,8 @@ public class ReentrantLockSlide extends Slide {
      */
     private void addAwaitSignalButton(String label, String action) {
         threadContext.addButton(label, () -> {
-                    ThreadSprite runningSprite = threadContext.getRunnableThread();
+            setCssSelected(action);
+            ThreadSprite runningSprite = threadContext.getRunnableThread();
                     if (runningSprite != null) {
                         if (!runningSprite.hasCondition()) {
                             // the user much choose which condition to wait on
@@ -240,8 +246,8 @@ public class ReentrantLockSlide extends Slide {
         super.reset();
         conditionId = 0;
         threadContext.setSlideLabel("ReentrantLock");
-//        Set styleSelectors = threadContext.setSnippetFile("synchronized.html");
-//        setStyleSelectors(styleSelectors);
+        Set styleSelectors = threadContext.setSnippetFile("reentrant-lock.html");
+        setStyleSelectors(styleSelectors);
         lock = new ReentrantLock();
     }
 }
