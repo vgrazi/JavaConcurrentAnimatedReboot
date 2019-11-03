@@ -1,0 +1,16 @@
+<div class="outer">
+</span><span class="init">
+ThreadPoolExecutor service = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+</span><span class="prestartAll">
+int threadCount = service.prestartAllCoreThreads();
+</span><span class="submit">
+service.submit(() -> {
+    while (working) {
+        doSomeWork();
+    }
+</span><span class="done">
+    // done
+</span><span class="fin">
+});
+</span>
+</div>

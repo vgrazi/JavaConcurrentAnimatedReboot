@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,11 +25,16 @@ public class ExecutorsSlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("prestartAllCoreThreads()", () -> ((ThreadPoolExecutor) executor).prestartAllCoreThreads());
+        threadContext.addButton("prestartAllCoreThreads()", () -> {
+            ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
+            setCssSelected("prestartAll");
+
+        });
 
         threadContext.addButton("submit", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
+            setCssSelected("submit");
 
             executor.submit(() -> {
                 Thread thread = Thread.currentThread();
@@ -43,6 +49,7 @@ public class ExecutorsSlide extends Slide {
                     }
                     sprite.setPooled(true);
                     runnableSprite.setDone();
+                    threadContext.stopThread(runnableSprite);
                 } else {
                     System.out.printf("Thread %s not known to context%n", thread);
                 }
@@ -51,6 +58,7 @@ public class ExecutorsSlide extends Slide {
 
         threadContext.addButton("(done)", () -> {
             PooledThreadSprite<String> sprite = threadContext.getRunningPooledThread();
+            setCssSelected("done");
             if (sprite != null) {
                 sprite.setRunning(false);
                 sprite.setPooled(true);
@@ -68,6 +76,9 @@ public class ExecutorsSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("Executors");
         threadContext.setBottomLabel("Pooled\nThreads");
+        Set styleSelectors = threadContext.setSnippetFile("Executors.html");
+        setStyleSelectors(styleSelectors);
+
         executor = Executors.newFixedThreadPool(4, r -> {
             PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
             Thread thread = new Thread(r);
