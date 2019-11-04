@@ -636,9 +636,10 @@ public class ThreadContext<S> implements InitializingBean {
             Resource resource = resourceLoader.getResource(fileName);
             byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
             String snippetFileContent = new String(bytes);
+            Set<String> styles = extractStyleSelectors(snippetFileContent);
             // replace leading white space with &nbsp;
             prepareSnippet(fileName, snippetFileContent);
-            Set<String> styles = extractStyleSelectors(snippetFileContent);
+
             return styles;
         } catch (IOException | BadLocationException e) {
             throw new IllegalArgumentException(e);
@@ -658,7 +659,7 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     /**
-     * loads the snippet file, replaces spaces with &nbsp; and ends all lines with <br/>\n
+     * loads the snippet file into the canvas, replaces spaces with &nbsp; and ends all lines with <br/>\n
      */
     private void prepareSnippet(String fileName, String snippetFileContent) throws IOException, BadLocationException {
         Matcher matcher = REPLACE_WHITE.matcher(snippetFileContent);
@@ -671,6 +672,8 @@ public class ThreadContext<S> implements InitializingBean {
 //                snippetFileContent = matcher.replaceAll(spaces + "$1");
         }
         String snippet = builder.toString();
+        // surround keywords with <span class='keyword'></span>.
+        snippet = snippet.replaceAll("(\\b(try|catch|finally|while|if|else|boolean|synchronized)\\b(?!['\"]))", "<span class='keyword'>$1</span>");
         this.snippet = snippet;
 //        System.out.println(snippet);
         snippetCanvas.setSnippet(snippet);

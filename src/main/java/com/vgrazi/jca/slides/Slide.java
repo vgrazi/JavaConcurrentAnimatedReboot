@@ -65,7 +65,14 @@ public abstract class Slide {
                 threadContext.addStyleRule("." + selector + deselectedFontColorStyle);
             }
         });
+        threadContext.addStyleRule(".keyword {color:blue}");
+
         snippetCanvas.applyStyles();
+    }
+
+    public void reset() {
+        threadContext.reset();
+        threadCanvas.hideMonolith(false);
     }
 
     /**
@@ -76,11 +83,5 @@ public abstract class Slide {
             styleSelectors.forEach(selector-> threadContext.addStyleRule("." + selector + selectedFontColorStyle));
         }
         snippetCanvas.applyStyles();
-    }
-
-    public void reset() {
-        threadContext.reset();
-        resetCss();
-        threadCanvas.hideMonolith(false);
     }
 }

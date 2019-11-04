@@ -88,5 +88,6 @@ public class ExecutorsSlide extends Slide {
             threadContext.addSprite(sprite);
             return thread;
         });
+        resetCss();
     }
 }

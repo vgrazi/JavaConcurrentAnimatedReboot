@@ -78,12 +78,11 @@ public class ReentrantLockSlide extends Slide {
                 try {
                     lock.lockInterruptibly();
                     whileLock(sprite);
+                    lock.unlock();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    e.printStackTrace();
                     sprite.setMessage(e.toString());
                 }
-                lock.unlock();
             });
             threadContext.addSprite(sprite);
 
@@ -117,8 +116,10 @@ public class ReentrantLockSlide extends Slide {
             setCssSelected("interrupt");
 
             ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(1);
-            sprite.setRetreating(true);
-            sprite.getThread().interrupt();
+            if (sprite != null) {
+                sprite.setRetreating(true);
+                sprite.getThread().interrupt();
+            }
         });
 
 
@@ -249,5 +250,6 @@ public class ReentrantLockSlide extends Slide {
         Set styleSelectors = threadContext.setSnippetFile("reentrant-lock.html");
         setStyleSelectors(styleSelectors);
         lock = new ReentrantLock();
+        resetCss();
     }
 }

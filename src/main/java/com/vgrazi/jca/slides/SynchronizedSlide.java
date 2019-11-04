@@ -28,7 +28,6 @@ public class SynchronizedSlide extends Slide {
             setCssSelected("synchronized");
         });
 
-
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
         threadContext.addButton("wait()", () -> {
@@ -78,9 +77,10 @@ public class SynchronizedSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("synchronized/wait/notify");
-        Set styleSelectors = threadContext.setSnippetFile("synchronized.html");
+        Set<String> styleSelectors = threadContext.setSnippetFile("synchronized.html");
         setStyleSelectors(styleSelectors);
         mutex = new Object();
+        resetCss();
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
