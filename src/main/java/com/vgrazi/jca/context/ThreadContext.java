@@ -673,7 +673,7 @@ public class ThreadContext<S> implements InitializingBean {
         }
         String snippet = builder.toString();
         // surround keywords with <span class='keyword'></span>.
-        snippet = snippet.replaceAll("(\\b(try|catch|finally|while|if|else|boolean|synchronized)\\b(?!['\"]))", "<span class='keyword'>$1</span>");
+//        snippet = snippet.replaceAll("(\\b(try|catch|finally|while|if|else|boolean|synchronized)\\b(?!['\"]))", "<span class='keyword'>$1</span>");
         this.snippet = snippet;
 //        System.out.println(snippet);
         snippetCanvas.setSnippet(snippet);
