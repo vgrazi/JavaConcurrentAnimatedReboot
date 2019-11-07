@@ -15,8 +15,14 @@ public class BlockingQueueSlide extends Slide {
     @Value("${monolith-left-border}")
     private int leftBorder;
 
+    @Value("${monolith-right-border}")
+    private int rightBorder;
+
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
+
+    @Value("${arrow-length}")
+    private int arrowLength;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -32,8 +38,9 @@ public class BlockingQueueSlide extends Slide {
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             if (getter != null) {
                 objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(leftBorder);
+                objectSprite.setXPosition(rightBorder - 10);
                 objectSprite.setAction("exit");
+
             }
             objectSprite.attachAndStartRunnable(() -> {
                 try {
@@ -95,6 +102,8 @@ public class BlockingQueueSlide extends Slide {
                         getter.attachAndStartRunnable(() -> {
                             try {
                                 getter.setYPosition(objectSprite.getYPosition());
+                                objectSprite.setXPosition(rightBorder - 20);
+
                                 blockingQueue.take();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();

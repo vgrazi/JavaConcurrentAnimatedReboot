@@ -17,8 +17,14 @@ public class TransferQueueSlide extends Slide {
     @Value("${monolith-left-border}")
     private int leftBorder;
 
+    @Value("${monolith-right-border}")
+    private int rightBorder;
+
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
+
+    @Value("${arrow-length}")
+    private int arrowLength;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -33,7 +39,7 @@ public class TransferQueueSlide extends Slide {
             threadContext.addSprite(objectSprite);
             if (getter != null) {
                 objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(leftBorder);
+                objectSprite.setXPosition(rightBorder - 10);
             }
             objectSprite.attachAndStartRunnable(() -> {
                 try {
@@ -89,6 +95,8 @@ public class TransferQueueSlide extends Slide {
                         getter.attachAndStartRunnable(() -> {
                             try {
                                 getter.setYPosition(objectSprite.getYPosition());
+                                objectSprite.setXPosition(rightBorder - 20);
+
                                 transferQueue.take();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
