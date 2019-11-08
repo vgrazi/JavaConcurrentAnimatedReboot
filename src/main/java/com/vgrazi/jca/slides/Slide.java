@@ -6,6 +6,8 @@ import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,7 +43,8 @@ public abstract class Slide {
     /**
      * Sets the specified selectorS as selected, and everything else unselected
      */
-    protected void setCssSelected(Set<String> selectors) {
+    protected void setCssSelected(String... selectorsArray) {
+        Set<String> selectors = new HashSet<>(Arrays.asList(selectorsArray));
         styleSelectors.forEach(selector-> {
             if(selectors.contains(selector)) {
                 threadContext.addStyleRule("." + selector + selectedFontColorStyle);

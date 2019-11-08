@@ -1,5 +1,4 @@
-<div class="outer">
-ReentrantLock lock = new ReentrantLock();
+<div class="outer">ReentrantLock lock = new ReentrantLock();
 <span class="lock">lock.lock();
 
 /// do work</span>
@@ -19,8 +18,7 @@ lock.lock();
 <span class="signal">condition.signal();</span>
 <span class="signalAll">condition.signalAll();</span>
 lock.unlock();
-</span>
-<span class="lock-interruptibly">
+</span><span class="lock-interruptibly">
 try {
   lock.lockInterruptibly();
   // do work
@@ -31,14 +29,10 @@ try {
   if(lock.isHeldByCurrentThread()){
     lock.unlock();
   }
-}
-</span>
+}</span>
 
-<span class="interrupt">
-Thread.currentThread().interrupt();
-</span>
-<span class="try-lock">
-boolean success = lock.tryLock();
+<span class="interrupt">Thread.currentThread().interrupt();</span>
+<span class="try-lock">boolean success = lock.tryLock();
 if(success) {
   // do work
   lock.unlock();

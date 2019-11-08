@@ -46,7 +46,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("notifying");
                 log("Set notifying on ", runningSprite);
-                setCssSelected("notify");
+                setCssSelected("notify", "release");
             }
         });
 
@@ -56,7 +56,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("notifyingAll");
                 log("Set notifyAll on ", runningSprite);
-                setCssSelected("notify-all");
+                setCssSelected("notify-all", "release");
             }
         });
 

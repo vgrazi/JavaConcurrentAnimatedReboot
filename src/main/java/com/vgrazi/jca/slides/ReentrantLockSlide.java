@@ -112,10 +112,20 @@ public class ReentrantLockSlide extends Slide {
 //            setCssSelected("synchronized");
         });
 
-        threadContext.addButton("interrupt()", () -> {
+        threadContext.addButton("interrupt interruptibly", () -> {
             setCssSelected("interrupt");
 
             ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(1);
+            if (sprite != null) {
+                sprite.setRetreating(true);
+                sprite.getThread().interrupt();
+            }
+        });
+
+        threadContext.addButton("(interrupt waiting)", () -> {
+            setCssSelected("interrupt");
+
+            ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(0);
             if (sprite != null) {
                 sprite.setRetreating(true);
                 sprite.getThread().interrupt();
