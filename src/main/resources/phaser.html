@@ -1,0 +1,26 @@
+<div class="outer">Phaser phaser = new Phaser(4) {
+  @Override
+  // Perform when all parties arrive
+
+  @Override
+  protected boolean onAdvance(int phase, int registeredParties) {
+      // return true if the phaser should
+      // terminate on advance, else false;
+      return false;
+  }   };
+
+<span class="arriveAndAwaitAdvance">
+int phase = phaser.arriveAndAwaitAdvance();
+</span>
+
+<span class="arrive">int phase = phaser.arrive();
+</span>
+<span class="awaitAdvance">int phase = phaser.awaitAdvance(int in_phase);
+</span>
+<span class="arriveAndDeregister">int phase = phaser.arriveAndDeregister();
+</span>
+<span class="register">int phase = phaser.register();
+</span>
+<span class="bulkRegister">int phase = phaser.bulkRegister(int parties);
+</span>
+</div>

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.concurrent.Phaser;
 
 @Component
@@ -17,21 +18,24 @@ public class PhaserSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("await()", ()->{
+        threadContext.addButton("awaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
+            setCssSelected("awaitAdvance");
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arrive()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arrive");
+            setCssSelected("arrive");
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arriveAndAwaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arriveAndAwaitAdvance");
+            setCssSelected("arriveAndAwaitAdvance");
             addRunnable(phaser, sprite);
         });
 
@@ -40,6 +44,7 @@ public class PhaserSlide extends Slide {
             //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("register");
+            setCssSelected("register");
             addRunnable(phaser, sprite);
         });
 
@@ -51,6 +56,9 @@ public class PhaserSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("Phaser");
         phaser = new Phaser(4);
+        Set styleSelectors = threadContext.setSnippetFile("phaser.html");
+        setStyleSelectors(styleSelectors);
+        resetCss();
     }
 
     private void addRunnable(Phaser phaser, ThreadSprite sprite) {
