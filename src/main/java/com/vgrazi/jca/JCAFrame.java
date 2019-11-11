@@ -86,6 +86,9 @@ public class JCAFrame extends JFrame {
     @Value("${menu-button-vgap}")
     private int vgap;
 
+    @Value("${animation-pane-to-snippet-divider-ratio}")
+    private double animationPaneToSnippetDividerRatio;
+
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     private final JLabel messages = new JLabel();
     private final JPanel menuPanel = new JPanel();
@@ -145,14 +148,14 @@ public class JCAFrame extends JFrame {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
-                animationAndSnippet.setDividerLocation(.6);
+                animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
                 wholePane.setDividerLocation(location);
             }
 
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
-                animationAndSnippet.setDividerLocation(.6);
+                animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
                 wholePane.setDividerLocation(location);
             }
         };
