@@ -2,14 +2,19 @@ package com.vgrazi.jca.config;
 
 import com.vgrazi.jca.sprites.*;
 import com.vgrazi.jca.states.*;
+import com.vgrazi.jca.util.Parsers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import javax.swing.*;
 import java.awt.*;
 
 @Configuration
 public class Config {
+    private final JLabel messages = new JLabel();
+
     @Bean
     @Scope("prototype")
     ThreadSprite threadSprite() {
@@ -120,6 +125,17 @@ public class Config {
     @Bean
     public Stroke dottedStroke2() {
         return new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 20);
+    }
+
+    @Bean
+    public JLabel messages() {
+        return messages;
+    }
+
+    @Value("${message-font}")
+    public void setMessageFont(String messageFont) {
+        Font font = Parsers.parseFont(messageFont);
+        messages().setFont(font);
     }
 
 }

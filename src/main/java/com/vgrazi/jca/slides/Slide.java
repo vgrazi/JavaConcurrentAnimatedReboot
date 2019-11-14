@@ -6,6 +6,7 @@ import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +31,9 @@ public abstract class Slide {
     protected SnippetCanvas snippetCanvas;
 
     private Set<String> styleSelectors;
+
+    @Autowired
+    protected JLabel messages;
 
     public abstract void run();
 
@@ -56,6 +60,10 @@ public abstract class Slide {
         snippetCanvas.applyStyles();
     }
 
+    protected void setMessage(String message) {
+        this.messages.setText(message);
+    }
+
     /**
      * Sets the specified selector as selected, and everything else unselected
      */
@@ -76,6 +84,7 @@ public abstract class Slide {
     public void reset() {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
+        this.messages.setText("");
     }
 
     /**

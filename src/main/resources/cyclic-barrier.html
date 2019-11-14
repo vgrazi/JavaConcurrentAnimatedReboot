@@ -1,0 +1,34 @@
+<div class="outer">// Contructor specifies # of parties, and an
+// optional Runnable that gets called when the
+// barrier is opened.
+CyclicBarrier barrier =
+       new CyclicBarrier(4, newRunnable(){
+public void run(){
+    System.out.println(&quot;Runnable hit&quot;);
+}
+// Each call to await blocks, until the number
+// specified in the constructor is reached.
+// Then the Runnable executes and all can pass.
+<span class="await">
+Thread thread = new Thread(){
+public void run() {
+  try {
+    barrier.await();
+  } catch(BrokenBarrierException e) {}
+}</span>
+
+
+<span class="await-timed">
+Thread thread = new Thread(){
+  public void run() {
+  try {
+    barrier.await(timeout,
+                         TimeUnit.SECONDS);
+  } catch(BrokenBarrierException e) {}
+</span>
+<span class="reset">// reset() allows the barrier to be reused.
+// Any waiting threads will throw
+// a BrokenBarrierException
+barrier.reset());
+</span>
+</div>

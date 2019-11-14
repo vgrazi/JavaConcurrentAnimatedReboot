@@ -90,7 +90,8 @@ public class JCAFrame extends JFrame {
     private double animationPaneToSnippetDividerRatio;
 
     private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    private final JLabel messages = new JLabel();
+    @Autowired
+    private JLabel messages;
     private final JPanel menuPanel = new JPanel();
 
     @Autowired
