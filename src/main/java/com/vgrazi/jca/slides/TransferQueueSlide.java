@@ -53,13 +53,14 @@ public class TransferQueueSlide extends Slide {
                 }
             });
         });
+
         threadContext.addButton("tryTransfer(2,TimeUnit.SECONDS)", () -> {
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
             if (getter != null) {
                 objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(leftBorder);
+                objectSprite.setXPosition(rightBorder - 10);
             }
             objectSprite.attachAndStartRunnable(() -> {
                 try {
@@ -75,7 +76,6 @@ public class TransferQueueSlide extends Slide {
                     threadContext.stopThread(getter);
                 }
             });
-            threadContext.addSprite(objectSprite);
         });
 
         threadContext.addButton("take()", () -> {
