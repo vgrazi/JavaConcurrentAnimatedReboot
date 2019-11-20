@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class CountdownLatchSlide extends Slide {
@@ -30,6 +31,24 @@ public class CountdownLatchSlide extends Slide {
                     threadContext.stopThread(sprite);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+            });
+            threadContext.addSprite(sprite);
+        });
+        threadContext.addButton("await(time, TimeUnit)", () -> {
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.attachAndStartRunnable(() -> {
+                boolean await;
+                try {
+                    await = countDownLatch.await(3, TimeUnit.SECONDS);
+                    if(!await) {
+                        sprite.setRetreating(false);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    setMessage(e.getMessage());
+                } finally {
+                    threadContext.stopThread(sprite);
                 }
             });
             threadContext.addSprite(sprite);

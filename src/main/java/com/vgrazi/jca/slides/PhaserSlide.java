@@ -71,20 +71,23 @@ public class PhaserSlide extends Slide {
                 }
                 switch (sprite.getAction()) {
                     case "awaitAdvance":
-                        phaser.awaitAdvance(phase);
+                        phase = phaser.awaitAdvance(phase);
+                        setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
                     case "arrive":
                         phase = phaser.arrive();
-                        System.out.println("Phase:" + phase);
+                        setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
                     case "arriveAndAwaitAdvance":
                         phase = phaser.arriveAndAwaitAdvance();
+                        setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
                     case "register":
                         phase = phaser.register();
+                        setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
                     case "default":
