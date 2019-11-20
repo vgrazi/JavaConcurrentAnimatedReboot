@@ -1,0 +1,28 @@
+<div class="outer">// Contructor specifies # of parties, and an
+// Constructor - pass in the pass count
+final CountDownLatch countDownLatch = 
+        new CountDownLatch(4); 
+// Threads attempting to acquire 
+// will block until the specified 
+// number of releases is counted. 
+<span class="await">Thread acquireThread = new Thread() {
+  public void run() { 
+    try { 
+      countDownLatch.await(); 
+    } catch(InterruptedException e) { }
+</span>
+<span class="countdown">
+Thread releaseThread = new Thread() { 
+  public void run() { 
+    countDownLatch.countDown(); 
+  } 
+</span>
+// timed await is like await except that
+// it times out after the specified  
+// timeout period.
+<span class="await-timed">
+  try {
+    countDownLatch.await(1L, TimeUnit.DAYS));
+  } catch(InterruptedException e) { }
+</span>
+</div>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,7 @@ public class CountdownLatchSlide extends Slide {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.attachAndStartRunnable(() -> {
                 try {
+                    setCssSelected("await");
                     countDownLatch.await();
                     threadContext.stopThread(sprite);
                 } catch (InterruptedException e) {
@@ -38,11 +40,12 @@ public class CountdownLatchSlide extends Slide {
         threadContext.addButton("await(time, TimeUnit)", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.attachAndStartRunnable(() -> {
-                boolean await;
+                boolean success;
                 try {
-                    await = countDownLatch.await(3, TimeUnit.SECONDS);
-                    if(!await) {
-                        sprite.setRetreating(false);
+                    setCssSelected("await-timed");
+                    success = countDownLatch.await(3, TimeUnit.SECONDS);
+                    if(!success) {
+                        sprite.setRetreating(true);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -56,6 +59,7 @@ public class CountdownLatchSlide extends Slide {
         threadContext.addButton("countDown()", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.attachAndStartRunnable(() -> {
+                setCssSelected("countdown");
                 countDownLatch.countDown();
                 while(countDownLatch.getCount() >0 && sprite.getXPosition() < rightBorder-10) {
                     Thread.yield();
@@ -74,5 +78,8 @@ public class CountdownLatchSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("CountdownLatch");
         countDownLatch = new CountDownLatch(totalCount);
+        Set styleSelectors = threadContext.setSnippetFile("countdown-latch.html");
+        setStyleSelectors(styleSelectors);
+        resetCss();
     }
 }
