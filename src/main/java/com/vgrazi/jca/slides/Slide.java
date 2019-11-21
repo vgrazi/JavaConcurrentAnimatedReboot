@@ -96,4 +96,10 @@ public abstract class Slide {
         }
         snippetCanvas.applyStyles();
     }
+
+    protected void setSnippetFile(String snippetFile) {
+        Set styleSelectors = threadContext.setSnippetFile(snippetFile);
+        setStyleSelectors(styleSelectors);
+        resetCss();
+    }
 }

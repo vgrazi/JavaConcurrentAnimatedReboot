@@ -29,6 +29,7 @@ public class ReadWriteLockSlide extends Slide {
         reset();
         threadContext.addButton("readLock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
+            setCssSelected("readlock-lock");
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 readWriteLock.readLock().lock();
@@ -36,6 +37,7 @@ public class ReadWriteLockSlide extends Slide {
                     Thread.yield();
                 }
                 readWriteLock.readLock().unlock();
+                setCssSelected("readlock-unlock");
             });
             threadContext.addSprite(sprite);
         });
@@ -45,6 +47,7 @@ public class ReadWriteLockSlide extends Slide {
             sprite.setHolder("write-lock");
             sprite.setSpecialId(1);
             sprite.attachAndStartRunnable(() -> {
+                setCssSelected("writelock-lock");
                 readWriteLock.writeLock().lock();
                 while ("write-lock".equals(sprite.getHolder())) {
                     Thread.yield();
@@ -70,6 +73,7 @@ public class ReadWriteLockSlide extends Slide {
         threadContext.addButton("(downgrade to read)", () -> {
             ThreadSprite<String> runningWriteThread = (ThreadSprite<String>) threadContext.getFirstRunningThreadOfSpecialId(1);
             if (runningWriteThread != null) {
+                setCssSelected("writelock-downgrade");
                 runningWriteThread.setHolder("downgrade");
             }
         });
@@ -77,6 +81,7 @@ public class ReadWriteLockSlide extends Slide {
         threadContext.addButton("lock.unlock()", () -> {
             ThreadSprite<String> runningThread = (ThreadSprite<String>) threadContext.getRunningThread();
             if (runningThread != null) {
+                setCssSelected("readlock-unlock");
                 runningThread.setHolder("release");
                 threadContext.stopThread(runningThread);
             }
@@ -92,5 +97,6 @@ public class ReadWriteLockSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("ReadWriteLock");
         readWriteLock = new ReentrantReadWriteLock();
+        setSnippetFile("read-write-lock.html");
     }
 }

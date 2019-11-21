@@ -99,9 +99,7 @@ public class CyclicBarrierSlide extends Slide {
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");
         cyclicBarrier = new CyclicBarrier(4);
-        Set styleSelectors = threadContext.setSnippetFile("cyclic-barrier.html");
-        setStyleSelectors(styleSelectors);
-        resetCss();
+        setSnippetFile("cyclic-barrier.html");
     }
 
     private void initializeInstanceFields() {

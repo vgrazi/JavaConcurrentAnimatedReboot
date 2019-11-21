@@ -1,0 +1,39 @@
+<div class="outer">// Construct the ReadWriteLock
+ final ReadWriteLock lock = 
+     new ReentrantReadWriteLock();
+//   new ReentrantReadWriteLock(true);
+
+// Acquire the read lock<div class="readlock-lock">
+ try {
+   lock.readLock().lock();
+   // or
+   lock.readLock().tryLock(1L, TimeUnit.SECONDS);
+ catch(InterruptedException e) { }
+</div>
+
+// Release the read lock<div class="readlock-unlock">
+ lock.readLock().unlock();
+</div>
+
+// Acquire the write lock<div class="writelock-lock">
+ try {
+   lock.writeLock().lock();
+   // or
+   lock.writeLock().tryLock(1L, TimeUnit.SECONDS);
+ } catch(InterruptedException e) { }
+</div>
+
+// Release the lock<div class="writelock-unlock">
+ lock.writeLock().unlock();
+// or
+ lock.readLock().unlock();
+</div>
+
+// Downgrade the write lock <div class="writelock-downgrade">
+ try {
+   lock.readLock().lock();
+   lock.writeLock().unlock();
+ }
+ catch(InterruptedException e) {}
+</div>
+</div>

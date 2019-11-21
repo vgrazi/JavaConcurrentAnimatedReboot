@@ -257,9 +257,7 @@ public class ReentrantLockSlide extends Slide {
         super.reset();
         conditionId = 0;
         threadContext.setSlideLabel("ReentrantLock");
-        Set styleSelectors = threadContext.setSnippetFile("reentrant-lock.html");
-        setStyleSelectors(styleSelectors);
+        setSnippetFile("reentrant-lock.html");
         lock = new ReentrantLock();
-        resetCss();
     }
 }

@@ -56,9 +56,7 @@ public class PhaserSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("Phaser");
         phaser = new Phaser(4);
-        Set styleSelectors = threadContext.setSnippetFile("phaser.html");
-        setStyleSelectors(styleSelectors);
-        resetCss();
+        setSnippetFile("phaser.html");
     }
 
     private void addRunnable(Phaser phaser, ThreadSprite sprite) {

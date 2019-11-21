@@ -78,8 +78,6 @@ public class CountdownLatchSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("CountdownLatch");
         countDownLatch = new CountDownLatch(totalCount);
-        Set styleSelectors = threadContext.setSnippetFile("countdown-latch.html");
-        setStyleSelectors(styleSelectors);
-        resetCss();
+        setSnippetFile("countdown-latch.html");
     }
 }
