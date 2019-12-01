@@ -113,12 +113,6 @@ public abstract class Slide {
         snippetCanvas.applyStyles();
     }
 
-//    protected void setSnippetFile(String snippetFile) {
-//        Set styleSelectors = threadContext.setSnippetFile(snippetFile);
-//        setStyleSelectors(styleSelectors);
-//        resetCss();
-//    }
-
     public void setSnippetFile(String snippetFile) {
         try {
             Resource[] resources = applicationContext.getResources("classpath*:/" + snippetFile);
