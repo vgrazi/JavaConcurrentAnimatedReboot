@@ -54,4 +54,7 @@ public class AtomicIntegerSlide extends Slide {
         counter = new AtomicInteger();
         threadContext.setSlideLabel("AtomicInteger");
     }
+    public void ping(){
+
+    }
 }

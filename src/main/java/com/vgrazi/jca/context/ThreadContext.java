@@ -11,23 +11,17 @@ import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.vgrazi.jca.util.Parsers.parseColor;
@@ -52,14 +46,6 @@ public class ThreadContext<S> implements InitializingBean {
      */
     private ColorationScheme colorScheme = ColorationScheme.byState;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
-
-    private String snippet;
-
-    private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s*)(.*)", Pattern.MULTILINE);
-    private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
-    private String snippetFile;
     private Slide slide;
     private boolean displayThreadNames;
 
@@ -230,7 +216,6 @@ public class ThreadContext<S> implements InitializingBean {
         canvas.setSlideLabel("");
         canvas.setBottomLabel(null);
         clearSprites();
-        snippetFile = null;
         snippetCanvas.removeContent();
         pixelsPerStep = initialPixelsPerStep;
         pixelsPerStepRunner = initialPixelsPerStepRunner;
@@ -623,61 +608,6 @@ public class ThreadContext<S> implements InitializingBean {
         frame.getButtonPanel().revalidate();
         frame.revalidate();
         frame.addNotify();
-    }
-
-    /**
-     * Reads the snippet from the specified filename, and adds a <br> to the end of every line, and replaces leading whitespace with &nbsp;
-     * Returns a Set of the CSS class style selectors from the file
-     * @param fileName
-     * @throws IOException if IO Exception or bad HTML parsing
-     */
-    public Set<String> setSnippetFile(String fileName) throws IllegalArgumentException {
-        try {
-            Resource resource = resourceLoader.getResource(fileName);
-            byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
-            String snippetFileContent = new String(bytes);
-            Set<String> styles = extractStyleSelectors(snippetFileContent);
-            // replace leading white space with &nbsp;
-            prepareSnippet(fileName, snippetFileContent);
-
-            return styles;
-        } catch (IOException | BadLocationException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Finds all instances of class="xxx" or class='xxx'
-     */
-    private Set<String> extractStyleSelectors(String snippetFileContent) {
-        Set<String> styles = new HashSet<>();
-        Matcher matcher = CLASS_LOCATOR.matcher(snippetFileContent);
-        while (matcher.find()) {
-            styles.add(matcher.group(1));
-        }
-        return styles;
-    }
-
-    /**
-     * loads the snippet file into the canvas, replaces spaces with &nbsp; and ends all lines with <br/>\n
-     */
-    private void prepareSnippet(String fileName, String snippetFileContent) throws IOException, BadLocationException {
-        Matcher matcher = REPLACE_WHITE.matcher(snippetFileContent);
-        StringBuilder builder = new StringBuilder();
-        while (matcher.find()) {
-            String blanks = matcher.group(1);
-            String spaces = blanks.replaceAll(" ", "&nbsp;");
-            builder.append(spaces).append(matcher.group(2)).append("<br/>\n");
-            // would prefer to use <pre>$1</pre> but apparently this is not supported :(
-//                snippetFileContent = matcher.replaceAll(spaces + "$1");
-        }
-        String snippet = builder.toString();
-        // surround keywords with <span class='keyword'></span>.
-//        snippet = snippet.replaceAll("(\\b(try|catch|finally|while|if|else|boolean|synchronized)\\b(?!['\"]))", "<span class='keyword'>$1</span>");
-        this.snippet = snippet;
-//        System.out.println(snippet);
-        snippetCanvas.setSnippet(snippet);
-        this.snippetFile = fileName;
     }
 
     public void setVisible() {

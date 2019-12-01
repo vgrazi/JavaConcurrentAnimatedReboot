@@ -4,8 +4,6 @@ import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
 import static com.vgrazi.jca.util.Logging.log;
 
 @Component
@@ -77,10 +75,8 @@ public class SynchronizedSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("synchronized/wait/notify");
-        Set<String> styleSelectors = threadContext.setSnippetFile("synchronized.html");
-        setStyleSelectors(styleSelectors);
+        setSnippetFile("synchronized.html");
         mutex = new Object();
-        resetCss();
     }
 
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
