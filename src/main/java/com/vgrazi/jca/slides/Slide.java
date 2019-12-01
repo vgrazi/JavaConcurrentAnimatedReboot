@@ -106,7 +106,7 @@ public abstract class Slide {
     /**
      * Selects all of this slide's selectors, enabling all fonts
      */
-    protected void resetCss() {
+    private void resetCss() {
         if (styleSelectors != null) {
             styleSelectors.forEach(selector-> threadContext.addStyleRule("." + selector + selectedFontColorStyle));
         }
