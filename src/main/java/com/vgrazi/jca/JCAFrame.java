@@ -27,10 +27,11 @@ public class JCAFrame extends JFrame {
     .                 ...................................
     .   Menu          .   Messages                      .
     .                 ...................................
-    .                 .                .                .
-    .                 .   Animation    .  Snippet       .
-    .                 .                .                .
-    .                 .                .                .
+    .                 .   CardPanel                     .
+    .                 . ..............................  .
+    .                 . . Animation    .  Snippet    .  .
+    .                 . .              .             .  .
+    .                 . ..............................  .
     .....................................................
 
 
@@ -84,6 +85,9 @@ public class JCAFrame extends JFrame {
     @Autowired
     private BlockingQueueSlide blockingQueueSlide;
 
+    @Autowired
+    private JPanel cardPanel;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -97,6 +101,9 @@ public class JCAFrame extends JFrame {
 
     @Autowired
     private JTextPane snippetPanel;
+
+    @Autowired
+    private JLabel imageLabel;
 
     public JCAFrame() throws HeadlessException {
         super("Java Concurrent Animated - Reboot!");
@@ -118,8 +125,11 @@ public class JCAFrame extends JFrame {
         JPanel buttonsAndMessages = new JPanel(new GridLayout(2, 1));
         buttonsAndMessages.add(buttonPanel);
         buttonsAndMessages.add(messagePanel);
-
-        JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, animationAndSnippet);
+        cardPanel.add(animationAndSnippet, "animation-pane");
+        JPanel graphicsPanel = new JPanel(new BorderLayout());
+        graphicsPanel.add(imageLabel);
+        cardPanel.add(graphicsPanel, "graphics-pane");
+        JSplitPane rightSide = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonsAndMessages, cardPanel);
         rightSide.setDividerSize(2);
 
         menuPanel.setLayout(new ButtonLayout(vgap));

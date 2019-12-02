@@ -258,6 +258,7 @@ public class ReentrantLockSlide extends Slide {
         conditionId = 0;
         threadContext.setSlideLabel("ReentrantLock");
         setSnippetFile("reentrant-lock.html");
+        setImage("images/reentrantLock.jpg");
         lock = new ReentrantLock();
     }
 }

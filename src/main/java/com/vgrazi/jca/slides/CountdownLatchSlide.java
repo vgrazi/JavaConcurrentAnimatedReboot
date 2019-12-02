@@ -77,7 +77,8 @@ public class CountdownLatchSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("CountdownLatch");
-        countDownLatch = new CountDownLatch(totalCount);
         setSnippetFile("countdown-latch.html");
+        setImage("images/countdownLatch.jpg");
+        countDownLatch = new CountDownLatch(totalCount);
     }
 }

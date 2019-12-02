@@ -1,13 +1,13 @@
 package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.util.UIUtils;
 import com.vgrazi.jca.view.SnippetCanvas;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -39,6 +39,9 @@ public abstract class Slide {
     @Autowired
     protected SnippetCanvas snippetCanvas;
 
+    @Autowired
+    private UIUtils uiUtils;
+
     private Set<String> styleSelectors;
 
     @Autowired
@@ -47,9 +50,11 @@ public abstract class Slide {
     @Autowired
     ApplicationContext applicationContext;
 
+    @Autowired
+    private JLabel imageLabel;
+
     private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s*)(.*)", Pattern.MULTILINE);
     private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
-    private String snippetFile;
 
     public abstract void run();
 
@@ -101,6 +106,7 @@ public abstract class Slide {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
         this.messages.setText("");
+        imageLabel.setIcon(null);
     }
 
     /**
@@ -187,5 +193,7 @@ public abstract class Slide {
         snippetCanvas.setSnippet(snippet);
     }
 
-
+    protected void setImage(String imageFile) {
+        uiUtils.setImage(imageFile, imageLabel);
+    }
 }

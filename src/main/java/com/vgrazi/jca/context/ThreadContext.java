@@ -41,6 +41,9 @@ public class ThreadContext<S> implements InitializingBean {
     private int initialFontSize;
     private int fontSize;
 
+    @Autowired
+    private JPanel cardPanel;
+
     /**
      * We either color by thread state or thread instance (eg in ForkJoin)
      */
@@ -105,6 +108,13 @@ public class ThreadContext<S> implements InitializingBean {
 
     public void setDisplayThreadNames(boolean b) {
         this.displayThreadNames = b;
+    }
+
+    /**
+     * Toggles the Graphics panel and the animation/snippet
+     */
+    public void toggleGraphics() {
+        ((CardLayout) cardPanel.getLayout()).next(cardPanel);
     }
 
     private enum ColorationScheme {

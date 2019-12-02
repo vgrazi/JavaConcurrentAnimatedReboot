@@ -132,6 +132,23 @@ public class Config {
         return messages;
     }
 
+    @Bean
+    /**
+     * This is the card panel that flips to display
+     * the animation or the slide intro
+     */
+    public JPanel cardPanel() {
+        JPanel cardPanel = new JPanel(new CardLayout());
+        return cardPanel;
+    }
+
+    @Bean
+    public JLabel imageLabel() {
+        JLabel imageLabel = new JLabel();
+        return imageLabel;
+    }
+
+
     @Value("${message-font}")
     public void setMessageFont(String messageFont) {
         Font font = Parsers.parseFont(messageFont);

@@ -25,10 +25,11 @@ public class ControlPanel extends JPanel {
                 nextSize = 10;
             }
         }, "font size");
-        addButton(new JButton("||"), l1 -> context.setSpeed("pause"), "Pause");
-        addButton(new JButton(">"), l1 -> context.setSpeed("slow"), "Slow");
-        addButton(new JButton(">>"),l->context.setSpeed("normal"), "Normal");
-        addButton(new JButton("T"),l->context.setDisplayThreadNames(!context.isDisplayThreadNames()), "Display Thread Names");
+        addButton(new JButton("||"), l -> context.setSpeed("pause"), "Pause");
+        addButton(new JButton(">"), l ->  context.setSpeed("slow"), "Slow");
+        addButton(new JButton(">>"),l ->  context.setSpeed("normal"), "Normal");
+        addButton(new JButton("T"), l ->  context.setDisplayThreadNames(!context.isDisplayThreadNames()), "Display Thread Names");
+        addButton(new JButton(":)"),l ->  context.toggleGraphics(), "Toggle Graphics");
     }
 
     private void addButton(JButton button, ActionListener l, String toolTipText) {

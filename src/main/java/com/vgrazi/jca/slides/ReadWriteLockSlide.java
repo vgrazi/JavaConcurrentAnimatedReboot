@@ -96,7 +96,8 @@ public class ReadWriteLockSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("ReadWriteLock");
-        readWriteLock = new ReentrantReadWriteLock();
         setSnippetFile("read-write-lock.html");
+        setImage("images/reentrantRWLock.jpg");
+        readWriteLock = new ReentrantReadWriteLock();
     }
 }

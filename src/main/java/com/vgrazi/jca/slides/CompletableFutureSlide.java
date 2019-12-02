@@ -124,16 +124,6 @@ public class CompletableFutureSlide extends Slide {
         threadContext.setVisible();
     }
 
-    public void reset() {
-        super.reset();
-        threadCanvas.hideMonolith(true);
-        threadContext.setSlideLabel("CompletableFuture");
-        firstThread = null;
-        threadCount = 0;
-        completableFutures.clear();
-        bigFutures.clear();
-    }
-
     private void addCompletableFutureSprite(CompletableFuture future) {
         FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
         completableFutures.clear();
@@ -152,6 +142,17 @@ public class CompletableFutureSlide extends Slide {
         threadCount = 0;
         threadContext.addSprite(0, futureSprite);
         bigFutures.add(futureSprite);
+    }
+
+    public void reset() {
+        super.reset();
+        threadCanvas.hideMonolith(true);
+        threadContext.setSlideLabel("CompletableFuture");
+        setImage("images/future.jpg");
+        firstThread = null;
+        threadCount = 0;
+        completableFutures.clear();
+        bigFutures.clear();
     }
 
 }

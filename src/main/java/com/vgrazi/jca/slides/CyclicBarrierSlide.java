@@ -98,8 +98,9 @@ public class CyclicBarrierSlide extends Slide {
         super.reset();
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");
-        cyclicBarrier = new CyclicBarrier(4);
         setSnippetFile("cyclic-barrier.html");
+        setImage("images/cyclicBarrier.jpg");
+        cyclicBarrier = new CyclicBarrier(4);
     }
 
     private void initializeInstanceFields() {

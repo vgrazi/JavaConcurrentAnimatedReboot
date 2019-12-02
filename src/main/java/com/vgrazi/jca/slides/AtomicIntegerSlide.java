@@ -53,6 +53,7 @@ public class AtomicIntegerSlide extends Slide {
         super.reset();
         counter = new AtomicInteger();
         threadContext.setSlideLabel("AtomicInteger");
+        setImage("images/AtomicInteger.jpg");
     }
     public void ping(){
 
