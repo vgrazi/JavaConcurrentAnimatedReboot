@@ -4,6 +4,7 @@ package com.vgrazi.jca;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.view.ButtonLayout;
+import com.vgrazi.jca.view.ButtonPanelLayout;
 import com.vgrazi.jca.view.ControlPanel;
 import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +90,7 @@ public class JCAFrame extends JFrame {
     @Value("${animation-pane-to-snippet-divider-ratio}")
     private double animationPaneToSnippetDividerRatio;
 
-    private final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private final JPanel buttonPanel = new JPanel(new ButtonPanelLayout(2, 2));
     @Autowired
     private JLabel messages;
     private final JPanel menuPanel = new JPanel();

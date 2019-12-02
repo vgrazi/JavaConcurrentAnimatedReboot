@@ -119,7 +119,6 @@ public abstract class Slide {
             for (Resource resource:resources) {
                 Set<String> styleSelectors = null;
                 if (resource.exists()) {
-                    System.out.println(resource + " EXISTS");
                     try {
 
                         styleSelectors = setSnippetResource(resource);
@@ -129,9 +128,6 @@ public abstract class Slide {
                     setStyleSelectors(styleSelectors);
                     resetCss();
                     break;
-                }
-                else {
-                    System.out.println(resource + " DOES NOT EXIST");
                 }
             }
         } catch (IOException e) {

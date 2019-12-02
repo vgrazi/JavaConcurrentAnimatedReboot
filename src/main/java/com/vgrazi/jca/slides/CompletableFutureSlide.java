@@ -138,7 +138,9 @@ public class CompletableFutureSlide extends Slide {
         FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
         completableFutures.clear();
         futureSprite.setFuture(future);
-        futureSprite.setYPosition(firstThread.getYPosition());
+        if (firstThread != null) {
+            futureSprite.setYPosition(firstThread.getYPosition());
+        }
         futureSprite.setHeight((threadCount-1) * pixelsPerYStep);
         int width = futureSprite.getWidth();
         futureSprite.setWidth(width +20);
