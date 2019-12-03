@@ -145,6 +145,7 @@ public class Config {
     @Bean
     public JLabel imageLabel() {
         JLabel imageLabel = new JLabel();
+        imageLabel.setBackground(Color.white);
         return imageLabel;
     }
 

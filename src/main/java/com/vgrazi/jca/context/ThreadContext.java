@@ -367,7 +367,7 @@ public class ThreadContext<S> implements InitializingBean {
         }).start();
     }
 
-    public void run() throws InterruptedException {
+    public void startAnimationThread() throws InterruptedException {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while (true) {

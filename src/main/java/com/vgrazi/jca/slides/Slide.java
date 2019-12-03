@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -52,6 +53,9 @@ public abstract class Slide {
 
     @Autowired
     private JLabel imageLabel;
+
+    @Autowired
+    JPanel cardPanel;
 
     private final Pattern REPLACE_WHITE = Pattern.compile("^(\\s*)(.*)", Pattern.MULTILINE);
     private final Pattern CLASS_LOCATOR = Pattern.compile("class=[\"|'](.+?)[\"|']", Pattern.MULTILINE);
@@ -107,6 +111,7 @@ public abstract class Slide {
         threadCanvas.hideMonolith(false);
         this.messages.setText("");
         imageLabel.setIcon(null);
+        ((CardLayout) cardPanel.getLayout()).first(cardPanel);
     }
 
     /**

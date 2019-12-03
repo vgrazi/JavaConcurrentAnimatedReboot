@@ -31,6 +31,9 @@ public class Main implements CommandLineRunner {
     private TransferQueueSlide transferQueueSlide;
 
     @Autowired
+    private IntroSlide introSlide;
+
+    @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
@@ -49,14 +52,14 @@ public class Main implements CommandLineRunner {
     public void run(String... args) {
         new Thread(() -> {
             try {
-                threadContext.run();
+                threadContext.startAnimationThread();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }).start();
         String param;
         if(args.length == 0) {
-            param = "synchronized";
+            param = "intro";
         }
         else {
             param = args[0];
@@ -89,7 +92,9 @@ public class Main implements CommandLineRunner {
             case "executors":
                 threadContext.registerSlide(executorsSlide);
                 break;
+            case "intro":
+                threadContext.registerSlide(introSlide);
+                break;
         }
-
     }
 }
