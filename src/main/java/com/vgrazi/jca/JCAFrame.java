@@ -169,6 +169,10 @@ public class JCAFrame extends JFrame {
                 super.componentResized(e);
                 animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
                 wholePane.setDividerLocation(location);
+                Slide slide  = threadContext.getSlide();
+                if(slide instanceof IntroSlide) {
+                    ((IntroSlide) slide).resetImage();
+                }
             }
         };
         addComponentListener(adapter);

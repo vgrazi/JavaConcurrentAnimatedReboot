@@ -26,7 +26,11 @@ public class IntroSlide extends Slide {
     @Override
     public void reset() {
         super.reset();
-        setImage("images/concurrent.jpg");
+        resetImage();
         ((CardLayout) cardPanel.getLayout()).next(cardPanel);
+    }
+
+    public void resetImage() {
+        setImage("images/concurrent.jpg");
     }
 }

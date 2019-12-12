@@ -117,6 +117,10 @@ public class ThreadContext<S> implements InitializingBean {
         ((CardLayout) cardPanel.getLayout()).next(cardPanel);
     }
 
+    public Slide getSlide() {
+        return slide;
+    }
+
     private enum ColorationScheme {
         byState, byInstance;
     }

@@ -47,12 +47,12 @@ public class UIUtils {
         double aspectRatio = imageWidth / (double) imageHeight;
         double labelRatio = cardPanel.getWidth() / (double) cardPanel.getHeight();
         if(aspectRatio < labelRatio) {
-            // use the label height: w/label_height = aspectRatio
+            // use the label width: label_width/image-height = aspectRatio
             width = cardPanel.getWidth();
             height = (int) (width/aspectRatio);
         }
         else {
-            // use the label width: label_width/h = aspectRatio
+            // use the label height: image-width/label_height = aspectRatio
             height = cardPanel.getHeight();
             width = (int) (aspectRatio * height);
         }
