@@ -43,16 +43,18 @@ public class UIUtils {
             return null;
         }
         int imageWidth = srcImg.getWidth(null);
-        int imageHeight = srcImg.getHeight(null);
+        int imageHeight = srcImg.getHeight((img, infoflags, x, y, width1, height1) -> false);
         double aspectRatio = imageWidth / (double) imageHeight;
         double labelRatio = cardPanel.getWidth() / (double) cardPanel.getHeight();
         if(aspectRatio < labelRatio) {
             // use the label height: w/label_height = aspectRatio
-            width = (int) (aspectRatio * height);
+            width = cardPanel.getWidth();
+            height = (int) (width/aspectRatio);
         }
         else {
             // use the label width: label_width/h = aspectRatio
-            height = (int) (width/aspectRatio);
+            height = cardPanel.getHeight();
+            width = (int) (aspectRatio * height);
         }
         BufferedImage resizedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resizedImg.createGraphics();
