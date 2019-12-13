@@ -1,41 +1,24 @@
-<div class="outer">ReentrantLock lock = new ReentrantLock();
-<span class="lock">lock.lock();
+    // Constructor
+    <0 keyword>final <0 default>Lock lock = <0 keyword>new <0 default>ReentrantLock();
+    <1 default>lock.lock();
 
-/// do work</span>
-<span class="condition">Condition condition = lock.newCondition();</span>
-<span class="await">
-try {
-  condition.await();
-} catch (InterruptedException e) {
-  Thread.currentThread().interrupt();
-}
-lock.unlock();
-</span>
-<span class="signal signalAll">
-lock.lock();
+    <4 keyword>try<4 default> {
+      lock.lockInterruptibly();
+    } <4 keyword>catch <4 default>(InterruptedException e) {...}
 
-/// do work
-<span class="signal">condition.signal();</span>
-<span class="signalAll">condition.signalAll();</span>
-lock.unlock();
-</span><span class="lock-interruptibly">
-try {
-  lock.lockInterruptibly();
-  // do work
-  lock.unlock();
-} catch (InterruptedException e) {
-  // interrupted
-} finally {
-  if(lock.isHeldByCurrentThread()){
-    lock.unlock();
-  }
-}</span>
+    <2 default>lock.unlock();
 
-<span class="interrupt">Thread.currentThread().interrupt();</span>
-<span class="try-lock">boolean success = lock.tryLock();
-if(success) {
-  // do work
-  lock.unlock();
-}
-</span>
-</div>
+    <3 keyword>boolean <3 default>acquired = <3 literal>false<3 default>;
+    <3 keyword>try<3 default> {
+      acquired = lock.tryLock(<3 literal>1L<3 default>, TimeUnit.SECONDS);
+      <3 keyword>if<3 default>(acquired) {
+        doSomething();
+      }
+    } <3 keyword>catch<3 default> (InterruptedException e) {...
+    } <3 keyword>finally {
+      if <3 default>(acquired) {
+        lock.unlock();
+      }
+    }
+    <6 default>&lt;lockedThread>.interrupt();
+    <5 default>&lt;blockedThread>.interrupt();

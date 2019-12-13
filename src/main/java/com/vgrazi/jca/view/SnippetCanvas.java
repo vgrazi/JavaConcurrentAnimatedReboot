@@ -10,11 +10,11 @@ import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import java.awt.*;
 import java.io.IOException;
 
 @Component
-public class SnippetCanvas extends JTextPane implements InitializingBean {
-    private final HTMLDocument htmlDocument;
+public class SnippetCanvas extends JLabel {
     @Value("${snippet-font-family}")
     private String fontFamily;
 
@@ -26,100 +26,16 @@ public class SnippetCanvas extends JTextPane implements InitializingBean {
     private Element htmlElement;
 
     public SnippetCanvas() {
-        HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-        styleSheet = new StyleSheet();
-        htmlEditorKit.setStyleSheet(styleSheet);
-        htmlDocument = (HTMLDocument) htmlEditorKit.createDefaultDocument();
-        this.setEditorKit(htmlEditorKit);
-        this.setDocument(htmlDocument);
-        try {
-            htmlElement = htmlDocument.getRootElements()[0];
-            // set a skeleton div. This is where our snippet will go
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setSnippet(String content) throws IOException, BadLocationException {
-        Element divElement = htmlDocument.getElement("Contents");
-        String divContent = String.format("<div>%s</div>", content);
-        htmlDocument.setInnerHTML(divElement, divContent);
-//        System.out.println("displaying " + divContent);
-//        HtmlUtils.displayHtml(htmlDocument, null, 0);
-        applyStyles();
-    }
-
-    public void removeContent() {
-//        System.out.println("Removing box");
-        try {
-            Element divElement = htmlDocument.getElement("Contents");
-            htmlDocument.setInnerHTML(divElement, "<div></div>");
-        } catch (BadLocationException | IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-//        HtmlUtils.displayHtml(htmlDocument, null, 0);
-    }
-
-    /**
-     * rule is a selector followed by a bracket-enclosed style, eg
-     * ".synchronized {background-color: yellow; color: green;}"
-     * Important - after all style rules are added, call {@link #applyStyles()}
-     */
-    public void addStyleRule(String rule) {
-        styleSheet.addRule(rule);
+        setOpaque(true);
+        setBackground(Color.white);
     }
 
     /**
      * Sets the font size in px for the "outer" dimv
      */
     public void setFontSize(int fontSize) {
-        styleSheet.addRule(String.format(".outer{font-style:\"bold\";font-size:%d px;}", fontSize));
-        applyStyles();
-    }
-
-    /**
-     * To be called after adding content or style rules, to apply the styles
-     */
-    public void applyStyles() {
-        Element sectionElem = htmlDocument.getRootElements()[0];
-
-        int paraCount = sectionElem.getElementCount();
-        for (int i = 0; i < paraCount; i++) {
-            Element e = sectionElem.getElement(i);
-            int rangeStart = e.getStartOffset();
-            int rangeEnd = e.getEndOffset();
-            htmlDocument.setParagraphAttributes(rangeStart, rangeEnd - rangeStart,
-                    e.getAttributes(), true);
-        }
-    }
-
-    @Override
-    public void afterPropertiesSet() {
-        try {
-            htmlDocument.setInnerHTML(htmlElement, String.format("" +
-                    "<html>" +
-                    "  <header>" +
-                    "    <style type=\"text/css\">" +
-                    "       div { font-family:'%s'; " +
-// Note: Can't specify font size here, or it will be immutable
-//                    "font-size: 20 pt;" +
-                    " font-style:'%s';}" +
-                    "     </style>" +
-                    "  </header>" +
-                    "  <body>" +
-                    "    <div id=\"Contents\">" +
-                    "    </div>" +
-                    "  </body>" +
-                    " </html>", fontFamily, fontStyle)
-            );
-
-//            styleSheet = htmlEditorKit.getStyleSheet();
-            // todo: change styles in the stylesheet to bold selected parts of code
-//            HtmlUtils.displayHtml(htmlDocument, null, 0);
-//            changer();
-        } catch (BadLocationException | IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+//        styleSheet.addRule(String.format(".outer{font-style:\"bold\";font-size:%d px;}", fontSize));
+//        applyStyles();
     }
 
 //    int counter;

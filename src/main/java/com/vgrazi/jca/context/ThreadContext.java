@@ -52,10 +52,6 @@ public class ThreadContext<S> implements InitializingBean {
     private Slide slide;
     private boolean displayThreadNames;
 
-    public void addStyleRule(String rule) {
-        snippetCanvas.addStyleRule(rule);
-    }
-
     /**
      * Returns the thread sprite bound to the supplied thread
      */
@@ -222,7 +218,6 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     public void reset() {
-        snippetCanvas.setFontSize(fontSize);
         threadColors.clear();
         nextYPos = initialYPos;
         nextPooledYPos = initialPooledYPos;
@@ -230,7 +225,6 @@ public class ThreadContext<S> implements InitializingBean {
         canvas.setSlideLabel("");
         canvas.setBottomLabel(null);
         clearSprites();
-        snippetCanvas.removeContent();
         pixelsPerStep = initialPixelsPerStep;
         pixelsPerStepRunner = initialPixelsPerStepRunner;
         displayThreadNames = false;

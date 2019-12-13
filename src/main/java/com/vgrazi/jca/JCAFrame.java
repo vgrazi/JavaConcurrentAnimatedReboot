@@ -100,7 +100,7 @@ public class JCAFrame extends JFrame {
     private final JPanel menuPanel = new JPanel();
 
     @Autowired
-    private JTextPane snippetPanel;
+    private JLabel snippetCanvas;
 
     @Autowired
     private JLabel imageLabel;
@@ -111,8 +111,8 @@ public class JCAFrame extends JFrame {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        snippetPanel.setBackground(Color.white);
-        JScrollPane snippetScrollPane = new JScrollPane(snippetPanel);
+        snippetCanvas.setBackground(Color.white);
+        JScrollPane snippetScrollPane = new JScrollPane(snippetCanvas);
         snippetScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         snippetScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JSplitPane animationAndSnippet = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, threadCanvas, snippetScrollPane);
