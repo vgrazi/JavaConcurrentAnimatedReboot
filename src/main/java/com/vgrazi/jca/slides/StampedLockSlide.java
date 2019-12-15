@@ -139,6 +139,7 @@ public class StampedLockSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("StampedLock");
+        setSnippetFile("stamped-lock.html");
         stampedLock = new StampedLock();
         readStamps.clear();
         writeStamps.clear();

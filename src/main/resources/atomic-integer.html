@@ -1,0 +1,21 @@
+ <0 comment>// Construct the AtomicVariable,
+ // assigning an initial value
+ <0 keyword>final <0 default>AtomicInteger atomicInteger
+   = <0 keyword>new <0 default>AtomicInteger(<0 literal>1<0 default>);
+
+ <1 comment>// compareAndSet does an atomic
+ //  "check and set if".
+ // Value is only set
+ //  if original value == assumed value
+ <1 keyword>int <1 default>assumedValue = <1 literal>10<1 default>, newValue = <1 literal>5<1 default>;
+ <1 keyword>boolean <1 default>success =
+         atomicInteger.compareAndSet(
+               assumedValue, newValue);
+
+<2 comment>
+ // Arithmetic functions on atomics
+ // perform their computations in
+ // an atomic fashion and return
+ // the result.
+ <2 keyword>int <2 default>result = atomicInteger
+       .incrementAndGet();

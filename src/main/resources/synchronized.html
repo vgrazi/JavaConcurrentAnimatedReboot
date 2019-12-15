@@ -1,25 +1,20 @@
-<div class="outer"><span class="synchronized">synchronized(some_object) {
-  ...do some work
-</span><span class="wait">
-  try {
-    while(some_condition) {
-      some_object.wait();
-    }
-  } catch (InterruptedException e) {
-    Thread.currentThread().interrupt();
+  <1 keyword>synchronized <1 default>(object) {
+    // do some work
+    <3 keyword>try {
+      <3 keyword>while<3 default>(!condition){
+      <3 default>  object.wait();
+      <3 default>}
+    } <3 keyword>catch <3 default>(InterruptedException e) {
+      Thread.currentThread().interrupt();
+    <2 default>// releasing lock
+  <1 default>}
+  <4 keyword>synchronized <4 default>(object) {
+    condition = true;
+    object.notify();
   }
-  </span><span class="release">
-  // releasing lock
-}
-</span><span class="notify">
-synchronized(some_object) {
-  some_condition = false;
-  some_object.notify();
-}
-</span><span class="notify-all">
-synchronized(some_object) {
-  some_condition = false;
-  some_object.notifyAll();
-}</span>
-thread.interrupt();
-</div>
+  <5 keyword>synchronized <5 default>(object) {
+    condition = true;
+    object.notifyAll();
+  }
+  <6 default>thread.interrupt();
+

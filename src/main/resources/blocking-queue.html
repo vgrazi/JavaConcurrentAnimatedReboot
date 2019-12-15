@@ -1,0 +1,33 @@
+<font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// Constructor - pass in the upper bound</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> BlockingQueue queue
+          = </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> ArrayBlockingQueue<ConcurrentSprite>(4); 
+   
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// Threads attempting to put will block</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// until there is room in the buffer</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>">Thread putThread = </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> Thread() { 
+     </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> run() { 
+       </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>try</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> { 
+         queue.put(); 
+       } </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>catch</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>">(InterruptedException e) { }
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// offer is like put except that it times out</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// after the specified timeout period</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>">Thread offerThread = </FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>"> Thread() { 
+     </FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>"> run() { 
+       </FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>"><B>try</B></FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>"> { 
+         queue.offer(someObject, 1L,
+                      TimeUnit.SECONDS</FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>">); 
+       }</FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000080>"><B>catch</B></FONT><font 'style="font-family:monospaced;" COLOR="<state3:#000000>">(InterruptedException e) { }
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// Threads attempting to poll will return </I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// null if there is nothing on the queue</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>">Thread pollThread = </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> Thread() { 
+     </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> run() { 
+       queue.poll(); 
+     } 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// Threads attempting to take will block</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// until the there is something to take</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000080>">Thread takeThread = </FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000000>"> Thread() { 
+     </FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state4:#000000>"> run() { 
+       queue.take(); 
+     } 
+</FONT></PRE>

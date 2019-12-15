@@ -1,28 +1,26 @@
-<div class="outer">// Contructor specifies # of parties, and an
-// Constructor - pass in the pass count
-final CountDownLatch countDownLatch = 
-        new CountDownLatch(4); 
-// Threads attempting to acquire 
-// will block until the specified 
-// number of releases is counted. 
-<span class="await">Thread acquireThread = new Thread() {
-  public void run() { 
-    try { 
-      countDownLatch.await(); 
-    } catch(InterruptedException e) { }
-</span>
-<span class="countdown">
-Thread releaseThread = new Thread() { 
-  public void run() { 
-    countDownLatch.countDown(); 
-  } 
-</span>
-// timed await is like await except that
-// it times out after the specified  
-// timeout period.
-<span class="await-timed">
-  try {
-    countDownLatch.await(1L, TimeUnit.DAYS));
-  } catch(InterruptedException e) { }
-</span>
-</div>
+<font style="font-family:monospaced;" COLOR="#000000"></FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// Constructor - pass in the pass count</I></FONT><font style="font-family:monospaced;" COLOR="#000000">
+  
+ </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>"> CountDownLatch countDownLatch = </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>">\n
+ </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>"></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>">        <B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>"> CountDownLatch(4); 
+ 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// Threads attempting to acquire</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// will block until the specified</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// number of releases is counted.</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>">Thread acquireThread = </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> Thread() { 
+   </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>public</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>void</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> run() { 
+     </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>try</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> { 
+       countDownLatch.await(); 
+     } </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>catch</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>">(InterruptedException e) { }
+ 
+ </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>">Thread releaseThread = </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> Thread() { 
+   </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>public</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>void</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> run() { 
+     countDownLatch.countDown(); 
+   } 
+ 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// timed await is like await except that</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// it times out after the specified </I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// timeout period.</I></FONT><font style="font-family:monospaced;" COLOR="#000000">
+   </FONT><font style="font-family:monospaced;" COLOR="<state3:#000080>"><B>try</B></FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>"> {
+     countDownLatch.await(1L, TimeUnit.DAYS)</FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>">);
+   } </FONT><font style="font-family:monospaced;" COLOR="<state3:#000080>"><B>catch</B></FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>">(InterruptedException e) { }
+</FONT></PRE>

@@ -105,6 +105,7 @@ public abstract class Slide {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
+        setState(0);
     }
     /**
      * Reads the snippet from the specified filename, and adds a <br> to the end of every line, and replaces leading whitespace with &nbsp;

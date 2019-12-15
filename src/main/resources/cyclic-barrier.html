@@ -1,34 +1,34 @@
-<div class="outer">// Contructor specifies # of parties, and an
-// optional Runnable that gets called when the
-// barrier is opened.
-CyclicBarrier barrier =
-       new CyclicBarrier(4, newRunnable(){
-public void run(){
-    System.out.println(&quot;Runnable hit&quot;);
-}
+<PRE><font 'style="font-family:monospaced;" COLOR="#000000"></FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// Contructor specifies # of parties, and an
+ // optional Runnable that gets called when the</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>// barrier is opened.</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"><br>
+ </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> CyclicBarrier cyclicBarrier = </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><br>
+   <B>    new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> CyclicBarrier(4</FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>">, </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>">Runnable(){<br/>
+ </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>"> run(){ 
+   System.out.println(</FONT><font 'style="font-family:monospaced;" COLOR="<state0:#008000>"><B>&quot; Runnable hit&quot;</B></FONT><font 'style="font-family:monospaced;" COLOR="<state0:#000000>">); 
+ } 
+ 
+ </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>
 // Each call to await blocks, until the number
-// specified in the constructor is reached.
-// Then the Runnable executes and all can pass.
-<span class="await">
-Thread thread = new Thread(){
-public void run() {
-  try {
-    barrier.await();
-  } catch(BrokenBarrierException e) {}
-}</span>
-
-
-<span class="await-timed">
-Thread thread = new Thread(){
-  public void run() {
-  try {
-    barrier.await(timeout,
-                         TimeUnit.SECONDS);
-  } catch(BrokenBarrierException e) {}
-</span>
-<span class="reset">// reset() allows the barrier to be reused.
-// Any waiting threads will throw
-// a BrokenBarrierException
-barrier.reset());
-</span>
-</div>
+ // specified in the constructor is reached.</I></FONT><font 'style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font 'style="font-family:monospaced;" COLOR="#808080"><I>
+// Then the Runnable executes and all can pass. </I></FONT><font 'style="font-family:monospaced;" COLOR="#000000">
+ <font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> 
+ Thread thread = </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> Thread(){ 
+ </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> run() { 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>try</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>"> { 
+     cyclicBarrier.await(); 
+   } </FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000080>"><B>catch</B></FONT><font 'style="font-family:monospaced;" COLOR="<state1:#000000>">(BrokenBarrierException e) {} 
+ 
+ <font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> 
+ Thread thread = </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>new</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> Thread(){ 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>public</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>void</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> run() { 
+   </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>try</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>"> { 
+     cyclicBarrier.await(timeout,
+                          TimeUnit.SECONDS); 
+   } </FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000080>"><B>catch</B></FONT><font 'style="font-family:monospaced;" COLOR="<state2:#000000>">(BrokenBarrierException e) {} 
+ 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// reset() allows the barrier to be reused.</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// Any waiting threads will throw 
+ // a BrokenBarrierException</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
+ <font style="font-family:monospaced;" COLOR="<state3:#000000>">cyclicBarrier.reset()</FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>">); 
+</FONT></PRE>

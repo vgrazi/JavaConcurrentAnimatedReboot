@@ -116,6 +116,7 @@ public class TransferQueueSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("TransferQueue");
+        setSnippetFile("transfer-queue.html");
         transferQueue = new LinkedTransferQueue();
     }
 }

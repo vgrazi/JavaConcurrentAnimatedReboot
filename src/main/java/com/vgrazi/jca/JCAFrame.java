@@ -112,7 +112,9 @@ public class JCAFrame extends JFrame {
     @PostConstruct
     public void afterPropertiesSet() {
         snippetCanvas.setBackground(Color.white);
+        snippetCanvas.setVerticalAlignment(SwingConstants.TOP);
         JScrollPane snippetScrollPane = new JScrollPane(snippetCanvas);
+        snippetScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         snippetScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         snippetScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JSplitPane animationAndSnippet = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, threadCanvas, snippetScrollPane);

@@ -135,12 +135,6 @@ public class SemaphoreSlide extends Slide {
 
     }
 
-    public void reset() {
-        super.reset();
-        semaphore = new Semaphore(4);
-        threadContext.setSlideLabel("Semaphore");
-    }
-
     private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
         sprite.attachAndStartRunnable(() -> {
             try {
@@ -177,5 +171,12 @@ public class SemaphoreSlide extends Slide {
         });
         threadContext.addSprite(sprite);
         System.out.println("Added " + sprite);
+    }
+
+    public void reset() {
+        super.reset();
+        threadContext.setSlideLabel("Semaphore");
+        setSnippetFile("semaphore.html");
+        semaphore = new Semaphore(4);
     }
 }

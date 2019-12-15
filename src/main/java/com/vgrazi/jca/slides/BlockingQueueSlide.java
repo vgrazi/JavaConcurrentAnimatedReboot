@@ -124,6 +124,7 @@ public class BlockingQueueSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("BlockingQueue");
+        setSnippetFile("blocking-queue.html");
         setImage("images/blockingQueue.jpg");
         blockingQueue  = new ArrayBlockingQueue(4);
     }

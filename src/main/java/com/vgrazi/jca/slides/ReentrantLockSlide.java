@@ -138,7 +138,7 @@ public class ReentrantLockSlide extends Slide {
         threadContext.addButton("newCondition()", () -> {
             setCssSelected("condition");
             ThreadSprite runningSprite = threadContext.getRunningThread();
-            if (!runningSprite.hasCondition()) {
+            if (runningSprite != null && !runningSprite.hasCondition()) {
                 runningSprite.setAction("newCondition");
             }
         });
@@ -259,7 +259,6 @@ public class ReentrantLockSlide extends Slide {
         threadContext.setSlideLabel("ReentrantLock");
         setSnippetFile("reentrant-lock.html");
         setImage("images/reentrantLock.jpg");
-        setState(0);
         lock = new ReentrantLock();
     }
 }
