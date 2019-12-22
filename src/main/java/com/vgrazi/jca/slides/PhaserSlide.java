@@ -21,21 +21,27 @@ public class PhaserSlide extends Slide {
         threadContext.addButton("awaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
-            setCssSelected("awaitAdvance");
+            setState(4);
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arrive()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arrive");
-            setCssSelected("arrive");
+            setState(1);
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arriveAndAwaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arriveAndAwaitAdvance");
-            setCssSelected("arriveAndAwaitAdvance");
+            setState(3);
+            addRunnable(phaser, sprite);
+        });
+        threadContext.addButton("arriveAndDeregister()", ()->{
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setAction("arriveAndDeregister");
+            setState(2);
             addRunnable(phaser, sprite);
         });
 
@@ -44,7 +50,16 @@ public class PhaserSlide extends Slide {
             //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("register");
-            setCssSelected("register");
+            setState(5);
+            addRunnable(phaser, sprite);
+        });
+
+        threadContext.addButton("bulkRegister()", ()->{
+            // todo: register should set a message on the UI message area, indicating the number
+            //  of permits. No need to create a thread
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setAction("bulk-register");
+            setState(6);
             addRunnable(phaser, sprite);
         });
 
@@ -83,8 +98,18 @@ public class PhaserSlide extends Slide {
                         setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
+                    case "arriveAndDeregister":
+                        phase = phaser.arriveAndDeregister();
+                        setMessage("Phase: " + phase);
+                        sprite.setAction("release");
+                        break;
                     case "register":
                         phase = phaser.register();
+                        setMessage("Phase: " + phase);
+                        sprite.setAction("release");
+                        break;
+                    case "bulk-register":
+                        phase = phaser.bulkRegister(2);
                         setMessage("Phase: " + phase);
                         sprite.setAction("release");
                         break;
