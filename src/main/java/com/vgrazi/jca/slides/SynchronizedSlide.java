@@ -22,7 +22,7 @@ public class SynchronizedSlide extends Slide {
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             addYieldRunnable(mutex, sprite);
-            setCssSelected("synchronized");
+            setState(1);
         });
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
@@ -33,8 +33,8 @@ public class SynchronizedSlide extends Slide {
             if (runningSprite != null) {
                 runningSprite.setAction("waiting");
                 log("Calling wait() on Runnable", runningSprite);
+                setState(3);
             }
-            setCssSelected("wait");
         });
 
         threadContext.addButton("notify()", () -> {
@@ -43,6 +43,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("notifying");
                 log("Set notifying on ", runningSprite);
+                setState(4);
             }
         });
 
@@ -51,6 +52,7 @@ public class SynchronizedSlide extends Slide {
             if (runningSprite != null) {
                 // The new running thread should call notify
                 runningSprite.setAction("notifyingAll");
+                setState(5);
                 log("Set notifyAll on ", runningSprite);
             }
         });
@@ -61,7 +63,19 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("release");
                 log("Set release on ", runningSprite);
-                setCssSelected("release");
+                setState(2);
+            }
+        });
+
+        threadContext.addButton("interrupt running", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+                // The new running thread should call notify
+                runningSprite.setAction("interrupt");
+                threadContext.stopThread(runningSprite);
+                runningSprite.setRetreating(true);
+                log("Set interrupt on ", runningSprite);
+                setState(6);
             }
         });
 

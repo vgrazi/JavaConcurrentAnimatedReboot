@@ -64,8 +64,7 @@ public class ReentrantLockSlide extends Slide {
                 lock.unlock();
             });
             threadContext.addSprite(sprite);
-
-//            setCssSelected("synchronized");
+            setState(1);
         });
         threadContext.addButton("lockInterrubtibly()", () -> {
             setCssSelected("lock-interruptibly");
@@ -85,8 +84,7 @@ public class ReentrantLockSlide extends Slide {
                 }
             });
             threadContext.addSprite(sprite);
-
-//            setCssSelected("synchronized");
+            setState(4);
         });
 
         threadContext.addButton("tryLock()", () -> {
@@ -108,8 +106,7 @@ public class ReentrantLockSlide extends Slide {
                 }
             });
             threadContext.addSprite(sprite);
-
-//            setCssSelected("synchronized");
+            setState(3);
         });
 
         threadContext.addButton("interrupt interruptibly", () -> {
@@ -119,6 +116,7 @@ public class ReentrantLockSlide extends Slide {
             if (sprite != null) {
                 sprite.setRetreating(true);
                 sprite.getThread().interrupt();
+                setState(6);
             }
         });
 
@@ -129,6 +127,7 @@ public class ReentrantLockSlide extends Slide {
             if (sprite != null) {
                 sprite.setRetreating(true);
                 sprite.getThread().interrupt();
+                setState(5);
             }
         });
 

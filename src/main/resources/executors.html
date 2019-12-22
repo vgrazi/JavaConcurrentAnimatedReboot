@@ -1,8 +1,15 @@
 <pre>  <0 comment>// FixedThreadPool Construction
   <0 keyword>final <0 default>Executor executor =
           Executors.newFixedThreadPool(<0 literal>4<0 default>);
-  <3 comment>// Use the Executor to execute a Runnable
-  <3 default>executor.execute(<3 keyword>new <3 default>Runnable() {
+  <2 comment>// Use the Executor to execute a Runnable
+  <2 default>executor.execute(<2 keyword>new <2 default>Runnable() {
+    <2 keyword>@Override
+    public void <2 default>run() {
+      <2 comment>// Do work
+    <2 default>}});
+
+  <3 comment>// Use the Executor to submit a Runnable or a Callable
+  <3 default>executor.submit(<3 keyword>new <3 default>Runnable() {
     <3 keyword>@Override
     public void <3 default>run() {
       <3 comment>// Do work

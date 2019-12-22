@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -27,14 +26,39 @@ public class ExecutorsSlide extends Slide {
 
         threadContext.addButton("prestartAllCoreThreads()", () -> {
             ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
-            setCssSelected("prestartAll");
+            setState(4);
+        });
 
+        threadContext.addButton("execute", () -> {
+            RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
+            threadContext.addSprite(runnableSprite);
+            setState(2);
+
+            executor.execute(() -> {
+                Thread thread = Thread.currentThread();
+                PooledThreadSprite<String> sprite = (PooledThreadSprite) threadContext.getThreadSprite(thread);
+                if (sprite != null) {
+                    sprite.setPooled(false);
+                    sprite.setRunning(true);
+                    sprite.setYPosition(runnableSprite.getYPosition());
+                    runnableSprite.setThread(thread);
+                    while (sprite.isRunning()) {
+                        Thread.yield();
+                    }
+                    sprite.setPooled(true);
+                    runnableSprite.setDone();
+                    threadContext.stopThread(runnableSprite);
+                    setState(0);
+                } else {
+                    System.out.printf("Thread %s not known to context%n", thread);
+                }
+            });
         });
 
         threadContext.addButton("submit", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
-            setCssSelected("submit");
+            setState(3);
 
             executor.submit(() -> {
                 Thread thread = Thread.currentThread();
@@ -50,6 +74,7 @@ public class ExecutorsSlide extends Slide {
                     sprite.setPooled(true);
                     runnableSprite.setDone();
                     threadContext.stopThread(runnableSprite);
+                    setState(0);
                 } else {
                     System.out.printf("Thread %s not known to context%n", thread);
                 }
@@ -76,7 +101,7 @@ public class ExecutorsSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("Executors");
         threadContext.setBottomLabel("Pooled\nThreads");
-        setSnippetFile("Executors.html");
+        setSnippetFile("executors.html");
         setImage("images/executors.jpg");
 
         executor = Executors.newFixedThreadPool(4, r -> {
