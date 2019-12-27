@@ -1,0 +1,20 @@
+<pre>
+<FONT style="font-family:monospaced;" COLOR="808080">
+  // Launch many Callables to the
+  //   completion service.
+  // Results are queued as they arrive.
+  // To retrieve the results in sequence,
+  // call completionService.take().get();"
+
+ <FONT style="font-family:monospaced;" COLOR="#808080"><I>// Create a completionService, providing
+  //   an Executor in the constructor.
+  </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000000>"><B>final</B> CompletionService<Result> completionService =
+   <B>new</B> ExecutorCompletionService<Result>(
+        Executors.newFixedThreadPool(4));
+
+<FONT style="font-family:monospaced;" COLOR="#808080"><I>// Submit callables to the completion service
+  </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">completionService.submit(callable);</FONT>"
+
+<FONT style="font-family:monospaced;" COLOR="#808080"><I>// Now take results as they complete
+  </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Future<Result> future = completionService.take();</FONT>
+  </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Result result = future.get();</FONT></PRE>
