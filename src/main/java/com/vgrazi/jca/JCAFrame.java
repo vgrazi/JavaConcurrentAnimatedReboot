@@ -86,6 +86,9 @@ public class JCAFrame extends JFrame {
     private StampedLockSlide stampedLockSlide;
 
     @Autowired
+    private BasicSlide basicSlide;
+
+    @Autowired
     private BlockingQueueSlide blockingQueueSlide;
 
     @Autowired
@@ -153,6 +156,7 @@ public class JCAFrame extends JFrame {
         addButton("Semaphore", semaphoreSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
+//        addButton("Basic Slide", basicSlide);
 
         menuPanel.add(controlPanel);
 

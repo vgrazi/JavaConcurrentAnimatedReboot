@@ -62,6 +62,8 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
     public void render(Graphics2D graphics) {
         Color color = getThreadContext().getColor(this);
         graphics.setColor(color);
+        // for debugging position and state issues, uncomment this
+//        System.out.println(this);
         graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
         drawThreadCap(graphics);
         renderMessage(graphics);
@@ -128,7 +130,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
         return "ThreadSprite{" +
                 "ID=" + getID() +
                 ", state=" + getState() +
-                ", native-state=" + thread.getState() +
+                ", native-state=" + (thread != null?thread.getState().toString():"") +
 //                ", x-position=" + getXPosition() +
                 ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +

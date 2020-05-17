@@ -17,8 +17,11 @@ public class AtomicIntegerSlide extends Slide {
     @Value("${monolith-left-border}")
     private int leftBorder;
 
-    @Autowired
     private ApplicationContext applicationContext;
+
+    public AtomicIntegerSlide(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     private AtomicInteger counter = new AtomicInteger();
     public void run() {
