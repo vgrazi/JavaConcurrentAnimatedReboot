@@ -1,5 +1,6 @@
 package com.vgrazi.jca.sprites;
 
+import com.vgrazi.jca.util.RenderUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +21,7 @@ public class WriteThreadSprite<S> extends RunnerThreadSprite implements Initiali
     @Override
     protected void drawThreadCap(Graphics2D g) {
         Graphics2D graphics = (Graphics2D) g.create();
-        int yPos = getCapYPosition(leftBound, rightBound, topBound, bottomBound, this) + 5;
+        int yPos = RenderUtils.getCapYPosition(leftBound, rightBound, topBound, bottomBound, ballDiameter, this) + 5;
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength:0;
         int x = getXPosition() -offset;
 

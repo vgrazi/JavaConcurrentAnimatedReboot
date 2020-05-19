@@ -34,6 +34,11 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
         }
     }
 
+    @Override
+    protected int getNextYPositionFromContext() {
+        return yPosition;
+    }
+
     /**
      * Draws the ball at the end of the thread
      */

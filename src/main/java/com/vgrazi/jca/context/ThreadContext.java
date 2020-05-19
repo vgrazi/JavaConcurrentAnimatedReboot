@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -472,6 +473,26 @@ public class ThreadContext<S> implements InitializingBean {
         return threads;
     }
 
+    /**
+     * If done is true, returns all FutureRunnableSprites that are done. Else returns all of them that are not done
+     * @param done
+     * @return
+     */
+    public List<FutureRunnableSprite> getFutureRunnables(boolean done) {
+        List<FutureRunnableSprite> list = sprites.stream()
+                .filter(sprite-> sprite instanceof FutureRunnableSprite)
+                .map(sprite->(FutureRunnableSprite)sprite)
+                .filter(sprite-> sprite.isDone() == done)
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    public List<Sprite> getThreadSpritesWithAction(String action) {
+        List<Sprite> list = sprites.stream()
+                .filter(sprite-> Objects.equals(sprite.getAction(), action))
+                .collect(Collectors.toList());
+        return list;
+    }
 
     /**
      * Returns a list of all threads that are not of the specified state
@@ -543,10 +564,6 @@ public class ThreadContext<S> implements InitializingBean {
      */
     private void advanceSprites() {
         sprites.forEach(Sprite::setNextXPosition);
-    }
-
-    public int getNextYPosition() {
-        return getNextYPosition(pixelsPerYStep);
     }
 
     /**

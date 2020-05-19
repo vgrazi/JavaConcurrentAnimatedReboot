@@ -64,6 +64,12 @@ public class Config {
     }
 
     @Bean
+    @Scope("prototype")
+    FutureRunnableSprite futureRunnableSprite() {
+        return new FutureRunnableSprite();
+    }
+
+    @Bean
     public Blocked blocked() {
         return new Blocked();
     }

@@ -7,23 +7,22 @@
     public void <2 default>run() {
       <2 comment>// Do work
     <2 default>}});
-
   <3 comment>// Use the Executor to submit a Runnable or a Callable
   <3 default>executor.submit(<3 keyword>new <3 default>Runnable() {
     <3 keyword>@Override
     public void <3 default>run() {
       <3 comment>// Do work
     <3 default>}});
-
   <4 comment>// Prestarting Core Threads
   <4 keyword>int <4 default>count = ((ThreadPoolExecutor)executor)
           .prestartAllCoreThreads();
 </pre>
-<table  border=0 width=750 style='background-color:black;'>
+<table  border=0 width=700 style='background-color:black;'>
 <tr><td align=center colspan=3 ><font size=5 color=white><span style="text-decoration:underline">Thread State Color Codes</span></font></td></tr>
 <tr><td align=left><font size=5><span style="color:#00ff00" >gReen = Runnable</span></font></td>
     <td align=left><font size=5><span style="color:#00b4ff" >BLue = BLocked</span></font></td>
     <td align=left><font size=5><span style="color:#ffffff" >White = Waiting</span></font></td>
+    <td align=left><font size=5><span style="color:#ffffff" >&nbsp/</span></font></td>
 </tr><tr>
     <td align=left><font size=5><span style="color:#c0c0c0" >gray = timed_waiting</span></font></td>
     <td align=left><font size=5><span style="color:#ff0000; font-weight:bold;" >Red = teRminated</span></font></td><td>&nbsp</td></tr>
