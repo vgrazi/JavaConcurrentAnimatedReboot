@@ -454,6 +454,17 @@ public class ThreadContext<S> implements InitializingBean {
         return getterThreadSprite;
     }
 
+    /**
+     * Returns all getther thread sprites
+     */
+    public List<GetterThreadSprite> getAllGetterThreadSprites() {
+        List<GetterThreadSprite> getterThreadSprites = sprites.stream()
+                .filter(sprite -> sprite instanceof GetterThreadSprite)
+                .map(sprite -> (GetterThreadSprite) sprite)
+                .collect(Collectors.toList());
+        return getterThreadSprites;
+    }
+
     private List<FutureSprite> getAllFutureSprites() {
         List<FutureSprite> collect = sprites.stream()
                 .filter(sprite -> sprite instanceof FutureSprite)

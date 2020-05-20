@@ -31,7 +31,27 @@ public class FutureRunnableSprite extends RunnerThreadSprite{
         int xPosition;
         Future future = getFuture();
         ThreadState state = getState();
-        if (state == getThreadContext().runnable) {
+        // for FutureRunnableSprite, we need to abuse the state to control the rendering.
+        // state machine:
+        // before we enter, we are waiting
+        // when we enter, we are runnable
+        // when we complete, we are blocked
+        // when we are done, we are terminated
+        if (state == getThreadContext().waiting) {
+            Color color = getThreadContext().getColor(this);
+            graphics.setColor(color);
+            RelativePosition relativePosition = getRelativePosition();
+            if( relativePosition == RelativePosition.Before) {
+                super.render(graphics);
+                graphics.fill3DRect(getXPosition() - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
+            }
+            else if( relativePosition == RelativePosition.At) {
+                xPosition = monolithLeftBorder;
+                graphics.fill3DRect(xPosition - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
+                super.render(graphics);
+            }
+        }
+        else if (state == getThreadContext().runnable) {
             super.render(graphics);
             RelativePosition relativePosition = getRelativePosition();
             Color color = getThreadContext().getColor(this);
@@ -41,7 +61,8 @@ public class FutureRunnableSprite extends RunnerThreadSprite{
                 xPosition = getXPosition() - arrowLength + (arrowLength - length) / 2 - 3;
                 graphics.fill3DRect(xPosition, yPosition, length, runnableHeight, true);
             }
-        } else if(state == getThreadContext().waiting){
+        }
+        else if(state == getThreadContext().blocked){
             xPosition = monolithRightBorder - length;
             graphics.fill3DRect(xPosition, yPosition, length, runnableHeight, true);
         }
@@ -74,14 +95,14 @@ public class FutureRunnableSprite extends RunnerThreadSprite{
         // when the future is done, we still want to keep it in the monolith until the sprite is done
         // when the sprite is also done, we can terminate it
         if(future == null) {
-            return getThreadContext().runnable;
+            return getThreadContext().waiting;
         }
         else if(!future.isDone()) {
             // it's still alive
             return getThreadContext().runnable;
         }
         else if(!isDone()) {
-            return getThreadContext().waiting;
+            return getThreadContext().blocked;
         }
         else {
             return getThreadContext().terminated;

@@ -2,6 +2,7 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.FutureRunnableSprite;
 import com.vgrazi.jca.sprites.GetterThreadSprite;
+import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +13,13 @@ import java.util.concurrent.*;
 @Component
 public class CompletionServiceSlide extends Slide {
 
-    private int getterYPos = 90;
+    public static final int GETTER_DELTA = 30;
+    private int initialGetterYPos = 90 - GETTER_DELTA;
     private Random random = new Random();
 
     private ExecutorService executor = Executors.newCachedThreadPool();
-    private ExecutorService pool = Executors.newFixedThreadPool(4);
     private CompletionService<ThreadSprite> completionService;
+    private ExecutorService pool;
 
     @Override
     public void run() {
@@ -25,12 +27,15 @@ public class CompletionServiceSlide extends Slide {
         threadContext.addButton("Add running thread", () -> {
                     // create a new sprite
                     FutureRunnableSprite sprite = (FutureRunnableSprite) applicationContext.getBean("futureRunnableSprite");
-                    // give it an action tag to test for
-                    sprite.setAction("running");
+                    // set to starting, so that it won't come up when we get all the runners when the complete button is pressed
+                    sprite.setAction("starting");
                     Future[] futureArray = new Future[1];
                     sprite.attachAndStartRunnable(() -> {
                         futureArray[0] = completionService.submit(() -> {
                             sprite.setFuture(futureArray[0]);
+                            sprite.setThread(Thread.currentThread());
+                            sprite.setAction("running");
+
                             // attach a runnable and start the thread
                             while (sprite.getAction().equals("running")) {
                                 // Even tho it is consuming CPU, we need to leave it running so as not to change the thread state
@@ -62,9 +67,8 @@ public class CompletionServiceSlide extends Slide {
         threadContext.addButton("take().get()", () -> {
             executor.execute(()-> {
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                getter.setYPosition(getterYPos);
+                getter.setYPosition(getGetterYPos());
                 threadContext.addSprite(getter);
-                getterYPos +=30;
 
                 getter.attachAndStartRunnable(() -> {
                     try {
@@ -90,10 +94,22 @@ public class CompletionServiceSlide extends Slide {
         threadContext.addButton("reset", this::reset);
     }
 
+    /**
+     * If there are no getters, returns the initial
+     * otherwise returns the bottom one plus delta
+     * @return
+     */
+    private int getGetterYPos() {
+        List<GetterThreadSprite> getters = threadContext.getAllGetterThreadSprites();
+        int next = getters.stream().mapToInt(Sprite::getYPosition).max().orElse(initialGetterYPos);
+        return next + GETTER_DELTA;
+    }
+
     @Override
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("CompletionService");
+        pool = Executors.newFixedThreadPool(4);
         completionService = new ExecutorCompletionService<>(pool);
         setSnippetFile("completion-service.html");
     }
