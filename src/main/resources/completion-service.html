@@ -8,13 +8,14 @@
 
  <FONT style="font-family:monospaced;" COLOR="#808080"><I>// Create a completionService, providing
   //   an Executor in the constructor.
-  </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000000>"><B>final</B> CompletionService<Result> completionService =
-   <B>new</B> ExecutorCompletionService<Result>(
-        Executors.newFixedThreadPool(4));
+  </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT> <FONT style="font-family:monospaced;" COLOR="<state0:#000000>">CompletionService completionService =
+</FONT>
+    <FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>new</B></FONT> <FONT style="font-family:monospaced;" COLOR="<state0:#000000>">ExecutorCompletionService(
+        Executors.newFixedThreadPool(4));</FONT>
 
 <FONT style="font-family:monospaced;" COLOR="#808080"><I>// Submit callables to the completion service
   </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">completionService.submit(callable);</FONT>"
 
 <FONT style="font-family:monospaced;" COLOR="#808080"><I>// Now take results as they complete
   </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Future<Result> future = completionService.take();</FONT>
-  </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Result result = future.get();</FONT></PRE>
+  </><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Result result = future.get();</FONT></PRE>

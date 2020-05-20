@@ -24,7 +24,8 @@ public class CompletionServiceSlide extends Slide {
     @Override
     public void run() {
         reset();
-        threadContext.addButton("Add running thread", () -> {
+        threadContext.addButton("submit()", () -> {
+                    setState(1);
                     // create a new sprite
                     FutureRunnableSprite sprite = (FutureRunnableSprite) applicationContext.getBean("futureRunnableSprite");
                     // set to starting, so that it won't come up when we get all the runners when the complete button is pressed
@@ -51,7 +52,7 @@ public class CompletionServiceSlide extends Slide {
                 }
         );
 
-        threadContext.addButton("complete", () -> {
+        threadContext.addButton("(complete)", () -> {
             // We need to find a not-done sprite, and mark it as done.
             List<FutureRunnableSprite> notCompleteSprites = threadContext.getThreadSpritesWithAction("running");
             if (notCompleteSprites.size() > 0) {
@@ -65,7 +66,8 @@ public class CompletionServiceSlide extends Slide {
         });
 
         threadContext.addButton("take().get()", () -> {
-            executor.execute(()-> {
+            executor.execute(() -> {
+                setState(2);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
                 getter.setYPosition(getGetterYPos());
                 threadContext.addSprite(getter);
