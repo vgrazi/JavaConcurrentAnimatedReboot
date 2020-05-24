@@ -2,12 +2,14 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.GetterThreadSprite;
 import com.vgrazi.jca.sprites.ObjectSprite;
+import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
@@ -25,6 +27,10 @@ public class TransferQueueSlide extends Slide {
 
     @Value("${arrow-length}")
     private int arrowLength;
+
+    private static final int GETTER_DELTA = 30;
+    private int initialGetterYPos = 90 - GETTER_DELTA;
+
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -81,10 +87,13 @@ public class TransferQueueSlide extends Slide {
         threadContext.addButton("take()", () -> {
                     // If there are waiting objects, don't create a new sprite
                     ObjectSprite objectSprite = threadContext.getFirstWaitingObjectSprite();
+                    int ypos = getGetterYPos();
+
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");
                     if (objectSprite == null) {
                         getter.attachAndStartRunnable(() -> {
                             try {
+                                getter.setYPosition(ypos);
                                 transferQueue.take();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
@@ -111,6 +120,16 @@ public class TransferQueueSlide extends Slide {
 
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
+    }
+    /**
+     * If there are no getters, returns the initial
+     * otherwise returns the bottom one plus delta
+     * @return
+     */
+    private int getGetterYPos() {
+        List<GetterThreadSprite> getters = threadContext.getAllGetterThreadSprites();
+        int next = getters.stream().mapToInt(Sprite::getYPosition).max().orElse(initialGetterYPos);
+        return next + GETTER_DELTA;
     }
 
     public void reset() {
