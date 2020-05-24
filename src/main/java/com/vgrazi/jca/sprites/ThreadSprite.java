@@ -67,6 +67,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
         graphics.drawLine(getXPosition() - arrowLength, getYPosition(), getXPosition(), getYPosition());
         drawThreadCap(graphics);
         renderMessage(graphics);
+        renderLabel(graphics);
     }
 
     @Override

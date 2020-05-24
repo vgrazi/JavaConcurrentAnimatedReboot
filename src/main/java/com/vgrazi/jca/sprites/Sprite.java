@@ -20,7 +20,9 @@ public abstract class Sprite<T> {
     @Qualifier("basicStroke")
     private Stroke stroke;
 
-    private Font messageFont;
+    private String label;
+
+    Font messageFont;
 
     private int ID = IDGenerator.next();
 
@@ -149,7 +151,21 @@ public abstract class Sprite<T> {
             Graphics graphics1 = graphics.create();
             graphics1.setColor(Color.white);
             graphics1.setFont(messageFont);
-            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() - 8);
+            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() + 8);
+            graphics1.dispose();
+        }
+    }
+
+    /**
+     * If the message is non-null, renders the message above the thread
+     * @param graphics
+     */
+    public void renderLabel(Graphics2D graphics) {
+        if(getLabel() != null) {
+            Graphics graphics1 = graphics.create();
+            graphics1.setColor(Color.yellow);
+            graphics1.setFont(messageFont);
+            graphics1.drawString(getLabel(), getXPosition() - arrowLength, getYPosition() - 8);
             graphics1.dispose();
         }
     }
@@ -160,6 +176,18 @@ public abstract class Sprite<T> {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    /**
+     * A label is a value that can be displayed on top of a thread.
+     * For example, on a GetterThreadSprite, to display the value it got.
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     /**

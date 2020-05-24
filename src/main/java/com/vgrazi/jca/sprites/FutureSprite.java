@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.vgrazi.jca.util.Parsers.parseColor;
+import static com.vgrazi.jca.util.Parsers.parseFont;
 
 /**
  * A ThreadSprite represents one thread, and retains all of the state related to that thread,
@@ -18,6 +19,8 @@ import static com.vgrazi.jca.util.Parsers.parseColor;
 public class FutureSprite extends Sprite implements InitializingBean {
     private Color futureDefaultColor;
     private Color futureDoneColor;
+    private Color futureTextColor;
+    private Font futureTextFont;
     @Value("${monolith-left-border}")
     private int leftBorder;
 
@@ -53,6 +56,15 @@ public class FutureSprite extends Sprite implements InitializingBean {
             graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
             graphics.fill3DRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
+            if(future.isDone()) {
+                String value = String.valueOf(future.join());
+                graphics.setColor(futureTextColor);
+                graphics.setFont(futureTextFont);
+                FontMetrics fm = graphics.getFontMetrics();
+                int xDelta = (width + getXMargin() + getXRightMargin() - fm.stringWidth(value))/2;
+                int yDelta = (this.height + getYMargin() * 2 - fm.getHeight())/2;
+                graphics.drawString(value,getXPosition() - getXMargin() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
+            }
         }
     }
 
@@ -64,6 +76,16 @@ public class FutureSprite extends Sprite implements InitializingBean {
     @Value("${FUTURE-DONE-COLOR}")
     private void setFutureDoneColor(String color) {
         futureDoneColor = parseColor(color);
+    }
+
+    @Value("${FUTURE-TEXT-COLOR}")
+    private void setFutureTextColor(String color) {
+        futureTextColor = parseColor(color);
+    }
+
+    @Value("${FUTURE-TEXT-FONT}")
+    private void setFutureTextFont(String font) {
+        futureTextFont = parseFont(font);
     }
 
     @Override

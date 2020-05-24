@@ -47,7 +47,6 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
         graphics.fillOval(getXPosition() - 6 - arrowLength, getYPosition() - 5, 10, 10);
     }
 
-
     @Override
     public void setNextXPosition() {
         ThreadState state = getState();

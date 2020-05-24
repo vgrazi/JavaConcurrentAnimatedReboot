@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vgrazi.jca.util.Logging.log;
 
@@ -43,6 +44,7 @@ public class CompletableFutureSlide extends Slide {
     private int futureTopMargin;
     @Value("${pixels-per-y-step}")
     private int pixelsPerYStep;
+    private AtomicInteger valueIdGenerator = new AtomicInteger(0);
 
     public CompletableFutureSlide() {
     }
@@ -84,12 +86,48 @@ public class CompletableFutureSlide extends Slide {
             threadContext.addSprite(threadSprite);
         });
 
+        threadContext.addButton("supplyAsync", () -> {
+            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
+            if(firstThread == null) {
+                firstThread = threadSprite;
+            }
+            threadSprite.setXPosition(leftBorder + arrowLength);
+            threadCount++;
+            // we need to create a future, a thread to attach to it, and sprites for each of those
+            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+            futureSprite.setXMargin(15);
+            futureSprite.setXRightMargin(15);
+            futureSprite.setYMargin(+6);
+            futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
+            // the holder contains the running status. When it is done, will be set to false
+            threadSprite.setHolder(true);
+            CompletableFuture future = CompletableFuture.supplyAsync(() -> {
+                while (threadSprite.getHolder()) {
+                    Thread.yield();
+                }
+                threadContext.stopThread(threadSprite);
+                return "value " + valueIdGenerator.incrementAndGet();
+            });
+            System.out.println("CREATED FUTURE:" + future);
+            completableFutures.add(future);
+            futureSprite.setFuture(future);
+            futureSprite.setHeight(completableFutureHeight);
+            threadContext.addSprite(0, futureSprite);
+            threadSprite.attachAndStartRunnable(() -> {
+                while (threadSprite.isRunning()) {
+                    Thread.yield();
+                }
+                System.out.println(threadSprite + " exiting");
+            });
+            threadContext.addSprite(threadSprite);
+        });
+
         threadContext.addButton("CompletableFuture.allOf()", () -> {
-            CompletableFuture future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
+            CompletableFuture<Void> future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
             addCompletableFutureSprite(future);
         });
         threadContext.addButton("CompletableFuture.anyOf()", () -> {
-            CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[0]));
+            CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
             addCompletableFutureSprite(future);
         });
 
@@ -100,14 +138,43 @@ public class CompletableFutureSlide extends Slide {
                 getter.setYPosition(futureSprite.getYCenter());
                 getter.attachAndStartRunnable(()->{
                     CompletableFuture future = futureSprite.getFuture();
-                    System.out.println("Getter attached to " + future);
                     try {
-                        future.get();
+                        Object value = future.get();
+                        getter.setLabel(String.valueOf(value));
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 });
                 threadContext.addSprite(getter);
+            }
+        });
+
+        threadContext.addButton("join()", () -> {
+            if(!bigFutures.isEmpty()) {
+                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
+                FutureSprite futureSprite = bigFutures.remove(0);
+                getter.setYPosition(futureSprite.getYCenter());
+                getter.attachAndStartRunnable(()->{
+                    CompletableFuture future = futureSprite.getFuture();
+                    Object value = future.join();
+                    getter.setLabel(String.valueOf(value));
+                });
+                threadContext.addSprite(getter);
+            }
+        });
+
+        threadContext.addButton("getNow()", () -> {
+            if(!bigFutures.isEmpty()) {
+                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
+                FutureSprite futureSprite = bigFutures.remove(0);
+                getter.setYPosition(futureSprite.getYCenter());
+                getter.attachAndStartRunnable(()->{
+                    CompletableFuture future = futureSprite.getFuture();
+                    System.out.println("Getter attached to " + future);
+                    Object value = future.getNow("(returning default)");
+                    getter.setLabel(String.valueOf(value));
+                    threadContext.addSprite(getter);
+                });
             }
         });
 
@@ -124,6 +191,9 @@ public class CompletableFutureSlide extends Slide {
         threadContext.setVisible();
     }
 
+    /**
+     * Start a new completable future based on the current futures
+     */
     private void addCompletableFutureSprite(CompletableFuture future) {
         FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
         completableFutures.clear();
@@ -154,6 +224,7 @@ public class CompletableFutureSlide extends Slide {
         threadCount = 0;
         completableFutures.clear();
         bigFutures.clear();
+        valueIdGenerator.set(0);
     }
 
 }
