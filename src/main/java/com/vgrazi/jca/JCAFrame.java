@@ -94,6 +94,9 @@ public class JCAFrame extends JFrame {
     @Autowired
     private JPanel cardPanel;
 
+    @Autowired
+    private IntroSlide introSlide;
+
     @Value("${menu-button-vgap}")
     private int vgap;
 
@@ -142,20 +145,21 @@ public class JCAFrame extends JFrame {
 
         menuPanel.setLayout(new ButtonLayout(vgap));
 
-        addButton("Executors", executorsSlide);
         addButton("Synchronized", synchronizedSlide);
         addButton("ReentrantLock", reentrantLockSlide);
+        addButton("Semaphore", semaphoreSlide);
+        addButton("ReadWriteLock", readWriteLockSlide);
+        addButton("StampedLock", stampedLockSlide);
+        addButton("Executors", executorsSlide);
         addButton("Phaser", phaserSlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
         addButton("CountdownLatch", countdownLatchSlide);
-        addButton("CompletableFuture", completableFutureSlide);
-        addButton("ReadWriteLock", readWriteLockSlide);
-        addButton("StampedLock", stampedLockSlide);
-        addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
-        addButton("Semaphore", semaphoreSlide);
+        addButton("CompletableFuture", completableFutureSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
+        addButton("BlockingQueue", blockingQueueSlide);
+        addButton("Titles", introSlide);
 //        addButton("Basic Slide", basicSlide);
 
         menuPanel.add(controlPanel);
