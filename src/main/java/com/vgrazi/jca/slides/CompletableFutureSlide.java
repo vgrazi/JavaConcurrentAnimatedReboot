@@ -51,42 +51,9 @@ public class CompletableFutureSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("runAsync", () -> {
-            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
-            if(firstThread == null) {
-                firstThread = threadSprite;
-            }
-            threadSprite.setXPosition(leftBorder + arrowLength);
-            threadCount++;
-            // we need to create a future, a thread to attach to it, and sprites for each of those
-            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
-            futureSprite.setXMargin(15);
-            futureSprite.setXRightMargin(15);
-            futureSprite.setYMargin(+6);
-            futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
-            // the holder contains the running status. When it is done, will be set to false
-            threadSprite.setHolder(true);
-            Runnable runnable = () -> {
-                while (threadSprite.getHolder()) {
-                    Thread.yield();
-                }
-                threadContext.stopThread(threadSprite);
-            };
-            CompletableFuture future = CompletableFuture.runAsync(runnable);
-            completableFutures.add(future);
-            futureSprite.setFuture(future);
-            futureSprite.setHeight(completableFutureHeight);
-            threadContext.addSprite(0, futureSprite);
-            threadSprite.attachAndStartRunnable(() -> {
-                while (threadSprite.isRunning()) {
-                    Thread.yield();
-                }
-                System.out.println(threadSprite + " exiting");
-            });
-            threadContext.addSprite(threadSprite);
-        });
 
         threadContext.addButton("supplyAsync", () -> {
+            setState(2);
             ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
             if(firstThread == null) {
                 firstThread = threadSprite;
@@ -122,17 +89,60 @@ public class CompletableFutureSlide extends Slide {
             threadContext.addSprite(threadSprite);
         });
 
-        threadContext.addButton("CompletableFuture.allOf()", () -> {
-            CompletableFuture<Void> future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
+        threadContext.addButton("runAsync", () -> {
+            setState(1);
+            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
+            if(firstThread == null) {
+                firstThread = threadSprite;
+            }
+            threadSprite.setXPosition(leftBorder + arrowLength);
+            threadCount++;
+            // we need to create a future, a thread to attach to it, and sprites for each of those
+            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+            futureSprite.setXMargin(15);
+            futureSprite.setXRightMargin(15);
+            futureSprite.setYMargin(+6);
+            futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
+            // the holder contains the running status. When it is done, will be set to false
+            threadSprite.setHolder(true);
+            CompletableFuture future = CompletableFuture.runAsync(() -> {
+                while (threadSprite.getHolder()) {
+                    Thread.yield();
+                }
+                threadContext.stopThread(threadSprite);
+            });
+            completableFutures.add(future);
+            futureSprite.setFuture(future);
+            futureSprite.setHeight(completableFutureHeight);
+            threadContext.addSprite(0, futureSprite);
+            threadSprite.attachAndStartRunnable(() -> {
+                while (threadSprite.isRunning()) {
+                    Thread.yield();
+                }
+                System.out.println(threadSprite + " exiting");
+            });
+            threadContext.addSprite(threadSprite);
+        });
+
+        threadContext.addButton("CompletableFuture.anyOf()", () -> {
+            if (!completableFutures.isEmpty()) {
+                setState(1);
+            }
+            CompletableFuture<?> future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
             addCompletableFutureSprite(future);
         });
-        threadContext.addButton("CompletableFuture.anyOf()", () -> {
-            CompletableFuture future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
+
+        threadContext.addButton("CompletableFuture.allOf()", () -> {
+            if (!completableFutures.isEmpty()) {
+                setState(3);
+            }
+            CompletableFuture<Void> future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
             addCompletableFutureSprite(future);
         });
 
         threadContext.addButton("get()", () -> {
             if(!bigFutures.isEmpty()) {
+                setState(5);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
                 FutureSprite futureSprite = bigFutures.remove(0);
                 getter.setYPosition(futureSprite.getYCenter());
@@ -151,6 +161,7 @@ public class CompletableFutureSlide extends Slide {
 
         threadContext.addButton("join()", () -> {
             if(!bigFutures.isEmpty()) {
+                setState(6);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
                 FutureSprite futureSprite = bigFutures.remove(0);
                 getter.setYPosition(futureSprite.getYCenter());
@@ -165,14 +176,15 @@ public class CompletableFutureSlide extends Slide {
 
         threadContext.addButton("getNow()", () -> {
             if(!bigFutures.isEmpty()) {
+                setState(7);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
                 FutureSprite futureSprite = bigFutures.remove(0);
                 getter.setYPosition(futureSprite.getYCenter());
                 getter.attachAndStartRunnable(()->{
-                    CompletableFuture future = futureSprite.getFuture();
+                    CompletableFuture<String> future = futureSprite.getFuture();
                     System.out.println("Getter attached to " + future);
-                    Object value = future.getNow("(returning default)");
-                    getter.setLabel(String.valueOf(value));
+                    String value = future.getNow("\"valueIfAbsent\"");
+                    getter.setLabel(value);
                     threadContext.addSprite(getter);
                 });
             }
@@ -216,6 +228,7 @@ public class CompletableFutureSlide extends Slide {
 
     public void reset() {
         super.reset();
+        setState(0);
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("CompletableFuture");
         setSnippetFile("completable-future.html");

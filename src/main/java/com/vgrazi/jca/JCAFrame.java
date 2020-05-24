@@ -112,7 +112,7 @@ public class JCAFrame extends JFrame {
     private JLabel imageLabel;
 
     public JCAFrame() throws HeadlessException {
-        super("Java Concurrent Animated - Reboot!");
+        super("Java Concurrent Animated - Reboot! https://github.com/vgrazi/JavaConcurrentAnimatedReboot");
     }
 
     @PostConstruct

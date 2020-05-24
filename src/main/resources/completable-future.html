@@ -1,0 +1,19 @@
+<0 default> CompletableFuture future =
+
+  <2 default>CompletableFuture.supplyAsync(() ->
+  <2 default>     doSomethingAndReturnSomeValue());
+  <1 default>CompletableFuture.runAsync(() -> doSomething());
+  <4 default>  CompletableFuture.anyOf(completableFutures
+  <4 default>     .toArray(new CompletableFuture[0]));
+  <3 default>  CompletableFuture.allOf(completableFutures
+  <3 default>     .toArray(new CompletableFuture[0]));
+
+  <5 keyword>  try {
+  <5 default>    Object value = future.get();
+  <5 keyword>  } catch <5 default>(InterruptedException
+    <5 default>    | ExecutionException e) {..}
+
+  <6 default>  Object value = future.join();
+
+  <7 default>  Object value = future.getNow("valueIfAbsent");
+

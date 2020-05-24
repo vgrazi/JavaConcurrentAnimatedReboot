@@ -31,6 +31,6 @@ public class IntroSlide extends Slide {
     }
 
     public void resetImage() {
-        setImage("images/concurrent.jpg");
+        setImage("images/concurrentText.jpg");
     }
 }
