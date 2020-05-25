@@ -92,6 +92,7 @@ public class BlockingQueueSlide extends Slide {
                     if (objectSprite == null) {
                         getter.attachAndStartRunnable(() -> {
                             try {
+                                threadContext.setGetterNextYPos(getter);
                                 blockingQueue.take();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();

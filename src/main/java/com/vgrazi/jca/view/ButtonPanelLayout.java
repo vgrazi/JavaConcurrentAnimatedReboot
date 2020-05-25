@@ -30,6 +30,11 @@ public class ButtonPanelLayout extends FlowLayout {
             component.setBounds(xPos, yPos, componentWidth, componentHeight);
             xPos += componentWidth + getHgap();
         }
-        target.setSize(target.getWidth(), yPos + delta);
+        int newHeight = yPos + delta;
+        if(newHeight== 0) {
+            newHeight = 26;
+        }
+        System.out.println("Setting bounds to " + target.getWidth() + "," + newHeight);
+        target.setSize(target.getWidth(), newHeight);
     }
 }

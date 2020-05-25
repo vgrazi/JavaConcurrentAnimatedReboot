@@ -28,10 +28,6 @@ public class TransferQueueSlide extends Slide {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    private static final int GETTER_DELTA = 30;
-    private int initialGetterYPos = 90 - GETTER_DELTA;
-
-
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -87,13 +83,12 @@ public class TransferQueueSlide extends Slide {
         threadContext.addButton("take()", () -> {
                     // If there are waiting objects, don't create a new sprite
                     ObjectSprite objectSprite = threadContext.getFirstWaitingObjectSprite();
-                    int ypos = getGetterYPos();
 
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");
                     if (objectSprite == null) {
                         getter.attachAndStartRunnable(() -> {
                             try {
-                                getter.setYPosition(ypos);
+                                threadContext.setGetterNextYPos(getter);
                                 transferQueue.take();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
@@ -120,16 +115,6 @@ public class TransferQueueSlide extends Slide {
 
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
-    }
-    /**
-     * If there are no getters, returns the initial
-     * otherwise returns the bottom one plus delta
-     * @return
-     */
-    private int getGetterYPos() {
-        List<GetterThreadSprite> getters = threadContext.getAllGetterThreadSprites();
-        int next = getters.stream().mapToInt(Sprite::getYPosition).max().orElse(initialGetterYPos);
-        return next + GETTER_DELTA;
     }
 
     public void reset() {

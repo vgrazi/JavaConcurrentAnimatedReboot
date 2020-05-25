@@ -13,8 +13,6 @@ import java.util.concurrent.*;
 @Component
 public class CompletionServiceSlide extends Slide {
 
-    public static final int GETTER_DELTA = 30;
-    private int initialGetterYPos = 90 - GETTER_DELTA;
     private Random random = new Random();
 
     private ExecutorService executor = Executors.newCachedThreadPool();
@@ -69,7 +67,7 @@ public class CompletionServiceSlide extends Slide {
             executor.execute(() -> {
                 setState(2);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                getter.setYPosition(getGetterYPos());
+                threadContext.setGetterNextYPos(getter);
                 threadContext.addSprite(getter);
 
                 getter.attachAndStartRunnable(() -> {
@@ -94,17 +92,6 @@ public class CompletionServiceSlide extends Slide {
         });
 
         threadContext.addButton("reset", this::reset);
-    }
-
-    /**
-     * If there are no getters, returns the initial
-     * otherwise returns the bottom one plus delta
-     * @return
-     */
-    private int getGetterYPos() {
-        List<GetterThreadSprite> getters = threadContext.getAllGetterThreadSprites();
-        int next = getters.stream().mapToInt(Sprite::getYPosition).max().orElse(initialGetterYPos);
-        return next + GETTER_DELTA;
     }
 
     @Override

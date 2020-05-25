@@ -134,8 +134,11 @@ public class JCAFrame extends JFrame {
         messagePanel.add(messages);
         messages.setText("this is the message label");
         JPanel buttonsAndMessages = new JPanel(new GridLayout(2, 1));
+        buttonPanel.setBackground(new Color(0));
+        messagePanel.setBackground(new Color(0));
         buttonsAndMessages.add(buttonPanel);
         buttonsAndMessages.add(messagePanel);
+        buttonsAndMessages.setBackground(new Color(0));
         cardPanel.add(animationAndSnippet, "animation-pane");
         JPanel graphicsPanel = new JPanel(new BorderLayout());
         graphicsPanel.add(imageLabel);

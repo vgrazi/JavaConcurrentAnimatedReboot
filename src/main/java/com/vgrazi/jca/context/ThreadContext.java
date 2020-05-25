@@ -46,6 +46,12 @@ public class ThreadContext<S> implements InitializingBean {
     private JPanel cardPanel;
 
     /**
+     * Used for positioning getter sprites
+     */
+    private static final int GETTER_DELTA = 30;
+    private int initialGetterYPos = 90 - GETTER_DELTA;
+
+    /**
      * We either color by thread state or thread instance (eg in ForkJoin)
      */
     private ColorationScheme colorScheme = ColorationScheme.byState;
@@ -116,6 +122,16 @@ public class ThreadContext<S> implements InitializingBean {
 
     public Slide getSlide() {
         return slide;
+    }
+
+    /**
+     * If there are no getters, positions this at the top
+     * otherwise positions it GETTER_DELTA positions below the lowest
+     */
+    public void setGetterNextYPos(ThreadSprite getter) {
+        List<GetterThreadSprite> getters = getAllGetterThreadSprites();
+        int next = getters.stream().filter(g-> g!= getter).mapToInt(Sprite::getYPosition).max().orElse(initialGetterYPos);
+        getter.setYPosition(next + GETTER_DELTA);
     }
 
     private enum ColorationScheme {
@@ -637,13 +653,14 @@ public class ThreadContext<S> implements InitializingBean {
         render();
     }
 
-    public void addButton(String text, Runnable runnable) {
+    public JButton addButton(String text, Runnable runnable) {
         JButton button = new JButton(text);
         button.addActionListener(e -> SwingUtilities.invokeLater(runnable));
         frame.getButtonPanel().add(button);
         frame.getButtonPanel().revalidate();
         frame.revalidate();
         frame.addNotify();
+        return button;
     }
 
     public void setVisible() {

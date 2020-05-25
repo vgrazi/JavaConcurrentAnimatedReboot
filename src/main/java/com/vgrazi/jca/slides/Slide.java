@@ -7,6 +7,7 @@ import com.vgrazi.jca.view.ThreadCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import javax.swing.*;
@@ -88,22 +89,15 @@ public abstract class Slide {
     }
 
     public void setSnippetFile(String snippetFile) {
-        try {
-            Resource[] resources = applicationContext.getResources("classpath*:/" + snippetFile);
-            for (Resource resource:resources) {
-                Set<String> styleSelectors = null;
-                if (resource.exists()) {
-                    try {
+        Resource resource = new ClassPathResource(snippetFile);
+        Set<String> styleSelectors = null;
+        if (resource.exists()) {
+            try {
 
-                        styleSelectors = setSnippetResource(resource);
-                    } catch (IOException | BadLocationException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
+                styleSelectors = setSnippetResource(resource);
+            } catch (IOException | BadLocationException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
         }
         setState(0);
     }
