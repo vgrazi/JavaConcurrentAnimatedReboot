@@ -3,6 +3,7 @@ package com.vgrazi.jca;
 
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
+import com.vgrazi.jca.util.Parsers;
 import com.vgrazi.jca.view.ButtonLayout;
 import com.vgrazi.jca.view.ButtonPanelLayout;
 import com.vgrazi.jca.view.ControlPanel;
@@ -100,6 +101,8 @@ public class JCAFrame extends JFrame {
     @Value("${menu-button-vgap}")
     private int vgap;
 
+    private Color buttonPanelColor;
+
     @Value("${animation-pane-to-snippet-divider-ratio}")
     private double animationPaneToSnippetDividerRatio;
 
@@ -118,6 +121,11 @@ public class JCAFrame extends JFrame {
         super("Java Concurrent Animated - Reboot! https://github.com/vgrazi/JavaConcurrentAnimatedReboot");
     }
 
+    @Value("${BUTTON-PANEL-COLOR}")
+    public void setButtonPanelColor(String color) {
+        buttonPanelColor = Parsers.parseColor(color);
+    }
+
     @PostConstruct
     public void afterPropertiesSet() {
         snippetCanvas.setBackground(Color.white);
@@ -134,11 +142,11 @@ public class JCAFrame extends JFrame {
         messagePanel.add(messages);
         messages.setText("this is the message label");
         JPanel buttonsAndMessages = new JPanel(new GridLayout(2, 1));
-        buttonPanel.setBackground(new Color(0));
-        messagePanel.setBackground(new Color(0));
+        buttonPanel.setBackground(buttonPanelColor);
+        messagePanel.setBackground(buttonPanelColor);
         buttonsAndMessages.add(buttonPanel);
         buttonsAndMessages.add(messagePanel);
-        buttonsAndMessages.setBackground(new Color(0));
+        buttonsAndMessages.setBackground(buttonPanelColor);
         cardPanel.add(animationAndSnippet, "animation-pane");
         JPanel graphicsPanel = new JPanel(new BorderLayout());
         graphicsPanel.add(imageLabel);
