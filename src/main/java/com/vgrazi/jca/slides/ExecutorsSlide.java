@@ -24,11 +24,6 @@ public class ExecutorsSlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("prestartAllCoreThreads()", () -> {
-            ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
-            setState(4);
-        });
-
         threadContext.addButton("execute", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
@@ -88,6 +83,11 @@ public class ExecutorsSlide extends Slide {
                 sprite.setRunning(false);
                 sprite.setPooled(true);
             }
+        });
+
+        threadContext.addButton("prestartAllCoreThreads()", () -> {
+            ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
+            setState(4);
         });
 
         threadContext.addButton("reset", this::reset);

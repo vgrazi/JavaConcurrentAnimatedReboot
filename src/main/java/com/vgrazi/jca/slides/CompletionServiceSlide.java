@@ -50,19 +50,6 @@ public class CompletionServiceSlide extends Slide {
                 }
         );
 
-        threadContext.addButton("(complete)", () -> {
-            // We need to find a not-done sprite, and mark it as done.
-            List<FutureRunnableSprite> notCompleteSprites = threadContext.getThreadSpritesWithAction("running");
-            if (notCompleteSprites.size() > 0) {
-                // pick a random one and complete it
-                int index = random.nextInt(notCompleteSprites.size());
-                FutureRunnableSprite sprite = notCompleteSprites.get(index);
-                sprite.setAction("complete");
-                // setting the sprite to "complete" will end the thread loop, thereby causing the future to be complete.
-                // the rendering algorithm will leave that kissing the right side of the monolith, until it is marked as done
-            }
-        });
-
         threadContext.addButton("take().get()", () -> {
             executor.execute(() -> {
                 setState(2);
@@ -89,6 +76,19 @@ public class CompletionServiceSlide extends Slide {
                     }
                 });
             });
+        });
+
+        threadContext.addButton("(complete)", () -> {
+            // We need to find a not-done sprite, and mark it as done.
+            List<FutureRunnableSprite> notCompleteSprites = threadContext.getThreadSpritesWithAction("running");
+            if (notCompleteSprites.size() > 0) {
+                // pick a random one and complete it
+                int index = random.nextInt(notCompleteSprites.size());
+                FutureRunnableSprite sprite = notCompleteSprites.get(index);
+                sprite.setAction("complete");
+                // setting the sprite to "complete" will end the thread loop, thereby causing the future to be complete.
+                // the rendering algorithm will leave that kissing the right side of the monolith, until it is marked as done
+            }
         });
 
         threadContext.addButton("reset", this::reset);

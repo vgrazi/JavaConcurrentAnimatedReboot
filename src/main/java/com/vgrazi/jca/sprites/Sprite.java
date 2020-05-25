@@ -151,7 +151,7 @@ public abstract class Sprite<T> {
             Graphics graphics1 = graphics.create();
             graphics1.setColor(Color.white);
             graphics1.setFont(messageFont);
-            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() + 8);
+            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() - 8);
             graphics1.dispose();
         }
     }
