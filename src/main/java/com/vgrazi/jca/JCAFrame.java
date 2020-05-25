@@ -93,6 +93,9 @@ public class JCAFrame extends JFrame {
     private BlockingQueueSlide blockingQueueSlide;
 
     @Autowired
+    private SaturationPolicySlide saturationPolicySlide;
+
+    @Autowired
     private JPanel cardPanel;
 
     @Autowired
@@ -162,6 +165,7 @@ public class JCAFrame extends JFrame {
         addButton("ReadWriteLock", readWriteLockSlide);
         addButton("StampedLock", stampedLockSlide);
         addButton("Executors", executorsSlide);
+        addButton("Saturation Policy", saturationPolicySlide);
         addButton("Phaser", phaserSlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
         addButton("CountdownLatch", countdownLatchSlide);

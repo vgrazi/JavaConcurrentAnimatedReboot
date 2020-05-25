@@ -62,7 +62,10 @@ public class RunnableSprite<S> extends ThreadSprite<S> {
 
     @Override
     public ThreadState getState() {
-        if (done) {
+        if(isRetreating()) {
+            return getThreadContext().retreating;
+        }
+        else if (done) {
             return getThreadContext().terminated;
         }
         else if (thread == null) {
@@ -77,6 +80,8 @@ public class RunnableSprite<S> extends ThreadSprite<S> {
         return "RunnableSprite{" +
                 "ID=" + getID() +
                 ", state=" + getState() +
+                ",done=" + done +
+                ",retreating=" + isRetreating() +
                 ",thread=" + thread +
 
 //                ", x-position=" + getXPosition() +
