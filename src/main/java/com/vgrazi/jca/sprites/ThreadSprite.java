@@ -143,8 +143,11 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
         return retreating;
     }
 
-    public void setRetreating(boolean retreating) {
-        this.retreating = retreating;
+    /**
+     * sets the spite to be retreating
+     */
+    public void setRetreating() {
+        this.retreating = true;
     }
 
     public boolean hasCondition() {

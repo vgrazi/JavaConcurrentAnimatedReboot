@@ -102,7 +102,7 @@ public class ReentrantLockSlide extends Slide {
                     }
                     lock.unlock();
                 } else {
-                    sprite.setRetreating(true);
+                    sprite.setRetreating();
                 }
             });
             threadContext.addSprite(sprite);
@@ -114,7 +114,7 @@ public class ReentrantLockSlide extends Slide {
 
             ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(1);
             if (sprite != null) {
-                sprite.setRetreating(true);
+                sprite.setRetreating();
                 sprite.getThread().interrupt();
                 setState(6);
             }
@@ -125,7 +125,7 @@ public class ReentrantLockSlide extends Slide {
 
             ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(0);
             if (sprite != null) {
-                sprite.setRetreating(true);
+                sprite.setRetreating();
                 sprite.getThread().interrupt();
                 setState(5);
             }

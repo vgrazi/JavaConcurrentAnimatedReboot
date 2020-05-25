@@ -51,7 +51,7 @@ public class SemaphoreSlide extends Slide {
                     }
                 }
                 else {
-                    sprite.setRetreating(true);
+                    sprite.setRetreating();
                 }
                 threadContext.stopThread(sprite);
             });
@@ -64,7 +64,7 @@ public class SemaphoreSlide extends Slide {
                     boolean b = semaphore.tryAcquire(3, TimeUnit.SECONDS);
                     if(!b) {
                         // todo: create a backoff rendering for threadSprite
-                        sprite.setRetreating(true);
+                        sprite.setRetreating();
                     }
                     else {
                         log("acquired ", sprite);

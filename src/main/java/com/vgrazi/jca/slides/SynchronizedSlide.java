@@ -73,7 +73,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("interrupt");
                 threadContext.stopThread(runningSprite);
-                runningSprite.setRetreating(true);
+                runningSprite.setRetreating();
                 log("Set interrupt on ", runningSprite);
                 setState(6);
             }

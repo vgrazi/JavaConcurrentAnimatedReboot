@@ -2,14 +2,12 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.GetterThreadSprite;
 import com.vgrazi.jca.sprites.ObjectSprite;
-import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
@@ -68,7 +66,7 @@ public class TransferQueueSlide extends Slide {
                 try {
                     boolean success = transferQueue.tryTransfer("xxx", 2000, TimeUnit.MILLISECONDS);
                     if(!success) {
-                        objectSprite.setRetreating(true);
+                        objectSprite.setRetreating();
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

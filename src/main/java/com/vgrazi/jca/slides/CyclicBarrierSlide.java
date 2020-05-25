@@ -41,7 +41,7 @@ public class CyclicBarrierSlide extends Slide {
                     }
                 } catch (InterruptedException | BrokenBarrierException e) {
                     e.printStackTrace();
-                    sprite.setRetreating(true);
+                    sprite.setRetreating();
                     setMessage(e.toString());
                 }
                 finally {
@@ -73,7 +73,7 @@ public class CyclicBarrierSlide extends Slide {
                     }
                 } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
                     e.printStackTrace();
-                    sprite.setRetreating(true);
+                    sprite.setRetreating();
                 }
                 finally {
                     threadContext.stopThread(sprite);

@@ -66,7 +66,7 @@ public class StampedLockSlide extends Slide {
                 }
                 else {
                     sprite.setMessage("Invalid :(");
-                    sprite.setRetreating(true);
+                    sprite.setRetreating();
                 }
                 System.out.println(valid);
                 threadContext.stopThread(sprite);

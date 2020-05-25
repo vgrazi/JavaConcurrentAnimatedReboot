@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +44,7 @@ public class CountdownLatchSlide extends Slide {
                     setCssSelected("await-timed");
                     success = countDownLatch.await(3, TimeUnit.SECONDS);
                     if(!success) {
-                        sprite.setRetreating(true);
+                        sprite.setRetreating();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

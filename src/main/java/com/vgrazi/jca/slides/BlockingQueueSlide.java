@@ -69,7 +69,7 @@ public class BlockingQueueSlide extends Slide {
             objectSprite.attachAndStartRunnable(() -> {
                 try {
                     boolean success = blockingQueue.offer("xxx", 5, TimeUnit.SECONDS);
-                    if(!success) objectSprite.setRetreating(true);
+                    if(!success) objectSprite.setRetreating();
 //                    threadContext.stopThread(objectSprite);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
