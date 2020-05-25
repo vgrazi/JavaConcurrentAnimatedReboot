@@ -55,7 +55,6 @@ public class SaturationPolicySlide extends Slide {
                     } else {
                         threadContext.stopThread(runnableSprite);
                         runnableSprite.setRetreating();
-
                         System.out.printf("Thread %s not known to context%n", thread);
                     }
                 });
@@ -64,32 +63,6 @@ public class SaturationPolicySlide extends Slide {
             }
         });
 
-        threadContext.addButton("submit", () -> {
-            RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
-            threadContext.addSprite(runnableSprite);
-            setState(3);
-
-                        executor.submit(() -> {
-                Thread thread = Thread.currentThread();
-                PooledThreadSprite<String> sprite = (PooledThreadSprite) threadContext.getThreadSprite(thread);
-                if (sprite != null) {
-                    sprite.setPooled(false);
-                    sprite.setRunning(true);
-                    sprite.setYPosition(runnableSprite.getYPosition());
-                    runnableSprite.setThread(thread);
-                    while (sprite.isRunning()) {
-                                Thread.yield();
-                            }
-                    sprite.setPooled(true);
-                    runnableSprite.setDone();
-                    threadContext.stopThread(runnableSprite);
-                    setState(0);
-                } else {
-                    System.out.printf("Thread %s not known to context%n", thread);
-                }
-                        });
-                    });
-
         threadContext.addButton("(done)", () -> {
             PooledThreadSprite<String> sprite = threadContext.getRunningPooledThread();
             if (sprite != null) {
@@ -97,6 +70,23 @@ public class SaturationPolicySlide extends Slide {
                 sprite.setRunning(false);
                 sprite.setPooled(true);
                 }
+        });
+
+        threadContext.addButton("setRejectedExecutionHandler(CallerRuns)", ()->{
+            reset();
+            executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        });
+        threadContext.addButton("setRejectedExecutionHandler(Discard)", ()->{
+            reset();
+            executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        });
+        threadContext.addButton("setRejectedExecutionHandler(DiscardOldest)", ()->{
+            reset();
+            executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
+        });
+        threadContext.addButton("setRejectedExecutionHandler(Abort)", ()->{
+            reset();
+            executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         });
 
         threadContext.addButton("reset", this::reset);
@@ -113,7 +103,7 @@ public class SaturationPolicySlide extends Slide {
 
         threadContext.setSlideLabel("Saturation Policy");
 //        setSnippetFile("some.html");
-        executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
+        executor = new ThreadPoolExecutor(4, 4, 2, TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 r -> {
                     PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
@@ -125,7 +115,5 @@ public class SaturationPolicySlide extends Slide {
                     return thread;
                 }
         );
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-
     }
 }
