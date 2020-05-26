@@ -52,7 +52,7 @@ public class RunnableSprite<S> extends ThreadSprite<S> {
     public void render(Graphics2D graphics) {
         // todo: make a property
         graphics.setColor(Color.orange);
-        graphics.fill3DRect(getXPosition() - width - 1, getYPosition() - height / 2, width, height, true);
+        graphics.fill3DRect(getXPosition() + getXOffset() - width - 1, getYPosition() - height / 2, width, height, true);
     }
 
     @Value("${FUTURE-DEFAULT-COLOR}")

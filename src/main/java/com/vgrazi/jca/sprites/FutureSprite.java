@@ -53,9 +53,9 @@ public class FutureSprite extends Sprite implements InitializingBean {
     public void render(Graphics2D graphics) {
         if (future != null) {
             graphics.setColor(Color.black);
-            graphics.drawRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
+            graphics.drawRect(getXPosition() + getXOffset() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
-            graphics.fill3DRect(getXPosition() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
+            graphics.fill3DRect(getXPosition() + getXOffset() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
             if(future.isDone()) {
                 String value = String.valueOf(future.join());
                 graphics.setColor(futureTextColor);
@@ -63,7 +63,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
                 FontMetrics fm = graphics.getFontMetrics();
                 int xDelta = (width + getXMargin() + getXRightMargin() - fm.stringWidth(value))/2;
                 int yDelta = (this.height + getYMargin() * 2 - fm.getHeight())/2;
-                graphics.drawString(value,getXPosition() - getXMargin() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
+                graphics.drawString(value,getXPosition() - getXMargin() + getXOffset() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
             }
         }
     }
@@ -110,6 +110,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
         return "FutureSprite{" +
                 "ID=" + getID() +
 //                ", x-position=" + xPosition +
+                ", x-offset=" + getXOffset() +
 //                ", y-position=" + yPosition +
                 ", relative_position=" + getRelativePosition() +
                 '}';

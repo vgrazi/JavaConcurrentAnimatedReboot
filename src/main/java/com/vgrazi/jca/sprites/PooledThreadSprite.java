@@ -52,7 +52,7 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
     protected void drawThreadCap(Graphics2D graphics) {
         if (getThreadState() == Thread.State.WAITING) {
             graphics.setColor(getThreadContext().getColorByInstance(this));
-            graphics.fillOval(leftBound, topBound, ballDiameter, ballDiameter);
+            graphics.fillOval(leftBound + getXOffset(), topBound, ballDiameter, ballDiameter);
 
         } else {
             super.drawThreadCap(graphics);
@@ -79,7 +79,6 @@ public class PooledThreadSprite<S> extends RunnerThreadSprite<S> {
 //                ", x-position=" + getXPosition() +
                 ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
-                ", " +
                 '}';
     }
 }

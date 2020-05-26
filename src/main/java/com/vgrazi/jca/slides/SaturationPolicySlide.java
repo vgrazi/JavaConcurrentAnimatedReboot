@@ -23,6 +23,7 @@ public class SaturationPolicySlide extends Slide {
     private ApplicationContext applicationContext;
 
     private ThreadPoolExecutor executor;
+    private SynchronousQueue<Runnable> workQueue;
 
     public SaturationPolicySlide(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -37,14 +38,14 @@ public class SaturationPolicySlide extends Slide {
             setState(2);
 
             try {
-                executor.execute(() -> {
-                    Thread thread = Thread.currentThread();
-                    PooledThreadSprite<String> sprite = (PooledThreadSprite) threadContext.getThreadSprite(thread);
+                Runnable[] runnables = new Runnable[1];
+                runnables[0] = () -> {
+                    PooledThreadSprite<String> sprite = (PooledThreadSprite) threadContext.getThreadSprite(Thread.currentThread());
                     if (sprite != null) {
                         sprite.setPooled(false);
                         sprite.setRunning(true);
                         sprite.setYPosition(runnableSprite.getYPosition());
-                        runnableSprite.setThread(thread);
+                        runnableSprite.setThread(Thread.currentThread());
                         while (sprite.isRunning()) {
                             Thread.yield();
                         }
@@ -55,11 +56,15 @@ public class SaturationPolicySlide extends Slide {
                     } else {
                         threadContext.stopThread(runnableSprite);
                         runnableSprite.setRetreating();
-                        System.out.printf("Thread %s not known to context%n", thread);
+                        System.out.printf("Thread %s not known to context%n", Thread.currentThread());
                     }
-                });
+                };
+                executor.execute(runnables[0]);
             } catch (Exception e) {
                 e.printStackTrace();
+                setMessage(e.getMessage());
+                threadContext.stopThread(runnableSprite);
+                runnableSprite.setRetreating();
             }
         });
 
@@ -103,8 +108,9 @@ public class SaturationPolicySlide extends Slide {
 
         threadContext.setSlideLabel("Saturation Policy");
 //        setSnippetFile("some.html");
-        executor = new ThreadPoolExecutor(4, 4, 2, TimeUnit.SECONDS,
-                new SynchronousQueue<>(),
+        workQueue = new SynchronousQueue<>();
+        executor = new ThreadPoolExecutor(0, 4, 2, TimeUnit.SECONDS,
+                workQueue,
                 r -> {
                     PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
                     Thread thread = new Thread(r);

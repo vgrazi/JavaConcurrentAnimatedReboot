@@ -28,33 +28,37 @@ public abstract class Sprite<T> {
 
     private Direction direction = Direction.right;
     @Value("${monolith-left-border}")
-    private int monolithLeftBorder;
+    protected int monolithLeftBorder;
     @Value("${monolith-right-border}")
     private int monolithRightBorder;
 
     private String message;
 
     /**
-     * Number of pixels to allow at top - this is subtracted from the set ypos
+     * Number of pixels to allow at left - this is subtracted from the set xpos
      */
     private int xMargin;
 
     /**
-     * Number of pixels to allow at left - this is subtracted from the set xpos
+     * Number of pixels to allow at top - this is subtracted from the set ypos
      */
     private int yMargin;
 
+    /**
+     * We can shift everything over by an offset.
+     */
+    private int xOffset;
 
     @Autowired
     private ThreadContext threadContext;
+
     protected int yPosition;
     private volatile String action = "default";
-
     private boolean running = true;
+
     private volatile T holder;
     private int xRightMargin;
     private long specialId;
-
     @Value("${arrow-length}")
     private int arrowLength;
 
@@ -76,6 +80,14 @@ public abstract class Sprite<T> {
      */
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public void setXOffset(int xOffset) {
+        this.xOffset = xOffset;
+    }
+
+    public int getXOffset() {
+        return xOffset;
     }
 
     public RelativePosition getRelativePosition() {
@@ -151,7 +163,7 @@ public abstract class Sprite<T> {
             Graphics graphics1 = graphics.create();
             graphics1.setColor(Color.white);
             graphics1.setFont(messageFont);
-            graphics1.drawString(message, getXPosition() - arrowLength, getYPosition() - 8);
+            graphics1.drawString(message, getXPosition() + xOffset - arrowLength + xOffset, getYPosition() - 8);
             graphics1.dispose();
         }
     }
@@ -165,7 +177,7 @@ public abstract class Sprite<T> {
             Graphics graphics1 = graphics.create();
             graphics1.setColor(Color.yellow);
             graphics1.setFont(messageFont);
-            graphics1.drawString(getLabel(), getXPosition() - arrowLength, getYPosition() - 8);
+            graphics1.drawString(getLabel(), getXPosition() + xOffset - arrowLength, getYPosition() - 8);
             graphics1.dispose();
         }
     }

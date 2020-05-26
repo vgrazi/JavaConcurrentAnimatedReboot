@@ -34,7 +34,7 @@ public class ObjectSprite extends RunnerThreadSprite implements InitializingBean
 //        Draw a positioning line, for diagnostics
 //        graphics.drawLine(0, yCenter, 1000, yCenter);
         int yPos = yCenter - height / 2;
-        graphics.fillOval(getXPosition() - width, yPos + getYMargin(), width, height);
+        graphics.fillOval(getXPosition() + getXOffset() - width, yPos + getYMargin(), width, height);
     }
 
     @Override

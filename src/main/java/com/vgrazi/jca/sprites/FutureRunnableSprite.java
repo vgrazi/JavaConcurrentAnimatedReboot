@@ -43,11 +43,11 @@ public class FutureRunnableSprite extends RunnerThreadSprite{
             RelativePosition relativePosition = getRelativePosition();
             if( relativePosition == RelativePosition.Before) {
                 super.render(graphics);
-                graphics.fill3DRect(getXPosition() - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
+                graphics.fill3DRect(getXPosition() + getXOffset() - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
             }
             else if( relativePosition == RelativePosition.At) {
                 xPosition = monolithLeftBorder;
-                graphics.fill3DRect(xPosition - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
+                graphics.fill3DRect(xPosition + getXOffset() - arrowLength + (arrowLength - length) / 2 - 3, yPosition, length, runnableHeight, true);
                 super.render(graphics);
             }
         }
@@ -59,16 +59,16 @@ public class FutureRunnableSprite extends RunnerThreadSprite{
             // render the future
             if (relativePosition != RelativePosition.In) {
                 xPosition = getXPosition() - arrowLength + (arrowLength - length) / 2 - 3;
-                graphics.fill3DRect(xPosition, yPosition, length, runnableHeight, true);
+                graphics.fill3DRect(xPosition + getXOffset(), yPosition, length, runnableHeight, true);
             }
         }
         else if(state == getThreadContext().blocked){
             xPosition = monolithRightBorder - length;
-            graphics.fill3DRect(xPosition, yPosition, length, runnableHeight, true);
+            graphics.fill3DRect(xPosition + getXOffset(), yPosition, length, runnableHeight, true);
         }
         else {
             xPosition = getXPosition() - arrowLength + (arrowLength - length) / 2 - 3;
-            graphics.fill3DRect(xPosition, yPosition, length, runnableHeight, true);
+            graphics.fill3DRect(xPosition + getXOffset(), yPosition, length, runnableHeight, true);
         }
     }
 

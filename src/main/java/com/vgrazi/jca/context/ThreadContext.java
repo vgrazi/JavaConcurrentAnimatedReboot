@@ -345,9 +345,9 @@ public class ThreadContext<S> implements InitializingBean {
         }
     }
 
-    public void addSprite(int i, Sprite sprite) {
-        if (i >= 0 && i <= sprites.size()) {
-            sprites.add(i, sprite);
+    public void addSprite(int position, Sprite sprite) {
+        if (position >= 0 && position <= sprites.size()) {
+            sprites.add(position, sprite);
         }
         if (sprite instanceof ThreadSprite) {
             threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());

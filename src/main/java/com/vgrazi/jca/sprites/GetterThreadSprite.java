@@ -44,7 +44,7 @@ public class GetterThreadSprite<S> extends ThreadSprite<S> {
      */
     protected void drawThreadCap(Graphics2D graphics) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
-        graphics.fillOval(getXPosition() - 6 - arrowLength, getYPosition() - 5, 10, 10);
+        graphics.fillOval(getXPosition() + getXOffset() - 6 - arrowLength, getYPosition() - 5, 10, 10);
     }
 
     @Override

@@ -70,6 +70,10 @@ public abstract class Slide {
     public abstract void run();
 
     protected void setMessage(String message) {
+        setMessage(message, Color.white);
+    }
+    protected void setMessage(String message, Color foreground) {
+        this.messages.setForeground(foreground);
         this.messages.setText(message);
     }
 

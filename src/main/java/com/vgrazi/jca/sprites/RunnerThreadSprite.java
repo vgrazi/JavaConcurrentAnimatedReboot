@@ -78,12 +78,12 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         if (relativePosition != RelativePosition.In) {// && relativePosition != RelativePosition.At) {
             int xPosition = getXPosition();
             int yPosition = getYPosition();
-            graphics.drawLine(xPosition - arrowLength, yPosition, xPosition, yPosition);
+            graphics.drawLine(xPosition - arrowLength + getXOffset(), yPosition, xPosition + getXOffset(), yPosition);
         } else {
-            graphics.drawArc(leftBound, topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
-            graphics.drawArc(rightBound - ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
-            graphics.drawLine(lineStart, topBound, lineEnd, topBound);
-            graphics.drawLine(lineStart, bottomBound, lineEnd, bottomBound);
+            graphics.drawArc(leftBound + getXOffset(), topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
+            graphics.drawArc(rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
+            graphics.drawLine(lineStart + getXOffset(), topBound, lineEnd + getXOffset(), topBound);
+            graphics.drawLine(lineStart + getXOffset(), bottomBound, lineEnd + getXOffset(), bottomBound);
         }
         renderMessage(graphics);
         drawThreadCap(graphics);
@@ -104,10 +104,10 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
             FontMetrics fm = graphicsCopy.getFontMetrics();
             int height = fm.getHeight();
 
-            graphicsCopy.drawString("C" + getConditionId(), getXPosition() - 8 - offset, yPos + height/2);
+            graphicsCopy.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset, yPos + height/2);
             graphicsCopy.dispose();
         } else {
-            graphics.fillOval(getXPosition() - 8 - offset, yPos, ballDiameter, ballDiameter);
+            graphics.fillOval(getXPosition() + getXOffset() - 8 - offset, yPos, ballDiameter, ballDiameter);
         }
 
     }
