@@ -198,62 +198,46 @@ public class CompletableFutureSlide extends Slide {
             if (!bigFutures.isEmpty()) {
 
                 setState(2);
-// RunnerThreadSprite<Boolean> threadSprite = (RunnerThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
-
-                FutureRunnableSprite threadSprite = (FutureRunnableSprite) applicationContext.getBean("futureRunnableSprite");
-                threadSprite.setRunning(true);
-                threadSprite.setHolder(true);
-                int spriteXOffset = rightBorder - leftBorder + arrowLength + 15;
-                threadSprite.setXOffset(spriteXOffset);
+                RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
+                threadContext.reclaimYPosition();
+                runnableSprite.setXPosition(leftBorder + 15);
+                runnableSprite.setRunning(true);
+                runnableSprite.setHolder(true);
+                int spriteXOffset = rightBorder - leftBorder + 15;
+                runnableSprite.setXOffset(spriteXOffset);
                 FutureSprite bigFutureSprite = bigFutures.get(bigFutures.size() - 1);
-                threadSprite.setYPosition(bigFutureSprite.getYPosition() - futureTopMargin + 10);
-
-/*
-                // we need to create a future, a thread to attach to it, and sprites for each of those
-                FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
-                futureSprite.setHeight(completableFutureHeight);
-                futureSprite.setXMargin(15);
-                futureSprite.setXRightMargin(15);
-                futureSprite.setYMargin(6);
-                futureSprite.setXOffset(spriteXOffset);
-                futureSprite.setYPosition(threadSprite.getYPosition() - 8);
-                CompletableFuture completableFuture = bigFutureSprite.getFuture();
-                CompletableFuture thenRun = completableFuture.thenRun(() -> {
-//                    threadSprite.moveMonolithBorder(rightBorder);
-//                            threadSprite.setYPosition(futureSprite.getYPosition());
-//                            threadSprite.setXPosition(rightBorder+arrowLength);
-//                            System.out.println("Setting xPos  for " + threadSprite);
-//                    threadSprite.setXPosition(200);
-                            while (threadSprite.isRunning()) {
-                                Thread.yield();
-                            }
-                        }
-                );
-
-                futureSprite.setFuture(thenRun);
-                threadSprite.attachAndStartRunnable(() -> {
-                    while (threadSprite.isRunning()) {
-                        Thread.yield();
-                    }
-                    System.out.println(threadSprite + " exiting");
-                });
-                threadContext.addSprite(0, futureSprite);
-*/
+                runnableSprite.setYPosition(bigFutureSprite.getYPosition() - futureTopMargin + 10);
 
                 CompletableFuture completableFuture = bigFutureSprite.getFuture();
                 CompletableFuture thenRun = completableFuture.thenRun(() -> {
-                            while (threadSprite.isRunning()) {
-                                Thread.yield();
-                            }
+                            System.out.println("HIT!!!!");
+                            RunnerThreadSprite runnerThreadSprite = (RunnerThreadSprite) applicationContext.getBean("runnerThreadSprite");
+                            threadContext.reclaimYPosition();
+                            runnerThreadSprite.setYPosition(runnableSprite.getYPosition());
+                            runnerThreadSprite.setXPosition(leftBorder + 5);
+                            runnerThreadSprite.setXOffset(spriteXOffset);
+
+                            // set the holder to true for running
+                            runnerThreadSprite.setHolder(true);
+                            runnerThreadSprite.attachAndStartRunnable(() -> {
+                                long startTime = System.currentTimeMillis();
+                                while(System.currentTimeMillis() - startTime < 2_000) {
+                                    Thread.yield();
+                                }
+
+                                threadContext.stopThread(runnerThreadSprite);
+                                threadContext.stopThread(runnableSprite);
+                            });
+                            threadContext.addSprite(runnerThreadSprite);
                         }
                 );
-                threadSprite.attachAndStartRunnable(() -> {
-                    while (threadSprite.isRunning()) {
+                runnableSprite.attachAndStartRunnable(() -> {
+                    while (runnableSprite.isRunning()) {
                         Thread.yield();
                     }
-                    System.out.println(threadSprite + " exiting");
+                    System.out.println(runnableSprite + " exiting");
                 });
-                threadContext.addSprite(threadSprite);
+                threadContext.addSprite(runnableSprite);
             }
         });
 

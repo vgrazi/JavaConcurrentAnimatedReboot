@@ -611,6 +611,13 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     /**
+     * yPosition is automatically incremented by ThreadContext. In case we are placing the sprite declaratively, we can use this method to reset the next y pointer to the previous position
+     */
+    public void reclaimYPosition() {
+        nextYPos -= pixelsPerYStep;
+    }
+
+    /**
      * Get the next pooled thread position
      */
     public int getNextPooledYPosition() {
