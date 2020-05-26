@@ -273,6 +273,7 @@ public class CompletableFutureSlide extends Slide {
         threadContext.addYPixels(15);
         firstThread = null;
         threadCount = 0;
+        futureSprite.setDisplayValue(false);
         threadContext.addSprite(0, futureSprite);
         bigFutures.add(futureSprite);
     }

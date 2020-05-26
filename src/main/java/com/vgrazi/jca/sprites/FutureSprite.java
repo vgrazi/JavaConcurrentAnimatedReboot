@@ -33,6 +33,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
     private CompletableFuture future;
     @Value("${future-height}")
     private int height;
+    private boolean isDisplayValue = true;
 
     public void setNextXPosition() {
     }
@@ -63,9 +64,22 @@ public class FutureSprite extends Sprite implements InitializingBean {
                 FontMetrics fm = graphics.getFontMetrics();
                 int xDelta = (width + getXMargin() + getXRightMargin() - fm.stringWidth(value))/2;
                 int yDelta = (this.height + getYMargin() * 2 - fm.getHeight())/2;
-                graphics.drawString(value,getXPosition() - getXMargin() + getXOffset() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
+                if (isDisplayValue()) {
+                    graphics.drawString(value,getXPosition() - getXMargin() + getXOffset() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
+                }
             }
         }
+    }
+
+    /**
+     * If true, displays the value of this future, else doesn't
+     */
+    public boolean isDisplayValue() {
+        return isDisplayValue;
+    }
+
+    public void setDisplayValue(boolean displayValue) {
+        isDisplayValue = displayValue;
     }
 
     @Value("${FUTURE-DEFAULT-COLOR}")
