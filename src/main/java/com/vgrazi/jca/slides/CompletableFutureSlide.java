@@ -198,14 +198,17 @@ public class CompletableFutureSlide extends Slide {
             if (!bigFutures.isEmpty()) {
 
                 setState(2);
-                RunnerThreadSprite<Boolean> threadSprite = (RunnerThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
-                threadSprite.setRunning(true);
-//                threadSprite.setXPosition(leftBorder);
-                // the holder contains the running status. When it is done, will be set to false
-                threadSprite.setHolder(true);
-                int spriteXOffset = rightBorder - leftBorder + 15;
-                threadSprite.setXOffset(spriteXOffset);
+// RunnerThreadSprite<Boolean> threadSprite = (RunnerThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
 
+                FutureRunnableSprite threadSprite = (FutureRunnableSprite) applicationContext.getBean("futureRunnableSprite");
+                threadSprite.setRunning(true);
+                threadSprite.setHolder(true);
+                int spriteXOffset = rightBorder - leftBorder + arrowLength + 15;
+                threadSprite.setXOffset(spriteXOffset);
+                FutureSprite bigFutureSprite = bigFutures.get(bigFutures.size() - 1);
+                threadSprite.setYPosition(bigFutureSprite.getYPosition() - futureTopMargin + 10);
+
+/*
                 // we need to create a future, a thread to attach to it, and sprites for each of those
                 FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
                 futureSprite.setHeight(completableFutureHeight);
@@ -213,8 +216,6 @@ public class CompletableFutureSlide extends Slide {
                 futureSprite.setXRightMargin(15);
                 futureSprite.setYMargin(6);
                 futureSprite.setXOffset(spriteXOffset);
-                FutureSprite bigFutureSprite = bigFutures.get(bigFutures.size() - 1);
-                threadSprite.setYPosition(bigFutureSprite.getYPosition() - futureTopMargin + 10);
                 futureSprite.setYPosition(threadSprite.getYPosition() - 8);
                 CompletableFuture completableFuture = bigFutureSprite.getFuture();
                 CompletableFuture thenRun = completableFuture.thenRun(() -> {
@@ -228,6 +229,7 @@ public class CompletableFutureSlide extends Slide {
                             }
                         }
                 );
+
                 futureSprite.setFuture(thenRun);
                 threadSprite.attachAndStartRunnable(() -> {
                     while (threadSprite.isRunning()) {
@@ -236,6 +238,21 @@ public class CompletableFutureSlide extends Slide {
                     System.out.println(threadSprite + " exiting");
                 });
                 threadContext.addSprite(0, futureSprite);
+*/
+
+                CompletableFuture completableFuture = bigFutureSprite.getFuture();
+                CompletableFuture thenRun = completableFuture.thenRun(() -> {
+                            while (threadSprite.isRunning()) {
+                                Thread.yield();
+                            }
+                        }
+                );
+                threadSprite.attachAndStartRunnable(() -> {
+                    while (threadSprite.isRunning()) {
+                        Thread.yield();
+                    }
+                    System.out.println(threadSprite + " exiting");
+                });
                 threadContext.addSprite(threadSprite);
             }
         });
