@@ -66,4 +66,7 @@ public class UIUtils {
         return resizedImg;
     }
 
+    public static Color applyAlpha(Color color, int alpha) {
+        return new Color(color.getRed(), color.getBlue(), color.getGreen(), alpha);
+    }
 }

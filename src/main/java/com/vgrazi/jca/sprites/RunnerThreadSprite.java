@@ -63,6 +63,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
 
     }
 
+
     @Override
     public void render(Graphics2D graphics) {
 // Render a bounding box around where the rounded circle should be.

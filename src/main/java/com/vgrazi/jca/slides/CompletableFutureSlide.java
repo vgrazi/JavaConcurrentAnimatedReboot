@@ -210,7 +210,6 @@ public class CompletableFutureSlide extends Slide {
 
                 CompletableFuture completableFuture = bigFutureSprite.getFuture();
                 CompletableFuture thenRun = completableFuture.thenRun(() -> {
-                            System.out.println("HIT!!!!");
                             RunnerThreadSprite runnerThreadSprite = (RunnerThreadSprite) applicationContext.getBean("runnerThreadSprite");
                             threadContext.reclaimYPosition();
                             runnerThreadSprite.setYPosition(runnableSprite.getYPosition());
