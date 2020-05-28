@@ -1,7 +1,7 @@
    <0 default>StampedLock lock = <0 keyword>new <0 default>StampedLock();<br>
    <1 keyword>long <1 default>stamp = lock.readLock();<br>
-   <2 default>lock.unlockRead(stamp);<br>
    <6 keyword>long <6 default>stamp = lock.writeLock();<br>
-   <3 default>lock.unlockWrite(stamp);<br>
    <5 keyword>long <5 default>stamp = lock.tryOptimisticRead();<br>
+   <2 default>lock.unlockRead(stamp);<br>
+   <3 default>lock.unlockWrite(stamp);<br>
    <4 keyword>boolean <4 default>valid = lock.validate(stamp);

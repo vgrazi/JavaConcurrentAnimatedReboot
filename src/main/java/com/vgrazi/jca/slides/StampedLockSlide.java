@@ -32,8 +32,9 @@ public class StampedLockSlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("readLock()", () -> {
+        threadContext.addButton("lock.readLock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
+            setState(1);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.readLock();
@@ -48,8 +49,27 @@ public class StampedLockSlide extends Slide {
             threadContext.addSprite(sprite);
         });
 
-        threadContext.addButton("tryOptimisticRead()", () -> {
+        threadContext.addButton("lock.writeLock()", () -> {
+            ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("writeThreadSprite");
+            setState(6);
+            sprite.setHolder("running");
+            sprite.attachAndStartRunnable(() -> {
+                long stamp = stampedLock.writeLock();
+                sprite.setSpecialId(stamp);
+                writeStamps.offer(stamp);
+                while ("running".equals(sprite.getHolder())) {
+                    Thread.yield();
+                }
+                System.out.println("unlockWrite(" + stamp);
+                stampedLock.unlockWrite(stamp);
+                threadContext.stopThread(sprite);
+            });
+            threadContext.addSprite(sprite);
+        });
+
+        threadContext.addButton("lock.tryOptimisticRead()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
+            setState(5);
             sprite.setStroke(dottedStroke);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
@@ -74,26 +94,10 @@ public class StampedLockSlide extends Slide {
             threadContext.addSprite(sprite);
         });
 
-        threadContext.addButton("writeLock()", () -> {
-            ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("writeThreadSprite");
-            sprite.setHolder("running");
-            sprite.attachAndStartRunnable(() -> {
-                long stamp = stampedLock.writeLock();
-                sprite.setSpecialId(stamp);
-                writeStamps.offer(stamp);
-                while ("running".equals(sprite.getHolder())) {
-                    Thread.yield();
-                }
-                System.out.println("unlockWrite(" + stamp);
-                stampedLock.unlockWrite(stamp);
-                threadContext.stopThread(sprite);
-            });
-            threadContext.addSprite(sprite);
-        });
-
-        threadContext.addButton("unlockRead(stamp)", () -> {
+        threadContext.addButton("lock.unlockRead(stamp)", () -> {
             Long stamp = readStamps.peek();
             if (stamp != null) {
+                setState(2);
                 ThreadSprite readLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if(readLockSprite != null) {
                     readStamps.poll();
@@ -105,9 +109,10 @@ public class StampedLockSlide extends Slide {
             }
         });
 
-        threadContext.addButton("unlockWrite(stamp)", () -> {
+        threadContext.addButton("lock.unlockWrite(stamp)", () -> {
             Long stamp = writeStamps.peek();
             if (stamp != null) {
+                setState(3);
                 ThreadSprite writeLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if(writeLockSprite != null) {
                     writeStamps.poll();
@@ -121,6 +126,7 @@ public class StampedLockSlide extends Slide {
         threadContext.addButton("validate(stamp)", () -> {
             Long stamp = optimisticReadStamps.peek();
             if (stamp != null) {
+                setState(4);
                 ThreadSprite sprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if (sprite != null) {
                     optimisticReadStamps.poll();
