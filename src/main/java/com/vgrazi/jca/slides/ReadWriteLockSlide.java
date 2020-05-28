@@ -27,9 +27,9 @@ public class ReadWriteLockSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("readLock()", () -> {
+        threadContext.addButton("readWriteLock.readLock().lock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
-            setCssSelected("readlock-lock");
+            setState(1);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 readWriteLock.readLock().lock();
@@ -42,12 +42,12 @@ public class ReadWriteLockSlide extends Slide {
             threadContext.addSprite(sprite);
         });
 
-        threadContext.addButton("writeLock", () -> {
+        threadContext.addButton("readWriteLock.writeLock().lock()", () -> {
             ThreadSprite<String> sprite = (WriteThreadSprite<String>) applicationContext.getBean("writeThreadSprite");
             sprite.setHolder("write-lock");
             sprite.setSpecialId(1);
             sprite.attachAndStartRunnable(() -> {
-                setCssSelected("writelock-lock");
+                setState(2);
                 readWriteLock.writeLock().lock();
                 while ("write-lock".equals(sprite.getHolder())) {
                     Thread.yield();
@@ -70,20 +70,21 @@ public class ReadWriteLockSlide extends Slide {
             threadContext.addSprite(sprite);
         });
 
-        threadContext.addButton("(downgrade to read)", () -> {
-            ThreadSprite<String> runningWriteThread = (ThreadSprite<String>) threadContext.getFirstRunningThreadOfSpecialId(1);
-            if (runningWriteThread != null) {
-                setCssSelected("writelock-downgrade");
-                runningWriteThread.setHolder("downgrade");
-            }
-        });
-
         threadContext.addButton("lock.unlock()", () -> {
             ThreadSprite<String> runningThread = (ThreadSprite<String>) threadContext.getRunningThread();
             if (runningThread != null) {
-                setCssSelected("readlock-unlock");
+                setState(3);
                 runningThread.setHolder("release");
                 threadContext.stopThread(runningThread);
+            }
+        });
+
+        threadContext.addButton("(downgrade to read)", () -> {
+            ThreadSprite<String> runningWriteThread = (ThreadSprite<String>) threadContext.getFirstRunningThreadOfSpecialId(1);
+            if (runningWriteThread != null) {
+                setState(4);
+                setCssSelected("writelock-downgrade");
+                runningWriteThread.setHolder("downgrade");
             }
         });
 

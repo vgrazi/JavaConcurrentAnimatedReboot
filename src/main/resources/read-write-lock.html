@@ -1,31 +1,28 @@
-<PRE>
- <FONT style="font-family:monospaced;" COLOR="#606060"><I>// Construct the ReadWriteLock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000000>"><br>
- </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000000>"> ReadWriteLock lock =
-     </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>new</B></FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000000>"> ReentrantReadWriteLock();
-     </FONT><FONT style="font-family:monospaced;" COLOR="<state6:#000080>"><B>new</B></FONT><FONT style="font-family:monospaced;" COLOR="<state6:#000000>"> ReentrantReadWriteLock(true);
+ <0 keyword>final<0 default> ReadWriteLock readWriteLock =
+     <0 keyword>new<0 default> ReentrantReadWriteLock();
+     <0 comment>new ReentrantReadWriteLock(true);
 
- </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#808080>"><I>// Acquire the read lock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">
+ <1 comment>// Acquire the read lock
+ <1 keyword>try <1 default> {
+     readWriteLock.readLock().lock();
+ <1 comment>// or
+ <1 default>    readWriteLock.readLock().tryLock(1L, TimeUnit.SECONDS);
+ }<1 keyword>catch<1 default>(InterruptedException e){}
 
- </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000080>"><B>try</B></FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>"> {
-   lock.readLock().lock();
-   </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#808080>"><I>// or</I></FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">
+ <2 keyword>try <2 default> {
+    readWriteLock.writeLock().lock();
+ <2 comment>// or
+ <2 default>   readWriteLock.writeLock().tryLock(1L, TimeUnit.SECONDS);
+ }<2 keyword>catch<2 default>(InterruptedException e){}
 
-   lock.readLock().tryLock(</FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000099>">1L, TimeUnit.SECONDS</FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">);
- }</FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000080>"><B>catch</B></FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">(InterruptedException e) { }
+ <3 default>readWriteLock.readLock().unlock()
+ <3 comment>// or
+ <3 default>readWriteLock.writeLock().unlock()
 
- </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#808080>"><I>// Release the read lock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>"><br>lock.readLock().unlock();
+ <4 comment>// Downgrade write lock to a read lock
+ <4 keyword>try <4 default> {
+    readWriteLock.readLock().lock();
+    readWriteLock.writeLock().unlock();
+ }<4 keyword>catch<4 default>(InterruptedException e){}
 
- </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#808080>"><I>// Acquire the write lock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>"><br></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000080>"><B>try</B></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>"> {
-   lock.writeLock().lock();
-   </FONT><FONT style="font-family:monospaced;" COLOR="<state3:#808080>"><I>// or</I></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>"><br>   lock.writeLock().tryLock(</FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000099>">1L, TimeUnit.SECONDS</FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>">);
- }</FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000080>"><B>catch</B></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>">(InterruptedException e) { }
 
- </FONT><FONT style="font-family:monospaced;" COLOR="<state4:#808080>"><I>// Release the lock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state4:#000000>"><br>lock.writeLock().unlock();
- // or<br>lock.readLock().unlock();
-
- </FONT><FONT style="font-family:monospaced;" COLOR="<state5:#808080>"><I>// Downgrade the write lock</I></FONT><FONT style="font-family:monospaced;" COLOR="<state3:#000000>"><br></FONT><FONT style="font-family:monospaced;" COLOR="<state5:#000080>"><B> try</B></FONT><FONT style="font-family:monospaced;" COLOR="<state5:#000000>"> {
-   lock.readLock().lock();
-   lock.writeLock().unlock();
- }</FONT><FONT style="font-family:monospaced;" COLOR="<state5:#000080>"><B>catch</B></FONT><FONT style="font-family:monospaced;" COLOR="<state5:#000000>">(InterruptedException e) {}
-</FONT>
-</PRE>
