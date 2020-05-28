@@ -88,6 +88,7 @@ public abstract class Slide {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
         this.messages.setText("");
+        setMessage("     ");
         imageLabel.setIcon(null);
         ((CardLayout) cardPanel.getLayout()).first(cardPanel);
     }
