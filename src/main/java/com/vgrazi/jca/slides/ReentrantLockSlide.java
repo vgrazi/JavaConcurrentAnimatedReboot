@@ -49,8 +49,8 @@ public class ReentrantLockSlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("lock()", () -> {
-            setCssSelected("lock");
+        threadContext.addButton("lock.lock()", () -> {
+            setState(1);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
@@ -66,7 +66,7 @@ public class ReentrantLockSlide extends Slide {
             threadContext.addSprite(sprite);
             setState(1);
         });
-        threadContext.addButton("lockInterrubtibly()", () -> {
+        threadContext.addButton("lock.lockInterrubtibly()", () -> {
             setCssSelected("lock-interruptibly");
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.setSpecialId(1);
@@ -88,7 +88,7 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("tryLock()", () -> {
-            setCssSelected("try-lock");
+            setState(6);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
@@ -134,21 +134,19 @@ public class ReentrantLockSlide extends Slide {
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
-        threadContext.addButton("newCondition()", () -> {
+        threadContext.addButton("lock.newCondition()", () -> {
             setCssSelected("condition");
+            setState(5);
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null && !runningSprite.hasCondition()) {
                 runningSprite.setAction("newCondition");
             }
         });
 
-        addAwaitSignalButton("await()", "await");
-
-        addAwaitSignalButton("signal()", "signal");
-
-        addAwaitSignalButton("signalAll()", "signalAll");
-
-        threadContext.addButton("unlock()", () -> {
+        addAwaitSignalButton("condition.await()", "await", 6);
+        addAwaitSignalButton("condition.signal()", "signal", 8);
+        addAwaitSignalButton("condition.signalAll()", "signalAll", 9);
+        threadContext.addButton("lock.unlock()", () -> {
             setCssSelected("unlock");
             ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
             runningSprite.setHolder(false);
@@ -204,11 +202,11 @@ public class ReentrantLockSlide extends Slide {
      * Adds a button for signal, signalAll, or await
      *
      * @param label  the button label
-     * @param action the action to set on the sprite if the menu item is selected
+     * @param state the state to set on the sprite if the menu item is selected
      */
-    private void addAwaitSignalButton(String label, String action) {
+    private void addAwaitSignalButton(String label, String action, int state) {
         threadContext.addButton(label, () -> {
-            setCssSelected(action);
+            setState(state);
             ThreadSprite runningSprite = threadContext.getRunnableThread();
                     if (runningSprite != null) {
                         if (!runningSprite.hasCondition()) {

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
 
+import static com.vgrazi.jca.util.Parsers.parseColor;
 import static com.vgrazi.jca.util.Parsers.parseFont;
+import static com.vgrazi.jca.util.UIUtils.applyAlpha;
 
 /**
  * This is a regular thread sprite, except that when it is running (inside the monolith), it renders as a round rectangle
@@ -14,6 +16,7 @@ import static com.vgrazi.jca.util.Parsers.parseFont;
  */
 public class RunnerThreadSprite<S> extends ThreadSprite<S> {
     protected Font conditionFont;
+    protected Color conditionColor;
     private int margin;
     protected int leftBound;
     protected int rightBound;
@@ -47,6 +50,12 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
     private void setConditionFont(String font) {
         conditionFont = parseFont(font);
     }
+
+    @Value("${condition-color}")
+    private void setConditionColor(String color) {
+        conditionColor = parseColor(color);
+    }
+
     @Override
     public void setYPosition(int yPosition) {
         super.setYPosition(yPosition);
@@ -102,6 +111,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         if (hasCondition()) {
             Graphics2D graphicsCopy = (Graphics2D) graphics.create();
             graphicsCopy.setFont(conditionFont);
+            graphicsCopy.setColor(conditionColor);
             FontMetrics fm = graphicsCopy.getFontMetrics();
             int height = fm.getHeight();
 
