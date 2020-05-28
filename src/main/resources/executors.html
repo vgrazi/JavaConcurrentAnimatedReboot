@@ -8,9 +8,9 @@
       <2 comment>// Do work
     <2 default>}});
   <3 comment>// Use the Executor to submit a Runnable or a Callable
-  <3 default>executor.submit(<3 keyword>new <3 default>Runnable() {
-    <3 keyword>@Override
-    public void <3 default>run() {
+  <3 default>Future future = executor.submit(<3 keyword>new <3 default>Runnable() {
+    <3 default>@Override
+    <3 keyword>public void <3 default>run() {
       <3 comment>// Do work
     <3 default>}});
   <4 comment>// Prestarting Core Threads
