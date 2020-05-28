@@ -3,10 +3,6 @@
  <1 keyword>try <1 default>{
    semaphore.acquire();
  }<1 keyword> catch <1 default>(InterruptedException e) { }
- <6 comment>// Constructor - pass in the number of permits
- <1 comment>// Threads attempting to acquire will block until
- <4 comment>// tryAcquire is like acquire, except that it
- // times out after an (optional) specified time (or 0).
  <4 keyword>try<4 default> {
  <4 keyword>  if<4 default>(semaphore.tryAcquire(<4 literal>5<4 default>, TimeUnit.SECONDS)) {
  <4 comment>    // Do something
@@ -18,7 +14,6 @@
  <3 keyword>if<3 default>(semaphore.tryAcquire()) {
  <3 comment>  // Do something
  <3 default>}
- // the specified number of releases are counted
  <2 default>semaphore.release();
  <5 default>int count = semaphore.drainPermits();
 

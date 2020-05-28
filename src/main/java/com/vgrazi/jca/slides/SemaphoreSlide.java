@@ -29,6 +29,8 @@ public class SemaphoreSlide extends Slide {
                 try {
                     log("About to acquire", sprite);
                     semaphore.acquire();
+                    printAvailablePermits();
+
                     log("acquired ", sprite);
                     while (sprite.isRunning()) {
                         Thread.yield();
@@ -47,6 +49,8 @@ public class SemaphoreSlide extends Slide {
                 threadContext.addSprite(sprite);
                 try {
                     boolean b = semaphore.tryAcquire(3, TimeUnit.SECONDS);
+                    printAvailablePermits();
+
                     if(!b) {
                         // todo: create a backoff rendering for threadSprite
                         sprite.setRetreating();
@@ -70,6 +74,7 @@ public class SemaphoreSlide extends Slide {
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
                 boolean b = semaphore.tryAcquire();
+                printAvailablePermits();
 
                 if (b) {
                     log("acquired ", sprite);
@@ -87,8 +92,9 @@ public class SemaphoreSlide extends Slide {
         threadContext.addButton("semaphore.release()", () -> {
             ThreadSprite sprite = threadContext.getRunningThread();
             setState(2);
+            semaphore.release();
+            printAvailablePermits();
             if (sprite != null) {
-                semaphore.release();
                 sprite.attachAndStartRunnable(()-> {
                     threadContext.stopThread(sprite);
                 });
@@ -98,13 +104,17 @@ public class SemaphoreSlide extends Slide {
         threadContext.addButton("semaphore.drainPermits()", ()->{
             setState(5);
             int count = semaphore.drainPermits();
-            setMessage(String.valueOf(count));
+            printAvailablePermits();
         });
 
         threadContext.addButton("reset", this::reset);
 
         threadContext.setVisible();
 
+    }
+
+    private void printAvailablePermits() {
+        setMessage("Available permits:" + semaphore.availablePermits());
     }
 
     public void reset() {
