@@ -38,12 +38,29 @@ public class StampedLockSlide extends Slide {
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.readLock();
+                setMessage("readLock acquired. Stamp=" + stamp);
                 sprite.setSpecialId(stamp);
                 readStamps.offer(stamp);
                 while ("running".equals(sprite.getHolder())) {
                     Thread.yield();
                 }
-                stampedLock.unlockRead(stamp);
+                if("wrong_stamp".equals(sprite.getHolder())) {
+                    // demo what happens if things go wrong
+                    try {
+                        // the first 7 bits of the stamp are used for tracking permits. The remaining 57 are used for
+                        // the stamp. Upshot is, if you just add say 1, it will still be valid.
+                        stampedLock.unlockRead(-stamp);
+                    } catch (Exception e) {
+                        sprite.setRetreating();
+                        sprite.setMessage("Validation failed");
+                        setMessage("unlocked wrong stamp. Needs=" + stamp + ". " + e);
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    stampedLock.unlockRead(stamp);
+                    setMessage("unlockedRead. Stamp=" + stamp);
+                }
                 threadContext.stopThread(sprite);
             });
             threadContext.addSprite(sprite);
@@ -55,6 +72,7 @@ public class StampedLockSlide extends Slide {
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.writeLock();
+                setMessage("writeLock acquired. Stamp=" + stamp);
                 sprite.setSpecialId(stamp);
                 writeStamps.offer(stamp);
                 while ("running".equals(sprite.getHolder())) {
@@ -62,6 +80,7 @@ public class StampedLockSlide extends Slide {
                 }
                 System.out.println("unlockWrite(" + stamp);
                 stampedLock.unlockWrite(stamp);
+                setMessage("unlockedWrite. Stamp=" + stamp);
                 threadContext.stopThread(sprite);
             });
             threadContext.addSprite(sprite);
@@ -74,6 +93,7 @@ public class StampedLockSlide extends Slide {
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.tryOptimisticRead();
+                setMessage("Optimistic read acquired. Stamp=" + stamp);
                 sprite.setSpecialId(stamp);
                 optimisticReadStamps.offer(stamp);
                 while ("running".equals(sprite.getHolder())) {
@@ -83,9 +103,11 @@ public class StampedLockSlide extends Slide {
                 boolean valid = stampedLock.validate(stamp);
                 if(valid){
                     sprite.setMessage("Valid :)");
+                    setMessage("validated. Stamp=" + stamp);
                 }
                 else {
                     sprite.setMessage("Invalid :(");
+                    setMessage("validation failed. Stamp=" + stamp);
                     sprite.setRetreating();
                 }
                 System.out.println(valid);
@@ -102,6 +124,21 @@ public class StampedLockSlide extends Slide {
                 if(readLockSprite != null) {
                     readStamps.poll();
                     readLockSprite.setHolder("done");
+                }
+                else {
+                    System.out.println("No running read threads for stamp " +stamp);
+                }
+            }
+        });
+
+        threadContext.addButton("lock.unlockRead(wrong_stamp)", () -> {
+            Long stamp = readStamps.peek();
+            if (stamp != null) {
+                setState(2);
+                ThreadSprite readLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
+                if(readLockSprite != null) {
+                    readStamps.poll();
+                    readLockSprite.setHolder("wrong_stamp");
                 }
                 else {
                     System.out.println("No running read threads for stamp " +stamp);
