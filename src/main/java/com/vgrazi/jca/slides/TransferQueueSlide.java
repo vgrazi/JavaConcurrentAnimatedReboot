@@ -33,7 +33,9 @@ public class TransferQueueSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("transfer()", () -> {
+
+        threadContext.addButton("transferQueue.transfer(object)", () -> {
+            setState(1);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
@@ -54,7 +56,29 @@ public class TransferQueueSlide extends Slide {
             });
         });
 
-        threadContext.addButton("tryTransfer(2,TimeUnit.SECONDS)", () -> {
+        threadContext.addButton("transferQueue.tryTransfer(object)", () -> {
+            setState(3);
+            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+            threadContext.addSprite(objectSprite);
+            if (getter != null) {
+                objectSprite.setYPosition(getter.getYPosition());
+                objectSprite.setXPosition(rightBorder - 10);
+            }
+            objectSprite.attachAndStartRunnable(() -> {
+                boolean success = transferQueue.tryTransfer("xxx");
+                if(!success) {
+                    objectSprite.setRetreating();
+                }
+                threadContext.stopThread(objectSprite);
+                if (getter != null) {
+                    threadContext.stopThread(getter);
+                }
+            });
+        });
+
+        threadContext.addButton("transferQueue.tryTransfer(object, 2,TimeUnit.SECONDS)", () -> {
+            setState(5);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
@@ -78,8 +102,27 @@ public class TransferQueueSlide extends Slide {
             });
         });
 
-        threadContext.addButton("take()", () -> {
+//        threadContext.addButton("transferQueue.put(object)", () -> {
+//            setState(6);
+//            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+//            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+//            threadContext.addSprite(objectSprite);
+//            if (getter != null) {
+//                objectSprite.setYPosition(getter.getYPosition());
+//                objectSprite.setXPosition(rightBorder - 10);
+//            }
+//            objectSprite.attachAndStartRunnable(() -> {
+//                try {
+//                    transferQueue.put("xxx");
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//            });
+//        });
+
+        threadContext.addButton("transferQueue.take()", () -> {
                     // If there are waiting objects, don't create a new sprite
+                    setState(2);
                     ObjectSprite objectSprite = threadContext.getFirstWaitingObjectSprite();
 
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");

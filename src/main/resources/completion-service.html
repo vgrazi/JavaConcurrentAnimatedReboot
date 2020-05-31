@@ -1,21 +1,15 @@
-<pre>
-<FONT style="font-family:monospaced;" COLOR="808080">
-  // Launch many Callables to the
-  //   completion service.
-  // Results are queued as they arrive.
-  // To retrieve the results in sequence,
-  // call completionService.take().get();"
+<0 comment>// Launch many Callables to the
+//   completion service.
+// Results are queued as they arrive.
+// To retrieve the results in sequence,
+// call completionService.take().get();
 
- <FONT style="font-family:monospaced;" COLOR="#808080"><I>// Create a completionService, providing
-  //   an Executor in the constructor.
-  </FONT><FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT> <FONT style="font-family:monospaced;" COLOR="<state0:#000000>">CompletionService completionService =
-</FONT>
-    <FONT style="font-family:monospaced;" COLOR="<state0:#000080>"><B>new</B></FONT> <FONT style="font-family:monospaced;" COLOR="<state0:#000000>">ExecutorCompletionService(
-        Executors.newFixedThreadPool(4));</FONT>
+// Create a completionService, providing
+//   an Executor in the constructor.<br><0 keyword>final<0 default> CompletionService completionService
+    = <0 keyword>new<0 default> ExecutorCompletionService(
+        Executors.newFixedThreadPool(4));
 
-<FONT style="font-family:monospaced;" COLOR="#808080"><I>// Submit callables to the completion service
-  </FONT><FONT style="font-family:monospaced;" COLOR="<state1:#000000>">completionService.submit(callable);</FONT>"
+<1 comment>// Submit callables to the completion service<br><1 default>completionService.submit(callable);
 
-<FONT style="font-family:monospaced;" COLOR="#808080"><I>// Now take results as they complete
-  </FONT><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Future<Result> future = completionService.take();</FONT>
-  </><FONT style="font-family:monospaced;" COLOR="<state2:#000000>">Result result = future.get();</FONT></PRE>
+<2 comment>// Now take results as they complete<br><2 default>Future  future = completionService.take();
+Result result = future.get();

@@ -93,6 +93,7 @@ public abstract class Slide {
         this.messages.setText("");
         setMessage("     ");
         imageLabel.setIcon(null);
+        setState(0);
         ((CardLayout) cardPanel.getLayout()).first(cardPanel);
     }
 
@@ -160,7 +161,7 @@ public abstract class Slide {
         String snippet = getSnippet();
         snippet = applyState(state, snippet);
         getSnippetLabel().setText(snippet);
-        getSnippetLabel().setCaretPosition(1);
+        getSnippetLabel().setCaretPosition(0);
     }
 
     protected String getSnippet() {

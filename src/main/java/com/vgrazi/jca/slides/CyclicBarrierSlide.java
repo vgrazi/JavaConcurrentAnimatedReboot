@@ -22,10 +22,12 @@ public class CyclicBarrierSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("await()", () -> {
+            setMessage("");
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("await");
             sprite.attachAndStartRunnable(() -> {
                 try {
+                    setState(1);
                     if (firstThread == null) {
                         firstThread = sprite;
                     }
@@ -52,9 +54,11 @@ public class CyclicBarrierSlide extends Slide {
         });
 
         threadContext.addButton("await(time, TimeUnit)", () -> {
+            setMessage("");
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("await");
             sprite.attachAndStartRunnable(() -> {
+                setState(2);
                 try {
                     if (firstThread == null) {
                         firstThread = sprite;
@@ -73,6 +77,7 @@ public class CyclicBarrierSlide extends Slide {
                     }
                 } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
                     e.printStackTrace();
+                    setMessage(e.getMessage());
                     sprite.setRetreating();
                 }
                 finally {
@@ -83,8 +88,8 @@ public class CyclicBarrierSlide extends Slide {
         });
 
         threadContext.addButton("barrier.reset()", () ->{
-            setCssSelected("reset");
-
+            setMessage("");
+            setState(3);
             cyclicBarrier.reset();
             initializeInstanceFields();
         });
@@ -95,10 +100,12 @@ public class CyclicBarrierSlide extends Slide {
 
     public void reset() {
         super.reset();
+        setState(0);
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");
         setSnippetFile("cyclic-barrier.html");
         setImage("images/cyclicBarrier.jpg");
+        setMessage("");
         cyclicBarrier = new CyclicBarrier(4);
     }
 

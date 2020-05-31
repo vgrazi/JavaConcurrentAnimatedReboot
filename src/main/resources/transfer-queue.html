@@ -1,23 +1,25 @@
-<BODY BGCOLOR="#ffffff">
-<pre>
-<span class="<state0:#000080>">
- TransferQueue&lt;T&gt; transferQueue
-      </span><span color="<state0:#000080>"> = new </span><span class="<state0:#000080>">LinkedTransferQueue&lt;T&gt;();
- </span><span color="<state1:#000080>">try </span><span color="<state1:#000080>">{
-     transferQueue.put(t);
- } </span><span color="<state1:#000080>">catch </span><span color="<state1:#000080>">(InterruptedException e) { }
+<0 default>TransferQueue&lt;T> transferQueue
+    = <0 keyword>new <0 default>LinkedTransferQueue&lt;T>();
 
- </span><span color="<state4:#000080>">try </span><span color="<state4:#000080>">{
-     T t = transferQueue.take();
- } </span><span color="<state4:#000080>">catch </span><span color="<state4:#000080>">(InterruptedException e) { } </span>
- </span><span color="<state2:#000080>">
+<1 keyword>try <1 default>{
+    transferQueue.transfer(t);
+} <1 keyword>catch<1 default> (InterruptedException e) { }
 
- T t = transferQueue.poll();</span>
- <span color="<state5:#000080>" T t = transferQueue.transfer();
- </span>
- <span color="<state6:#000080>">boolean </span><span color="<state6:#000080>">success = transferQueue.tryTransfer(t);
+<3 keyword>try <3 default>{
+    <3 keyword>boolean<3 default> success = transferQueue.tryTransfer(t);
+} <3 keyword>catch<3 default> (InterruptedException e) { }
 
- </span><span color="<state7:#000080>">boolean </span><span color="<state7:#000080>">success =transferQueue.tryTransfer(t,
-</span><span color="<state7:#0000ff>">5</span><span color="<state7:#000080>">,
-                     TimeUnit.SECONDS);</span></pre>
-</body>
+<5 keyword>try <5 default>{
+    <5 keyword>boolean<5 default> success = transferQueue.tryTransfer(t, 2, TimeUnit.SECONDS);
+} <5 keyword>catch<5 default> (InterruptedException e) { }
+
+<6 keyword>try <6 default>{
+    <6 keyword>boolean<6 default> success = transferQueue.put(t);
+} <6 keyword>catch<6 default> (InterruptedException e) { }
+
+<2 keyword>try <2 default>{
+    T t = transferQueue.take();
+} <2 keyword>catch<2 default> (InterruptedException e) { }
+
+<4 default>T t = transferQueue.poll();
+

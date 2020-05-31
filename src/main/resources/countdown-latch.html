@@ -1,26 +1,20 @@
-<font style="font-family:monospaced;" COLOR="#000000"></FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// Constructor - pass in the pass count</I></FONT><font style="font-family:monospaced;" COLOR="#000000">
-  
- </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>"><B>final</B></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>"> CountDownLatch countDownLatch = </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>">\n
- </FONT><font style="font-family:monospaced;" COLOR="<state0:#000080>"></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>">        <B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state0:#000000>"> CountDownLatch(4); 
- 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// Threads attempting to acquire</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// will block until the specified</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// number of releases is counted.</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
- </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>">Thread acquireThread = </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> Thread() { 
-   </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>public</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>void</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> run() { 
-     </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>try</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>"> { 
-       countDownLatch.await(); 
-     } </FONT><font style="font-family:monospaced;" COLOR="<state1:#000080>"><B>catch</B></FONT><font style="font-family:monospaced;" COLOR="<state1:#000000>">(InterruptedException e) { }
- 
- </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>">Thread releaseThread = </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>new</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> Thread() { 
-   </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>public</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> </FONT><font style="font-family:monospaced;" COLOR="<state2:#000080>"><B>void</B></FONT><font style="font-family:monospaced;" COLOR="<state2:#000000>"> run() { 
-     countDownLatch.countDown(); 
-   } 
- 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// timed await is like await except that</I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// it times out after the specified </I></FONT><font style="font-family:monospaced;" COLOR="#000000"> 
- </FONT><font style="font-family:monospaced;" COLOR="#808080"><I>// timeout period.</I></FONT><font style="font-family:monospaced;" COLOR="#000000">
-   </FONT><font style="font-family:monospaced;" COLOR="<state3:#000080>"><B>try</B></FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>"> {
-     countDownLatch.await(1L, TimeUnit.DAYS)</FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>">);
-   } </FONT><font style="font-family:monospaced;" COLOR="<state3:#000080>"><B>catch</B></FONT><font style="font-family:monospaced;" COLOR="<state3:#000000>">(InterruptedException e) { }
-</FONT></PRE>
+<0 comment>// Constructor - pass in the pass count<br><0 keyword>final<0 default> CountDownLatch countDownLatch <br>  = <0 keyword>new<0 default> CountDownLatch(4);
+
+<1 comment>// Threads attempting to acquire
+// will block until the specified
+// number of releases is counted.<br><1 default>Thread acquireThread = <1 keyword>new <1 default>Thread() {
+    <1 keyword>public void<1 default> run() {
+        <1 keyword>try <1 default>{
+            countDownLatch.await();
+        } <1 keyword>catch<1 default>(InterruptedException e) { }
+
+<3 comment>// timed await is like await except that
+// it times out after the specified
+// timeout period.<br><3 keyword>try<3 default> {
+    countDownLatch.await(1L, TimeUnit.DAYS));
+} <3 keyword>catch<3 default>(InterruptedException e) { }
+
+<2 default>Thread releaseThread = <2 keyword>new<2 default> Thread(){
+    <2 keyword>public void<2 default> run() {
+        countDownLatch.countDown();
+    }}
