@@ -48,9 +48,9 @@ public class SnippetCanvas extends JEditorPane {
 //
 //    // Diagnostic code: todo: remove
 //    public void change() {
-//        System.out.println("Counter:" + counter);
+//        println("Counter:" + counter);
 //        if (counter == 4) {
-//            System.out.println("Replacing");
+//            println("Replacing");
 //            try {
 //                setSnippet("<div id='Contents'>" +
 //                        "<span class='synchronized'>replaced test 1</span><br>" +

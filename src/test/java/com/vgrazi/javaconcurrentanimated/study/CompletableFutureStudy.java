@@ -6,8 +6,15 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 public class CompletableFutureStudy {
+
+    private Logger logger = Logger.getLogger("CompletableFutureStudy");
+
+    private void println(String message) {
+        logger.info(message);
+    }
 
     private final Random random = new Random();
 
@@ -16,7 +23,7 @@ public class CompletableFutureStudy {
         int testCount = 1;
         CompletableFuture<String>[] cfs = new CompletableFuture[testCount];
         for (int i = 0; i < testCount; i++) {
-            System.out.println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
+            println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
             CompletableFuture<String> completableFuture = addCompletableFuture("CompletableFuture #" + (i+1), 5);
             cfs[i] = completableFuture;
         }
@@ -34,17 +41,17 @@ public class CompletableFutureStudy {
         int testCount = 5;
         CompletableFuture<String>[] cfs = new CompletableFuture[testCount];
         for (int i = 0; i < testCount; i++) {
-            System.out.println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
+            println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
             CompletableFuture<String> completableFuture = addCompletableFuture("CompletableFuture #" + (i+1), 5);
             cfs[i] = completableFuture;
         }
         CompletableFuture<?> anyOf = CompletableFuture.anyOf(cfs);
         CompletableFuture.allOf(cfs).join();
         Object joinAny = anyOf.join();
-        System.out.println("Joined!!!:" + joinAny);
+        println("Joined!!!:" + joinAny);
         try {
             Object joinGet = anyOf.get();
-            System.out.println("Joined!!!:" + joinGet);
+            println("Joined!!!:" + joinGet);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -55,24 +62,24 @@ public class CompletableFutureStudy {
         int testCount = 2;
         CompletableFuture<String>[] cfs = new CompletableFuture[testCount];
         for (int i = 0; i < testCount; i++) {
-            System.out.println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
+            println("Creating CompletableFuture " + "CompletableFuture #" + (i+1));
             CompletableFuture<String> completableFuture = addCompletableFuture("CompletableFuture #" + (i+1), 5);
             cfs[i] = completableFuture;
         }
         CompletableFuture<?> anyOf = CompletableFuture.anyOf(cfs);
-        anyOf.thenRun(()-> System.out.println("I'm Running!!!!"));
+        anyOf.thenRun(()-> println("I'm Running!!!!"));
         anyOf.thenApply(x -> {
-            System.out.println("I'm Returning " + x + " " + x.getClass() + " !!!!");
+            println("I'm Returning " + x + " " + x.getClass() + " !!!!");
             return x;
         });
         anyOf.thenAccept(x -> {
-            System.out.println("I'm Accepting " + x + " " + x.getClass() + " !!!!");
+            println("I'm Accepting " + x + " " + x.getClass() + " !!!!");
         });
         Object joinAny = anyOf.join();
-        System.out.println("Joined!!!:" + joinAny);
+        println("Joined!!!:" + joinAny);
         try {
             Object joinGet = anyOf.get();
-            System.out.println("Joined!!!:" + joinGet);
+            println("Joined!!!:" + joinGet);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -88,7 +95,7 @@ public class CompletableFutureStudy {
                 e.printStackTrace();
             }
 
-            System.out.println("Completing CompletableFuture " + id);
+            println("Completing CompletableFuture " + id);
             return id;
         });
         return f1;

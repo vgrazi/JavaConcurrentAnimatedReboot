@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,6 +69,8 @@ public abstract class Slide {
     private String snippetText;
     private static float snippetFontSize;
     private String snippetFile;
+
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public abstract void run();
 
@@ -164,6 +167,15 @@ public abstract class Slide {
         getSnippetLabel().setCaretPosition(0);
     }
 
+    public void println(Object message) {
+        logger.info(String.valueOf(message));
+    }
+
+    public void printf(String message, Object... params) {
+        String formatted = String.format(message, params);
+        println(formatted);
+    }
+
     protected String getSnippet() {
         String snippetText = this.snippetText == null?"":this.snippetText;
         int fontSize = snippetFont.getSize();
@@ -191,7 +203,7 @@ public abstract class Slide {
     }
 
     private String applyState(int state, String snippet) {
-//        System.out.println("ConcurrentExample.applyState " + state);
+//        println("ConcurrentExample.applyState " + state);
         if (snippet != null) {
             if (state == -1) {
                 snippet = snippet.replaceAll("<state\\d:(#\\d\\d\\d\\d\\d\\d)>", "$1");
@@ -208,7 +220,7 @@ public abstract class Slide {
 
             // for newer html output, intelliJ is spitting out css. The default css class is .s9
             // Look for <state2:s1> if state == 2 convert that to s1 else s9
-//          System.out.println(snippet);
+//          println(snippet);
             snippet = snippet.replaceAll("<state" + state + "\\:(\\w*)>", "$1");
             snippet = snippet.replaceAll("<state\\d:(s\\w+)>", "s9");
             snippet = snippet.replaceAll("<state\\d:(\\w+)>", "unselected");

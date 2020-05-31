@@ -22,7 +22,7 @@ public class ReactorStudy {
         }
 
 //        Scheduler scheduler = Schedulers.from(command -> new Thread(() -> {
-//                    System.out.println(Thread.currentThread());
+//                    println(Thread.currentThread());
 //                    command.run();
 //                }).start());
 

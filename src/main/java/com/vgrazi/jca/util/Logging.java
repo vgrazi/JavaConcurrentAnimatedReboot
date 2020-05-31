@@ -6,14 +6,16 @@ import com.vgrazi.jca.sprites.ThreadSprite;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Logging {
     static Map<Sprite, String> messageCache = new HashMap<>();
     static private long stepDelay = 2000;
+    static Logger logger = Logger.getLogger("Logging");
 
     public static void logAndSleep(long delay, String message) throws InterruptedException {
         Thread.sleep(delay);
-        System.out.println(LocalTime.now() + " " + message);
+        println(message);
     }
 
     public static void logAndSleep(String message, ThreadSprite sprite) {
@@ -42,7 +44,7 @@ public class Logging {
         if (cachedMessage == null || !cachedMessage.equals(message)) {
             messageCache.put(sprite, message);
             String newMessage = message + " " + sprite;
-            log(LocalTime.now() + " " + newMessage);
+            log(newMessage);
         }
     }
 
@@ -51,11 +53,15 @@ public class Logging {
         String cachedMessage = messageCache.get(sprite);
         if (cachedMessage == null || !cachedMessage.equals(message)) {
             messageCache.put(sprite, message);
-            System.out.println(LocalTime.now() + " " + message);
+            println(message);
         }
     }
 
     public static void log(String message) {
-        System.out.println(message);
+        println(message);
+    }
+
+    public static void println(String message) {
+        logger.info(message);
     }
 }

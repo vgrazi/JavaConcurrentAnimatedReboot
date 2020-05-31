@@ -34,7 +34,7 @@ public class ButtonPanelLayout extends FlowLayout {
         if(newHeight== 0) {
             newHeight = 26;
         }
-//        System.out.println("Setting bounds to " + target.getWidth() + "," + newHeight);
+//        println("Setting bounds to " + target.getWidth() + "," + newHeight);
         target.setSize(target.getWidth(), newHeight);
     }
 }

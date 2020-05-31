@@ -3,10 +3,15 @@ package com.vgrazi.jca.util;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
+import java.util.logging.Logger;
 
 public class HtmlUtils {
     private final static String blanks = "                                  "; // using Java 8 :(
 
+    private static Logger logger = Logger.getLogger("HtmlUtils");
+    private static void println(String message) {
+        logger.info(message);
+    }
     /**
      * Displays the html structure of the supplied node.
      * To start, pass in an HTMLDocument, null, 0
@@ -15,13 +20,13 @@ public class HtmlUtils {
         try {
             String padding = blanks.substring(0, level * 2);
             if (node == null) {
-                System.out.println("===============");
+                println("===============");
                 node = htmlDocument.getRootElements()[0];
 
             }
-            System.out.println("****" + padding + node.getName());
+            println("****" + padding + node.getName());
             if (node.isLeaf()) {
-                System.out.println("***-" + padding + "   " + htmlDocument.getText(node.getStartOffset(), node.getEndOffset() - node.getStartOffset()));
+                println("***-" + padding + "   " + htmlDocument.getText(node.getStartOffset(), node.getEndOffset() - node.getStartOffset()));
             } else {
                 int count = node.getElementCount();
                 for (int i = 0; i < count; i++) {

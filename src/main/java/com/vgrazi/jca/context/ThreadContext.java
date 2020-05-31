@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.vgrazi.jca.util.Parsers.parseColor;
@@ -44,7 +45,7 @@ public class ThreadContext<S> implements InitializingBean {
 
     @Autowired
     private JPanel cardPanel;
-
+    private final Logger logger = Logger.getLogger("ThreadContext");
     /**
      * Used for positioning getter sprites
      */
@@ -101,8 +102,12 @@ public class ThreadContext<S> implements InitializingBean {
      * Diagnostic - attach to a button to list sprites on demand
      */
     public void listSprites() {
-        System.out.println("SPRITES");
-        sprites.forEach(System.out::println);
+        println("SPRITES");
+        sprites.forEach(this::println);
+    }
+
+    private void println(Object message) {
+        logger.info(String.valueOf(message));
     }
 
     public boolean isDisplayThreadNames() {

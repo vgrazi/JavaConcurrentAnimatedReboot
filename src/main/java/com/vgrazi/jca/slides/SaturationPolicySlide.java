@@ -56,7 +56,7 @@ public class SaturationPolicySlide extends Slide {
                     } else {
                         threadContext.stopThread(runnableSprite);
                         runnableSprite.setRetreating();
-                        System.out.printf("Thread %s not known to context%n", Thread.currentThread());
+                        printf("Thread %s not known to context%n", Thread.currentThread());
                     }
                 };
                 executor.execute(runnables[0]);

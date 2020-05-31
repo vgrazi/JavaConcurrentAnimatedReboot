@@ -75,7 +75,7 @@ public class CompletableFutureSlide extends Slide {
                 threadContext.stopThread(threadSprite);
                 return "value " + valueIdGenerator.incrementAndGet();
             });
-            System.out.println("CREATED FUTURE:" + future);
+            println("CREATED FUTURE:" + future);
             completableFutures.add(future);
             futureSprite.setFuture(future);
             futureSprite.setHeight(completableFutureHeight);
@@ -84,7 +84,7 @@ public class CompletableFutureSlide extends Slide {
                 while (threadSprite.isRunning()) {
                     Thread.yield();
                 }
-                System.out.println(threadSprite + " exiting");
+                println(threadSprite + " exiting");
             });
             threadContext.addSprite(threadSprite);
         });
@@ -119,7 +119,7 @@ public class CompletableFutureSlide extends Slide {
                 while (threadSprite.isRunning()) {
                     Thread.yield();
                 }
-                System.out.println(threadSprite + " exiting");
+                println(threadSprite + " exiting");
             });
             threadContext.addSprite(threadSprite);
         });
@@ -184,7 +184,7 @@ public class CompletableFutureSlide extends Slide {
                 getter.setYPosition(futureSprite.getYCenter());
                 getter.attachAndStartRunnable(() -> {
                     CompletableFuture<String> future = futureSprite.getFuture();
-                    System.out.println("Getter attached to " + future);
+                    println("Getter attached to " + future);
                     String value = future.getNow("\"valueIfAbsent\"");
                     getter.setLabel(value);
                     threadContext.addSprite(getter);
@@ -234,7 +234,7 @@ public class CompletableFutureSlide extends Slide {
                     while (runnableSprite.isRunning()) {
                         Thread.yield();
                     }
-                    System.out.println(runnableSprite + " exiting");
+                    println(runnableSprite + " exiting");
                 });
                 threadContext.addSprite(runnableSprite);
             }

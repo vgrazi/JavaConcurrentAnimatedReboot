@@ -61,11 +61,11 @@ public class CompletionServiceSlide extends Slide {
                     try {
                         Future future = completionService.take();
                         if (future != null) {
-                            System.out.println("Called take. Now calling get");
+                            println("Called take. Now calling get");
                             FutureRunnableSprite originalSprite = (FutureRunnableSprite) future.get();
                             getter.setYPosition(originalSprite.getYPosition());
                             originalSprite.setDone(true);
-                            System.out.println("Completed get" + originalSprite);
+                            println("Completed get" + originalSprite);
                             threadContext.stopThread(originalSprite);
                             threadContext.stopThread(getter);
                         }

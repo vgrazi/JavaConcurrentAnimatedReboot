@@ -95,7 +95,7 @@ public class SynchronizedSlide extends Slide {
         sprite.attachAndStartRunnable(() -> {
             try {
                 synchronized (mutex) {
-                    System.out.println("Target state:" + sprite.getAction());
+                    println("Target state:" + sprite.getAction());
                     while (sprite.isRunning()) {
                         if ("release".equals(sprite.getAction())) {
                             threadContext.stopThread(sprite);
@@ -119,13 +119,13 @@ public class SynchronizedSlide extends Slide {
                                 break;
                         }
                     }
-                    System.out.println(sprite + " exiting");
+                    println(sprite + " exiting");
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
         threadContext.addSprite(sprite);
-        System.out.println("Added " + sprite);
+        println("Added " + sprite);
     }
 }

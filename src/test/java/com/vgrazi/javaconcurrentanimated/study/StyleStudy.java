@@ -11,12 +11,17 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class StyleStudy extends JFrame {
 
     private StyleSheet styleSheet = new StyleSheet();
     private HTMLDocument htmlDocument;
     private final String blanks = "                                  "; // using Java 8 :(
+    private static Logger logger = Logger.getLogger("StyleStudy");
+    private static void println(Object message) {
+        logger.info(String.valueOf(message));
+    }
 
     public static void main(String[] args) {
         StyleStudy stylePlay = new StyleStudy();
@@ -130,13 +135,13 @@ public class StyleStudy extends JFrame {
     private void displayHtml(Element node, int level) throws BadLocationException {
         String padding = blanks.substring(0, level * 2);
         if (node == null) {
-            System.out.println("===============");
+            println("===============");
             node = htmlDocument.getRootElements()[0];
 
         }
-        System.out.println("****" + padding + node.getName());
+        println("****" + padding + node.getName());
         if (node.isLeaf()) {
-            System.out.println("***-" + padding + "   " + htmlDocument.getText(node.getStartOffset(), node.getEndOffset() - node.getStartOffset()));
+            println("***-" + padding + "   " + htmlDocument.getText(node.getStartOffset(), node.getEndOffset() - node.getStartOffset()));
         } else {
             int count = node.getElementCount();
             for (int i = 0; i < count; i++) {

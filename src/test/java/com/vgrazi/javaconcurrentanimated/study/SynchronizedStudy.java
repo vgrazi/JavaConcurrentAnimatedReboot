@@ -2,9 +2,16 @@ package com.vgrazi.javaconcurrentanimated.study;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.logging.Logger;
+
 public class SynchronizedStudy {
     private final Object MUTEX = new Object();
     private boolean stopped;
+
+    private static Logger logger = Logger.getLogger("SynchronizedStudy");
+    private static void println(Object message) {
+        logger.info(String.valueOf(message));
+    }
 
     /**
      * Demo for how thread.stop will release a blocked thread.
@@ -19,18 +26,18 @@ public class SynchronizedStudy {
         Thread thread3 = getThread();
 //        Thread.holdsLock()
 
-        System.out.println("Trying interrupt on thread 1");
+        println("Trying interrupt on thread 1");
         thread1.interrupt();
         Thread.sleep(1000);
-        System.out.println("Trying stop on thread 2");
+        println("Trying stop on thread 2");
         thread2.stop();
         Thread.sleep(1000);
 
-        System.out.println("Trying stop on thread 1");
+        println("Trying stop on thread 1");
         thread1.stop();
         Thread.sleep(100);
 
-        System.out.println("Exhausted all attempts");
+        println("Exhausted all attempts");
         keepAlive();
     }
 
@@ -55,13 +62,13 @@ public class SynchronizedStudy {
 
     private Thread getThread() throws InterruptedException {
         Thread thread = new Thread(() -> {
-            System.out.println(Thread.currentThread() + " ACQUIRING LOCK");
+            println(Thread.currentThread() + " ACQUIRING LOCK");
             synchronized (MUTEX) {
-                System.out.println(Thread.currentThread() + " HAS LOCK");
+                println(Thread.currentThread() + " HAS LOCK");
                 while (!stopped && !Thread.currentThread().isInterrupted()) {
                     Thread.yield();
                 }
-                System.out.println(Thread.currentThread() + "Exiting");
+                println(Thread.currentThread() + "Exiting");
             }
         });
         thread.start();

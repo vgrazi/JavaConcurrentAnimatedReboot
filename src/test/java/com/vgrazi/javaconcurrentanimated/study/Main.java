@@ -2,6 +2,7 @@ package com.vgrazi.javaconcurrentanimated.study;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -11,6 +12,10 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
 public class Main extends JFrame {
+    private static Logger logger = Logger.getLogger("Main");
+    private static void println(Object message) {
+        logger.info(String.valueOf(message));
+    }
 
     StyleSheet styleSheet = new StyleSheet();
     HTMLDocument htmlDocument;
@@ -80,7 +85,7 @@ public class Main extends JFrame {
     boolean even;
 
     public void change(int i) throws Exception {
-        System.out.println("Changing");
+        println("Changing");
         Element div = htmlDocument.getElement("main");
         String htmlText;
         switch(i%3) {

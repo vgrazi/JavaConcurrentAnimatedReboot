@@ -5,8 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.*;
+import java.util.logging.Logger;
 
 public class ExecutorsStudy {
+    private static Logger logger = Logger.getLogger("ExecutorsStudy");
+    private static void println(Object message) {
+        logger.info(String.valueOf(message));
+    }
     private boolean stopped;
 
     @Test
@@ -40,11 +45,11 @@ public class ExecutorsStudy {
 
     private void execute(Executor executor) {
         executor.execute(()->{
-            System.out.println("Launching " + Thread.currentThread());
+            println("Launching " + Thread.currentThread());
             while(!stopped) {
                 Thread.yield();
             }
-            System.out.println("Exiting " + Thread.currentThread());
+            println("Exiting " + Thread.currentThread());
         });
     }
 
@@ -96,13 +101,13 @@ public class ExecutorsStudy {
 
 
     private void addRunnable(ExecutorService executorService) {
-        System.out.println("Trying " + Thread.currentThread());
+        println("Trying " + Thread.currentThread());
         executorService.execute(()->{
-            System.out.println("Launching " + Thread.currentThread());
+            println("Launching " + Thread.currentThread());
             while(!stopped) {
                 Thread.yield();
             }
-            System.out.println("Completing " + Thread.currentThread());
+            println("Completing " + Thread.currentThread());
         });
     }
 }

@@ -7,9 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.logging.Logger;
 
 @Component
 public class UIUtils {
+    private static Logger logger = Logger.getLogger("UIUtils");
+    private static void println(String message) {
+        logger.info(message);
+    }
 
     @Autowired
     private JPanel cardPanel;
@@ -33,7 +38,7 @@ public class UIUtils {
             ImageIcon imageIcon = new ImageIcon(url);
             return imageIcon;
         } catch (RuntimeException e) {
-            System.out.println("UIUtils.getImageIcon Can't find image at " + imageName);
+            println("UIUtils.getImageIcon Can't find image at " + imageName);
             throw e;
         }
     }

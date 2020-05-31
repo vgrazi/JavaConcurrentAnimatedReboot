@@ -12,7 +12,7 @@ public class Running extends ThreadState {
     @Override
     public void advancePosition(Sprite sprite) {
         RelativePosition relativePosition = sprite.getRelativePosition();
-//        System.out.println(sprite + " " + relativePosition);
+//        println(sprite + " " + relativePosition);
         switch (relativePosition) {
             case Before:
                 calculateNextPositionBefore(sprite);

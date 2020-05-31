@@ -78,7 +78,7 @@ public class StampedLockSlide extends Slide {
                 while ("running".equals(sprite.getHolder())) {
                     Thread.yield();
                 }
-                System.out.println("unlockWrite(" + stamp);
+                println("unlockWrite(" + stamp);
                 stampedLock.unlockWrite(stamp);
                 setMessage("unlockedWrite. Stamp=" + stamp);
                 threadContext.stopThread(sprite);
@@ -110,7 +110,7 @@ public class StampedLockSlide extends Slide {
                     setMessage("validation failed. Stamp=" + stamp);
                     sprite.setRetreating();
                 }
-                System.out.println(valid);
+                println(valid);
                 threadContext.stopThread(sprite);
             });
             threadContext.addSprite(sprite);
@@ -126,7 +126,7 @@ public class StampedLockSlide extends Slide {
                     readLockSprite.setHolder("done");
                 }
                 else {
-                    System.out.println("No running read threads for stamp " +stamp);
+                    println("No running read threads for stamp " +stamp);
                 }
             }
         });
@@ -141,7 +141,7 @@ public class StampedLockSlide extends Slide {
                     readLockSprite.setHolder("wrong_stamp");
                 }
                 else {
-                    System.out.println("No running read threads for stamp " +stamp);
+                    println("No running read threads for stamp " +stamp);
                 }
             }
         });
@@ -156,7 +156,7 @@ public class StampedLockSlide extends Slide {
                     writeLockSprite.setHolder("done");
                 }
                 else {
-                    System.out.println("No running write threads for stamp " +stamp);
+                    println("No running write threads for stamp " +stamp);
                 }
             }
         });
@@ -171,7 +171,7 @@ public class StampedLockSlide extends Slide {
                 }
             }
             else {
-                System.out.println("No running optimistic threads for stamp " +stamp);
+                println("No running optimistic threads for stamp " +stamp);
             }
         });
         threadContext.addButton("reset", this::reset);
