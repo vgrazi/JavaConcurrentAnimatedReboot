@@ -133,7 +133,7 @@ public class CompletableFutureSlide extends Slide {
                 setState(4);
             }
             CompletableFuture<?> future = CompletableFuture.anyOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
-            addCompletableFutureSprite(future);
+            addCompletableFutureSprite(future, "anyOf");
         });
 
         threadContext.addButton("CompletableFuture.allOf()", () -> {
@@ -141,7 +141,7 @@ public class CompletableFutureSlide extends Slide {
                 setState(3);
             }
             CompletableFuture<Void> future = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
-            addCompletableFutureSprite(future);
+            addCompletableFutureSprite(future, "allOf");
         });
 
         threadContext.addButton("join()", () -> {
@@ -370,8 +370,9 @@ public class CompletableFutureSlide extends Slide {
     /**
      * Start a new completable future based on the current futures
      */
-    private void addCompletableFutureSprite(CompletableFuture future) {
+    private void addCompletableFutureSprite(CompletableFuture future, String label) {
         FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+        futureSprite.setLabel(label);
         completableFutures.clear();
         futureSprite.setFuture(future);
         if (firstThread != null) {

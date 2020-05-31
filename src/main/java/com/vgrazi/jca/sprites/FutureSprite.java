@@ -57,6 +57,7 @@ public class FutureSprite extends Sprite implements InitializingBean {
             graphics.drawRect(getXPosition() + getXOffset() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2);
             graphics.setColor(future.isDone() ? futureDoneColor : futureDefaultColor);
             graphics.fill3DRect(getXPosition() + getXOffset() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
+            renderLabel(graphics);
             if(future.isDone()) {
                 String value = String.valueOf(future.join());
                 graphics.setColor(futureTextColor);
@@ -68,6 +69,16 @@ public class FutureSprite extends Sprite implements InitializingBean {
                     graphics.drawString(value,getXPosition() - getXMargin() + getXOffset() + xDelta,getYPosition() - getYMargin() -1 + this.height + yDelta);
                 }
             }
+        }
+    }
+
+    public void renderLabel(Graphics2D graphics) {
+        if(getLabel() != null) {
+            Graphics graphics1 = graphics.create();
+            graphics1.setColor(Color.yellow);
+            graphics1.setFont(futureTextFont);
+            graphics1.drawString(getLabel(), getXPosition() - getXMargin() + getXOffset() -60,getYPosition()/* - getYMargin() -1 + this.height*/);
+            graphics1.dispose();
         }
     }
 

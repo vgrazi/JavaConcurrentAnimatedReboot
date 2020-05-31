@@ -22,7 +22,7 @@ public abstract class Sprite<T> {
 
     private String label;
 
-    Font messageFont;
+    private Font messageFont;
 
     private int ID = IDGenerator.next();
 
