@@ -102,23 +102,34 @@ public class TransferQueueSlide extends Slide {
             });
         });
 
-//        threadContext.addButton("transferQueue.put(object)", () -> {
-//            setState(6);
-//            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-//            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-//            threadContext.addSprite(objectSprite);
-//            if (getter != null) {
-//                objectSprite.setYPosition(getter.getYPosition());
-//                objectSprite.setXPosition(rightBorder - 10);
-//            }
-//            objectSprite.attachAndStartRunnable(() -> {
-//                try {
-//                    transferQueue.put("xxx");
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-//            });
-//        });
+        threadContext.addButton("transferQueue.put()", () -> {
+            setState(6);
+            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+            objectSprite.setAction("waiting");
+            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+            threadContext.addSprite(objectSprite);
+            if (getter != null) {
+                objectSprite.setYPosition(getter.getYPosition());
+                objectSprite.setXPosition(rightBorder - 10);
+            }
+            objectSprite.attachAndStartRunnable(() -> {
+                try {
+                    transferQueue.put("xxx");
+                    if (getter == null) {
+                        while("waiting".equals(objectSprite.getAction())){
+                            Thread.yield();
+                        }
+                    }
+                    threadContext.stopThread(objectSprite);
+                    if (getter != null) {
+                        threadContext.stopThread(getter);
+                    }
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        });
 
         threadContext.addButton("transferQueue.take()", () -> {
                     // If there are waiting objects, don't create a new sprite
@@ -130,7 +141,9 @@ public class TransferQueueSlide extends Slide {
                         getter.attachAndStartRunnable(() -> {
                             try {
                                 threadContext.setGetterNextYPos(getter);
-                                transferQueue.take();
+                                Object take = transferQueue.take();
+
+                                println("Took " + take);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             }
@@ -141,8 +154,10 @@ public class TransferQueueSlide extends Slide {
                             try {
                                 getter.setYPosition(objectSprite.getYPosition());
                                 objectSprite.setXPosition(rightBorder - 20);
+                                objectSprite.setAction("done");
 
-                                transferQueue.take();
+                                Object take = transferQueue.take();
+                                println("Took " + take);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             }

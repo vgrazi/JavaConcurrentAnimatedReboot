@@ -10,7 +10,8 @@
 } <3 keyword>catch<3 default> (InterruptedException e) { }
 
 <5 keyword>try <5 default>{
-    <5 keyword>boolean<5 default> success = transferQueue.tryTransfer(t, 2, TimeUnit.SECONDS);
+    <5 keyword>boolean<5 default> success = transferQueue.tryTransfer(t,
+                            2, TimeUnit.SECONDS);
 } <5 keyword>catch<5 default> (InterruptedException e) { }
 
 <6 keyword>try <6 default>{

@@ -12,19 +12,20 @@
     <3 keyword>try<3 default> {
         acquired = lock.tryLock(<3 literal>1L<3 default>, TimeUnit.SECONDS);
         <3 keyword>if<3 default>(acquired) {
-                doSomething();
-            }
+            doSomething();
+        }
         } <3 keyword>catch<3 default> (InterruptedException e) {...
     } <3 keyword>finally {
         if <3 default>(acquired) {
-                lock.unlock();
-            }
+            lock.unlock();
         }
+    }
 
     <5 default>Condition condition = lock.newCondition();
     <6 keyword>try<6 default> {
       condition.await();
     } <6 keyword>catch <6 default>(InterruptedException e) {...}
+
     lock.unlock();
     <7 default>lock.lock();
 

@@ -26,6 +26,7 @@ public class BasicSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("Add running thread", () -> {
+            reset();
             // create a new sprite
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             attachAndStartRunnable(objectSprite);

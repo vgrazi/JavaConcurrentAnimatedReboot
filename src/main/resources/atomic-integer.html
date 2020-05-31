@@ -3,6 +3,14 @@
  <0 keyword>final <0 default>AtomicInteger atomicInteger
    = <0 keyword>new <0 default>AtomicInteger(<0 literal>1<0 default>);
 
+ <2 comment>
+// Arithmetic functions on atomics
+ // perform their computations in
+ // an atomic fashion and return
+ // the result.
+ <2 keyword>int <2 default>result = atomicInteger
+                .getAndIncrement();
+
  <1 comment>// compareAndSet does an atomic
  //  "check and set if".
  // Value is only set
@@ -12,10 +20,3 @@
          atomicInteger.compareAndSet(
                assumedValue, newValue);
 
-<2 comment>
- // Arithmetic functions on atomics
- // perform their computations in
- // an atomic fashion and return
- // the result.
- <2 keyword>int <2 default>result = atomicInteger
-       .incrementAndGet();

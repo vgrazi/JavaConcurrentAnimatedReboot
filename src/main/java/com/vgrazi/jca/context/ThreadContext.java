@@ -447,7 +447,7 @@ public class ThreadContext<S> implements InitializingBean {
         ObjectSprite objectSprite = sprites.stream()
                 .filter(sprite -> sprite instanceof ObjectSprite)
                 .map(sprite -> (ObjectSprite) sprite)
-                .filter(sprite -> sprite.getState() == waiting)
+                .filter(sprite -> sprite.getState() == waiting || "waiting".equals(sprite.getAction()))
                 .findFirst().orElse(null);
         return objectSprite;
     }

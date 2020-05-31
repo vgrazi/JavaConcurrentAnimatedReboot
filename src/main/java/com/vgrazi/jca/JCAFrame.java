@@ -170,11 +170,11 @@ public class JCAFrame extends JFrame {
         addButton("Phaser", phaserSlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
         addButton("CountdownLatch", countdownLatchSlide);
+        addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
         addButton("CompletableFuture", completableFutureSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
-        addButton("BlockingQueue", blockingQueueSlide);
         addButton("Titles", introSlide);
 //        addButton("Basic Slide", basicSlide);
 

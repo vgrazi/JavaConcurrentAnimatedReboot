@@ -16,7 +16,7 @@ public class CyclicBarrierSlide extends Slide {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private CyclicBarrier cyclicBarrier = new CyclicBarrier(4);
+    private CyclicBarrier cyclicBarrier;
     private ThreadSprite firstThread;
     private int count;
     public void run() {
@@ -106,7 +106,10 @@ public class CyclicBarrierSlide extends Slide {
         setSnippetFile("cyclic-barrier.html");
         setImage("images/cyclicBarrier.jpg");
         setMessage("");
-        cyclicBarrier = new CyclicBarrier(4);
+        cyclicBarrier = new CyclicBarrier(4, ()->{
+            setState(4);
+            setMessage("Barrier Action Hit!!");
+        });
     }
 
     private void initializeInstanceFields() {

@@ -11,7 +11,7 @@
 <3 comment>// timed await is like await except that
 // it times out after the specified
 // timeout period.<br><3 keyword>try<3 default> {
-    countDownLatch.await(1L, TimeUnit.DAYS));
+    countDownLatch.await(10L, TimeUnit.SECONDS));
 } <3 keyword>catch<3 default>(InterruptedException e) { }
 
 <2 default>Thread releaseThread = <2 keyword>new<2 default> Thread(){

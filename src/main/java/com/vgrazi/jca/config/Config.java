@@ -13,7 +13,7 @@ import java.awt.*;
 
 @Configuration
 public class Config {
-    private final JLabel messages = new JLabel();
+    private final JLabel messages = new JLabel(".");
 
     @Bean
     @Scope("prototype")

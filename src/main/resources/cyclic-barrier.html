@@ -1,9 +1,9 @@
 <0 comment>// Contructor specifies # of parties, and an
 // optional Runnable that gets called when the
 // barrier is opened.<br><0 keyword>final<0 default> CyclicBarrier cyclicBarrier<br>    =<0 keyword> new<0 default> CyclicBarrier(4, new Runnable(){
-        public <0 keyword>void<0 default> run(){
-            println("Runnable hit");
-        }
+      <4 keyword>public void<4 default> run(){
+        println("Barrier Action Hit!!");
+      }});
 
 <1 comment>// Each call to await blocks, until the number
 // specified in the constructor is reached.
@@ -11,13 +11,13 @@
     <1 keyword>public void<1 default> run() {
         <1 keyword>try <1 default>{
             cyclicBarrier.await();
-        } <1 keyword>catch<1 default>(BrokenBarrierException e) {}
+        } <1 keyword>catch<1 default>(BrokenBarrierException e) {}}}
 
 <2 default>Thread thread = <2 keyword>new<2 default> Thread(){
-    <2 keyword>public void<2 default> run() {
-        <2 keyword>try <2 default>{
-            cyclicBarrier.await(timeout,TimeUnit.SECONDS);
-        } <2 keyword>catch<2 default>(BrokenBarrierException e) {}
+  <2 keyword>public void<2 default> run() {
+    <2 keyword>try <2 default>{
+      cyclicBarrier.await(timeout,TimeUnit.SECONDS);
+    } <2 keyword>catch<2 default>(BrokenBarrierException e) {}}}
 
 <3 comment>// reset() allows the barrier to be reused.
 // Any waiting threads will throw

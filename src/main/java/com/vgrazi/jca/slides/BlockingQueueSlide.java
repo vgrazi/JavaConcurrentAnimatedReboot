@@ -31,7 +31,8 @@ public class BlockingQueueSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("offer()", () -> {
+        threadContext.addButton("put()", () -> {
+            setState(1);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             objectSprite.setAction("running");
             threadContext.addSprite(objectSprite);
@@ -57,7 +58,34 @@ public class BlockingQueueSlide extends Slide {
                 }
             });
         });
+
+        threadContext.addButton("offer(obj)", () -> {
+            setState(2);
+            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+            objectSprite.setAction("running");
+            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+            if (getter != null) {
+                objectSprite.setYPosition(getter.getYPosition());
+                objectSprite.setXPosition(leftBorder);
+                objectSprite.setAction("exit");
+            }
+            objectSprite.attachAndStartRunnable(() -> {
+                boolean success = blockingQueue.offer("xxx");
+                if(!success) objectSprite.setRetreating();
+//                    threadContext.stopThread(objectSprite);
+                while("running".equals(objectSprite.getAction())){
+                    Thread.yield();
+                }
+                threadContext.stopThread(objectSprite);
+                if (getter != null) {
+                    threadContext.stopThread(getter);
+                }
+            });
+            threadContext.addSprite(objectSprite);
+        });
+
         threadContext.addButton("offer(obj, 5, TimeUnit.SECONDS)", () -> {
+            setState(4);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             objectSprite.setAction("running");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
@@ -86,6 +114,7 @@ public class BlockingQueueSlide extends Slide {
         });
 
         threadContext.addButton("take()", () -> {
+            setState(5);
                     // If there are waiting objects, don't create a new sprite
                     ObjectSprite objectSprite = threadContext.getFirstRunningObjectSprite();
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");
