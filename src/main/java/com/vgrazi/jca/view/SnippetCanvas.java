@@ -14,7 +14,7 @@ import java.awt.*;
 import java.io.IOException;
 
 @Component
-public class SnippetCanvas extends JLabel {
+public class SnippetCanvas extends JEditorPane {
     @Value("${snippet-font-family}")
     private String fontFamily;
 
@@ -26,6 +26,7 @@ public class SnippetCanvas extends JLabel {
     private Element htmlElement;
 
     public SnippetCanvas() {
+        setContentType("text/html");
         setOpaque(true);
         setBackground(Color.white);
     }

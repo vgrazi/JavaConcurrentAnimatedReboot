@@ -66,12 +66,15 @@ public abstract class Slide {
     @Value("${HTML_DISABLED_COLOR}")
     private String htmlDisabledColor;
     private String snippetText;
+    private static float snippetFontSize;
+    private String snippetFile;
 
     public abstract void run();
 
     protected void setMessage(String message) {
         setMessage(message, Color.white);
     }
+
     protected void setMessage(String message, Color foreground) {
         this.messages.setForeground(foreground);
         this.messages.setText(message);
@@ -94,18 +97,23 @@ public abstract class Slide {
     }
 
     public void setSnippetFile(String snippetFile) {
-        Resource resource = new ClassPathResource(snippetFile);
-        Set<String> styleSelectors = null;
-        if (resource.exists()) {
-            try {
+        // prevent resetting the snippet file, to eliminate flicker
+        if (!snippetFile.equals(this.snippetFile) || snippetFontSize != snippetFont.getSize()) {
+            this.snippetFile = snippetFile;
+            Resource resource = new ClassPathResource(snippetFile);
+            Set<String> styleSelectors = null;
+            if (resource.exists()) {
+                try {
 
-                styleSelectors = setSnippetResource(resource);
-            } catch (IOException | BadLocationException e) {
-                e.printStackTrace();
+                    styleSelectors = setSnippetResource(resource);
+                } catch (IOException | BadLocationException e) {
+                    e.printStackTrace();
+                }
             }
+            setState(0);
         }
-        setState(0);
     }
+
     /**
      * Reads the snippet from the specified filename, and adds a <br> to the end of every line, and replaces leading whitespace with &nbsp;
      * Returns a Set of the CSS class style selectors from the file
@@ -115,7 +123,7 @@ public abstract class Slide {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
         String line;
         StringBuilder builder = new StringBuilder();
-        while((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             builder.append(line).append("\n");
         }
 
@@ -152,11 +160,16 @@ public abstract class Slide {
         String snippet = getSnippet();
         snippet = applyState(state, snippet);
         getSnippetLabel().setText(snippet);
-
+        getSnippetLabel().setCaretPosition(1);
     }
 
     protected String getSnippet() {
+        String snippetText = this.snippetText == null?"":this.snippetText;
+        int fontSize = snippetFont.getSize();
         return "<html><head><style type=\"text/css\"> \n" +
+                "pre{font-size:" +
+                fontSize +
+                ";}\n" +
                 ".default { font-weight: bold}\n" +
                 ".keyword { color: rgb(0,0,200); font-weight: bold; }\n" +
                 ".highlight { color: rgb(0,0,0); background-color: yellow; font-weight: normal; }\n" +
@@ -165,9 +178,9 @@ public abstract class Slide {
                 ".unselected { color: rgb(128,128,128); }\n" +
                 "</style> \n" +
                 "</head>\n" +
-                "<BODY BGCOLOR=\"#ffffff\">\n" +
-                "<pre>\n" + snippetText +
-                "</pre></body>\n" +
+                "<BODY BGCOLOR=\"#ffffff\" vertical-align='top'><p>\n" +
+                "<pre>" + snippetText +
+                "</pre></p></body>\n" +
                 "</html>";
     }
 
@@ -187,7 +200,7 @@ public abstract class Slide {
             }
             // in order to change the size of the selected font, include a size css font style as follows: font-size:state2-size
             // the state number (in this example state2) corresponds to the state parameter
-            if (state>=0) {
+            if (state >= 0) {
                 snippet = snippet.replaceAll(String.format("state%d-size", state), "24pt");
                 snippet = snippet.replaceAll(String.format("state[~%d]-size", state), "21pt");
             }
@@ -211,5 +224,17 @@ public abstract class Slide {
     @Value("${snippet-font}")
     private void setSnippetFont(String fontString) {
         this.snippetFont = parseFont(fontString);
+        if(snippetFontSize == 0) {
+            snippetFontSize = 18;
+        }
+        if(snippetFontSize != snippetFont.getSize()) {
+            setSnippetFontSize(snippetFontSize);
+        }
+    }
+
+    public void setSnippetFontSize(float size) {
+        this.snippetFontSize = size;
+        snippetFont = snippetFont.deriveFont(size);
+        setState(state);
     }
 }

@@ -4,10 +4,7 @@ package com.vgrazi.jca;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.util.Parsers;
-import com.vgrazi.jca.view.ButtonLayout;
-import com.vgrazi.jca.view.ButtonPanelLayout;
-import com.vgrazi.jca.view.ControlPanel;
-import com.vgrazi.jca.view.ThreadCanvas;
+import com.vgrazi.jca.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -109,13 +106,16 @@ public class JCAFrame extends JFrame {
     @Value("${animation-pane-to-snippet-divider-ratio}")
     private double animationPaneToSnippetDividerRatio;
 
+    private JScrollPane snippetScrollPane;
+
+
     private final JPanel buttonPanel = new JPanel(new ButtonPanelLayout(2, 2));
     @Autowired
     private JLabel messages;
     private final JPanel menuPanel = new JPanel();
 
     @Autowired
-    private JLabel snippetCanvas;
+    private SnippetCanvas snippetCanvas;
 
     @Autowired
     private JLabel imageLabel;
@@ -132,8 +132,9 @@ public class JCAFrame extends JFrame {
     @PostConstruct
     public void afterPropertiesSet() {
         snippetCanvas.setBackground(Color.white);
-        snippetCanvas.setVerticalAlignment(SwingConstants.TOP);
-        JScrollPane snippetScrollPane = new JScrollPane(snippetCanvas);
+        snippetCanvas.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
+        snippetCanvas.setFontSize( 18);
+        snippetScrollPane = new JScrollPane(snippetCanvas);
         snippetScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         snippetScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         snippetScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -214,6 +215,7 @@ public class JCAFrame extends JFrame {
         button.addActionListener(e -> {
             buttonPanel.removeAll();
             threadContext.registerSlide(slide);
+            slide.setSnippetFontSize(controlPanel.getFontSize());
             repaint();
         });
         menuPanel.add(button);
