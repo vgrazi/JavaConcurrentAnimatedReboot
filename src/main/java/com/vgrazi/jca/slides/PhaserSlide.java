@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import javax.swing.*;
 import java.util.concurrent.Phaser;
 
 @Component
@@ -14,7 +14,7 @@ public class PhaserSlide extends Slide {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private Phaser phaser = new Phaser(4);
+    private Phaser phaser;
 
     public void run() {
         reset();
@@ -63,6 +63,12 @@ public class PhaserSlide extends Slide {
             addRunnable(phaser, sprite);
         });
 
+        threadContext.addButton("getPhase()", ()->{
+            setState(8);
+            int phase = phaser.getPhase();
+            setMessage("Phase: " + phase);
+        });
+
         threadContext.addButton("reset", this::reset);
         threadContext.setVisible();
     }
@@ -70,7 +76,14 @@ public class PhaserSlide extends Slide {
     public void reset() {
         super.reset();
         threadContext.setSlideLabel("Phaser");
-        phaser = new Phaser(4);
+        phaser = new Phaser(4) {
+            @Override
+            protected boolean onAdvance(int phase, int registeredParties) {
+                setState(7);
+                SwingUtilities.invokeLater(()-> setMessage("onAdvance called on phase " + phase + ". Registered parties:" +registeredParties));
+                return false;
+            }
+        };
         setSnippetFile("phaser.html");
     }
 
