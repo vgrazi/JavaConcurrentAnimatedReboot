@@ -1,5 +1,4 @@
-<0 default> CompletableFuture future =
-
+  <0 default> CompletableFuture future =
   <2 default>CompletableFuture.supplyAsync(() ->
   <2 default>     doSomethingAndReturnSomeValue());
   <1 default>CompletableFuture.runAsync(() -> doSomething());
@@ -14,6 +13,6 @@
   <5 default>    Object value = future.get();
   <5 keyword>  } catch <5 default>(InterruptedException
     <5 default>    | ExecutionException e) {..}
-
+  <8 default>completableFuture.thenRun(<9 default>()-> someRunMethod()<8 default>);
   <7 default>  Object value = future.getNow("valueIfAbsent");
 

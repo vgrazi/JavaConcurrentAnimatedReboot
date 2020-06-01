@@ -1,39 +1,32 @@
-    <99 default>// Constructor
-    <0 keyword>final <0 default>Lock lock = <0 keyword>new <0 default>ReentrantLock();
-    <1 default>lock.lock();
-    <99 default>// do work
-
-    <4 keyword>try<4 default> {
-        lock.lockInterruptibly();
-    } <4 keyword>catch <4 default>(InterruptedException e) {...}
-
-    <2 default>lock.unlock();
-    <3 keyword>boolean <3 default>acquired = <3 literal>false<3 default>;
-    <3 keyword>try<3 default> {
-        acquired = lock.tryLock(<3 literal>1L<3 default>, TimeUnit.SECONDS);
-        <3 keyword>if<3 default>(acquired) {
-            doSomething();
-        }
-        } <3 keyword>catch<3 default> (InterruptedException e) {...
-    } <3 keyword>finally {
-        if <3 default>(acquired) {
-            lock.unlock();
-        }
-    }
-
-    <5 default>Condition condition = lock.newCondition();
-    <6 keyword>try<6 default> {
-      condition.await();
-    } <6 keyword>catch <6 default>(InterruptedException e) {...}
-
-    lock.unlock();
-    <7 default>lock.lock();
-
-    <99 default>// do work
-    <8 default>condition.signal();
-    lock.unlock();
-    <9 default>condition.signalAll();
-    lock.unlock();
-
-    <5 default>&lt;waitingThread>.interrupt();
-    <6 default>&lt;interrubtibleThread>.interupt();
+ <0 keyword>final <0 default>Lock lock = <0 keyword>new <0 default>ReentrantLock();
+ <1 default>lock.lock();
+ <99 default>// do work
+ <4 keyword>try<4 default> {
+     lock.lockInterruptibly();
+ } <4 keyword>catch <4 default>(InterruptedException e) {...}
+ <2 default>lock.unlock();
+ <3 keyword>boolean <3 default>acquired = <3 literal>false<3 default>;
+ <3 keyword>try<3 default> {
+     acquired = lock.tryLock(<3 literal>1L<3 default>, TimeUnit.SECONDS);
+     <3 keyword>if<3 default>(acquired) {
+         doSomething();
+     }
+     } <3 keyword>catch<3 default> (InterruptedException e) {...
+ } <3 keyword>finally {
+     if <3 default>(acquired) {
+         lock.unlock();
+     }
+ }
+ <5 default>Condition condition = lock.newCondition();
+ <6 keyword>try<6 default> {
+   condition.await();
+ } <6 keyword>catch <6 default>(InterruptedException e) {...}
+ lock.unlock();
+ <7 default>lock.lock();
+ <99 default>// do work
+ <8 default>condition.signal();
+ lock.unlock();
+ <9 default>condition.signalAll();
+ lock.unlock();
+ <5 default>&lt;waitingThread>.interrupt();
+ <6 default>&lt;interrubtibleThread>.interupt();

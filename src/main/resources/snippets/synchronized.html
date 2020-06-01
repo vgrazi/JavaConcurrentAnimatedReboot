@@ -3,19 +3,16 @@
     <3 keyword>try {
       <3 keyword>while<3 default>(!condition){
       <3 default>  object.wait();
-      <3 default>}
-    } <3 keyword>catch <3 default>(InterruptedException e) {
+      <3 default>}} <3 keyword>catch <3 default>(InterruptedException e) {
       Thread.currentThread().interrupt();
     <2 default>// releasing lock
   <1 default>}
   <4 keyword>synchronized <4 default>(object) {
     condition = true;
-    object.notify();
-  }
+    object.notify(); }
   <5 keyword>synchronized <5 default>(object) {
     condition = true;
-    object.notifyAll();
-  }
+    object.notifyAll(); }
   <6 default>thread.interrupt();
   <table  border=0 width=700 style='background-color:black;'>
       <tr><td align=center colspan=3 ><font size=5 color=white><span style="text-decoration:underline">Thread State Color Codes</span></font></td></tr>

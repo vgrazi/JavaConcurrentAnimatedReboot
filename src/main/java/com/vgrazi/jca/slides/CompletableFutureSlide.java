@@ -258,7 +258,7 @@ public class CompletableFutureSlide extends Slide {
 
             if (!bigFutureSprites.isEmpty()) {
 
-                setState(2);
+                setState(8);
                 RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
                 threadContext.reclaimYPosition();
                 runnableSprite.setXPosition(leftBorder + 15);
@@ -281,6 +281,7 @@ public class CompletableFutureSlide extends Slide {
                             runnerThreadSprite.setHolder(true);
                             runnerThreadSprite.attachAndStartRunnable(() -> {
                                 long startTime = System.currentTimeMillis();
+                                setState(9);
 //                                runnerThreadSprite.fadeOut();
 //                                runnableSprite.fadeOut();
 //                                while(runnerThreadSprite.getState() != threadContext.terminated) {
