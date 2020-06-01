@@ -104,7 +104,7 @@ public abstract class Slide {
         // prevent resetting the snippet file, to eliminate flicker
         if (!snippetFile.equals(this.snippetFile) || snippetFontSize != snippetFont.getSize()) {
             this.snippetFile = snippetFile;
-            Resource resource = new ClassPathResource(snippetFile);
+            Resource resource = new ClassPathResource("snippets/" + snippetFile);
             Set<String> styleSelectors = null;
             if (resource.exists()) {
                 try {
