@@ -160,6 +160,7 @@ public abstract class Slide {
      * @param state -1 colors the entire snippet. 0 colors the constructor, etc
      */
     public void setState(int state) {
+        setMessage("");
         this.state = state;
         String snippet = getSnippet();
         snippet = applyState(state, snippet);

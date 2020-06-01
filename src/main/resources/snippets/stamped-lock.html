@@ -4,4 +4,7 @@
    <5 keyword>long <5 default>stamp = lock.tryOptimisticRead();<br>
    <2 default>lock.unlockRead(stamp);<br>
    <3 default>lock.unlockWrite(stamp);<br>
-   <4 keyword>boolean <4 default>valid = lock.validate(stamp);
+   <4 keyword>boolean <4 default>valid = lock.validate(stamp);<br>
+   <7 keyword>long <7 default>stamp = lock.tryConvertToWriteLock(stamp);<br>
+   <8 keyword>long <8 default>stamp = lock.tryConvertToReadLock(stamp);<br>
+   <9 keyword>long <9 default>stamp = lock.tryConvertToOptimisticRead(stamp);<br>
