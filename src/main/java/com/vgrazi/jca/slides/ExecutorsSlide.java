@@ -40,10 +40,10 @@ public class ExecutorsSlide extends Slide {
                     while (sprite.isRunning()) {
                         Thread.yield();
                     }
+                    setState(5);
                     sprite.setPooled(true);
                     runnableSprite.setDone();
                     threadContext.stopThread(runnableSprite);
-                    setState(0);
                 } else {
                     printf("Thread %s not known to context%n", thread);
                 }
@@ -66,10 +66,10 @@ public class ExecutorsSlide extends Slide {
                     while (sprite.isRunning()) {
                         Thread.yield();
                     }
+                    setState(6);
                     sprite.setPooled(true);
                     runnableSprite.setDone();
                     threadContext.stopThread(runnableSprite);
-                    setState(0);
                 } else {
                     printf("Thread %s not known to context%n", thread);
                 }
