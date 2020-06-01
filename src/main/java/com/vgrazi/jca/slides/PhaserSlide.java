@@ -18,7 +18,7 @@ public class PhaserSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("awaitAdvance()", ()->{
+        threadContext.addButton("awaitAdvance(phase)", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
             setState(4);
@@ -66,7 +66,7 @@ public class PhaserSlide extends Slide {
         threadContext.addButton("getPhase()", ()->{
             setState(8);
             int phase = phaser.getPhase();
-            setMessage("Phase: " + phase);
+            displayPhaseAndPermits("");
         });
 
         threadContext.addButton("reset", this::reset);
@@ -80,7 +80,7 @@ public class PhaserSlide extends Slide {
             @Override
             protected boolean onAdvance(int phase, int registeredParties) {
                 setState(7);
-                SwingUtilities.invokeLater(()-> setMessage("onAdvance called on phase " + phase + ". Registered parties:" +registeredParties));
+                SwingUtilities.invokeLater(()-> displayPhaseAndPermits("onAdvance called."));
                 return false;
             }
         };
@@ -97,33 +97,34 @@ public class PhaserSlide extends Slide {
                 }
                 switch (sprite.getAction()) {
                     case "awaitAdvance":
+                        phase = phaser.getPhase();
                         phase = phaser.awaitAdvance(phase);
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "arrive":
                         phase = phaser.arrive();
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "arriveAndAwaitAdvance":
                         phase = phaser.arriveAndAwaitAdvance();
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "arriveAndDeregister":
                         phase = phaser.arriveAndDeregister();
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "register":
                         phase = phaser.register();
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "bulk-register":
                         phase = phaser.bulkRegister(2);
-                        setMessage("Phase: " + phase);
+                        displayPhaseAndPermits("");
                         sprite.setAction("release");
                         break;
                     case "default":
@@ -134,5 +135,13 @@ public class PhaserSlide extends Slide {
             println(sprite + " exiting");
         });
         threadContext.addSprite(sprite);
+    }
+
+    /**
+     * Displays an option message (null if none) followed by the arrived and registered count
+     * @param message
+     */
+    private void displayPhaseAndPermits(String message) {
+        setMessage((message == null ? "" : message + " ") + "Phase: " + phaser.getPhase() + "; Arrived: " + phaser.getArrivedParties() + "; Registered: " + phaser.getRegisteredParties());
     }
 }

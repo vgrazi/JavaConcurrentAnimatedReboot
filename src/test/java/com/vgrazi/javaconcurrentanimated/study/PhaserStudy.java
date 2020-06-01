@@ -2,7 +2,7 @@ package com.vgrazi.javaconcurrentanimated.study;
 
 import java.util.concurrent.Phaser;
 
-public class PhaserPlay {
+public class PhaserStudy {
     public void test() {
         Phaser phaser = new Phaser(4) {
             @Override
