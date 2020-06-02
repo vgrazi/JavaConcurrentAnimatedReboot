@@ -167,9 +167,9 @@ public class JCAFrame extends JFrame {
         addButton("StampedLock", stampedLockSlide);
         addButton("Executors", executorsSlide);
         addButton("Saturation Policy", saturationPolicySlide);
-        addButton("Phaser", phaserSlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
         addButton("CountdownLatch", countdownLatchSlide);
+        addButton("Phaser", phaserSlide);
         addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
         addButton("CompletableFuture", completableFutureSlide);

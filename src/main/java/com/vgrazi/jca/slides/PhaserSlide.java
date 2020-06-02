@@ -22,7 +22,14 @@ public class PhaserSlide extends Slide {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
             setState(4);
-            addRunnable(phaser, sprite);
+            addRunnable(phaser, sprite, true);
+        });
+
+        threadContext.addButton("awaitAdvance(oldPhase)", ()->{
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+            sprite.setAction("awaitAdvance");
+            setState(4);
+            addRunnable(phaser, sprite, false);
         });
 
         threadContext.addButton("arrive()", ()->{
@@ -88,6 +95,11 @@ public class PhaserSlide extends Slide {
     }
 
     private void addRunnable(Phaser phaser, ThreadSprite sprite) {
+        // unused newPhase param
+        addRunnable(phaser, sprite, false);
+    }
+
+    private void addRunnable(Phaser phaser, ThreadSprite sprite, boolean useCurrentPhase) {
         sprite.attachAndStartRunnable(() -> {
             int phase =0;
             while (sprite.isRunning()) {
@@ -97,7 +109,10 @@ public class PhaserSlide extends Slide {
                 }
                 switch (sprite.getAction()) {
                     case "awaitAdvance":
-                        phase = phaser.getPhase();
+                        if (useCurrentPhase) {
+                            // let's get the proper phase
+                            phase = phaser.getPhase();
+                        }
                         phase = phaser.awaitAdvance(phase);
                         displayPhaseAndPermits("");
                         sprite.setAction("release");
