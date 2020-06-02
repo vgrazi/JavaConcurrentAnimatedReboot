@@ -1,4 +1,4 @@
-This is a revised and much simplified version of Java Concurrent Animated
+This is a the latest version of Java Concurrent Animated - (Original version binary download: https://sourceforge.net/projects/javaconcurrenta/)
 
 In the original version too much control was taken by the canvas, and all of the interactions were dependent on the slide program.
 
