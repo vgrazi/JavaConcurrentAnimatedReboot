@@ -57,7 +57,7 @@ public class JCAFrame extends JFrame {
     private CyclicBarrierSlide cyclicBarrierSlide;
 
     @Autowired
-    private CountdownLatchSlide countdownLatchSlide;
+    private CountDownLatchSlide countdownLatchSlide;
 
     @Autowired
     private CompletableFutureSlide completableFutureSlide;
@@ -168,7 +168,7 @@ public class JCAFrame extends JFrame {
         addButton("Executors", executorsSlide);
         addButton("Saturation Policy", saturationPolicySlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
-        addButton("CountdownLatch", countdownLatchSlide);
+        addButton("CountDownLatch", countdownLatchSlide);
         addButton("Phaser", phaserSlide);
         addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);

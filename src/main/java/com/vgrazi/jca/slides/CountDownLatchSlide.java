@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class CountdownLatchSlide extends Slide {
+public class CountDownLatchSlide extends Slide {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -75,7 +75,7 @@ public class CountdownLatchSlide extends Slide {
 
     public void reset() {
         super.reset();
-        threadContext.setSlideLabel("CountdownLatch");
+        threadContext.setSlideLabel("CountDownLatch");
         setSnippetFile("countdown-latch.html");
         setImage("images/countdownLatch.jpg");
         countDownLatch = new CountDownLatch(totalCount);

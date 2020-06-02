@@ -42,6 +42,27 @@ public class SemaphoreSlide extends Slide {
             });
         });
 
+        threadContext.addButton("semaphore.tryAcquire()", () -> {
+            setState(3);
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
+            sprite.attachAndStartRunnable(()-> {
+                threadContext.addSprite(sprite);
+                boolean b = semaphore.tryAcquire();
+                printAvailablePermits();
+
+                if (b) {
+                    log("acquired ", sprite);
+                    while (sprite.isRunning()) {
+                        Thread.yield();
+                    }
+                }
+                else {
+                    sprite.setRetreating();
+                }
+                threadContext.stopThread(sprite);
+            });
+        });
+
         threadContext.addButton("semaphore.tryAcquire(3, TimeUnit.SECONDS)", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             setState(4);
@@ -65,27 +86,6 @@ public class SemaphoreSlide extends Slide {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            });
-        });
-
-        threadContext.addButton("semaphore.tryAcquire()", () -> {
-            setState(3);
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
-            sprite.attachAndStartRunnable(()-> {
-                threadContext.addSprite(sprite);
-                boolean b = semaphore.tryAcquire();
-                printAvailablePermits();
-
-                if (b) {
-                    log("acquired ", sprite);
-                    while (sprite.isRunning()) {
-                        Thread.yield();
-                    }
-                }
-                else {
-                    sprite.setRetreating();
-                }
-                threadContext.stopThread(sprite);
             });
         });
 

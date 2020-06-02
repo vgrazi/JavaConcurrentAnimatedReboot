@@ -25,6 +25,16 @@ public class SynchronizedSlide extends Slide {
             setState(1);
         });
 
+        threadContext.addButton("exit synchronized", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+                // The new running thread should call notify
+                runningSprite.setAction("release");
+                log("Set release on ", runningSprite);
+                setState(2);
+            }
+        });
+
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
         threadContext.addButton("wait()", () -> {
@@ -57,16 +67,6 @@ public class SynchronizedSlide extends Slide {
             }
         });
 
-        threadContext.addButton("exit synchronized", () -> {
-            ThreadSprite runningSprite = threadContext.getRunningThread();
-            if (runningSprite != null) {
-                // The new running thread should call notify
-                runningSprite.setAction("release");
-                log("Set release on ", runningSprite);
-                setState(2);
-            }
-        });
-
         threadContext.addButton("interrupt running", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
@@ -85,7 +85,7 @@ public class SynchronizedSlide extends Slide {
 
     public void reset() {
         super.reset();
-        threadContext.setSlideLabel("synchronized");
+        threadContext.setSlideLabel("synchronized(){}");
         setSnippetFile("synchronized.html");
         setImage("images/VisibilityAndSynchronization.png");
         mutex = new Object();
