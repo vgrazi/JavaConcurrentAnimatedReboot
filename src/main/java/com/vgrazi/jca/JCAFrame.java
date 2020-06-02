@@ -175,8 +175,8 @@ public class JCAFrame extends JFrame {
         addButton("CompletableFuture", completableFutureSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
+        addButton("Basic Slide", basicSlide);
         addButton("Titles", introSlide);
-//        addButton("Basic Slide", basicSlide);
 
         menuPanel.add(controlPanel);
 
