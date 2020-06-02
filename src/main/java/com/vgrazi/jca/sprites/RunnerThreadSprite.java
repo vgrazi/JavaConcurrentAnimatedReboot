@@ -100,11 +100,18 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
     }
 
     /**
+     * Same as drawThreadCap, however applies an offset to the x location
+     */
+    protected void drawThreadCap(Graphics2D graphics){
+        drawThreadCap(graphics, 0);
+    }
+
+    /**
      * Draws the ball (or whatever) at the end of the thread line
      * If the sprite is attached to a condition, draws a C with the
      * condition id (1-based serial), instead of the ball
      */
-    protected void drawThreadCap(Graphics2D graphics) {
+    protected void drawThreadCap(Graphics2D graphics, int capOffset) {
         graphics.setColor(getThreadContext().getColorByInstance(this));
         int yPos = RenderUtils.getCapYPosition(leftBound, rightBound, topBound, bottomBound, ballDiameter, this);
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
@@ -115,10 +122,10 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
             FontMetrics fm = graphicsCopy.getFontMetrics();
             int height = fm.getHeight();
 
-            graphicsCopy.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset, yPos + height/2);
+            graphicsCopy.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset + capOffset, yPos + height/2);
             graphicsCopy.dispose();
         } else {
-            graphics.fillOval(getXPosition() + getXOffset() - 8 - offset, yPos, ballDiameter, ballDiameter);
+            graphics.fillOval(getXPosition() + getXOffset() - 8 - offset + capOffset, yPos, ballDiameter, ballDiameter);
         }
 
     }

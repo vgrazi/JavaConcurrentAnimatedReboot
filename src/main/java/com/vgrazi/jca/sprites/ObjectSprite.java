@@ -28,13 +28,26 @@ public class ObjectSprite extends RunnerThreadSprite implements InitializingBean
 
     @Override
     public void render(Graphics2D graphics) {
-        Color color = getThreadContext().getColor(this);
-        graphics.setColor(color);
+        graphics.setColor(Color.orange);
         int yCenter = getYPosition();
 //        Draw a positioning line, for diagnostics
 //        graphics.drawLine(0, yCenter, 1000, yCenter);
         int yPos = yCenter - height / 2;
         graphics.fillOval(getXPosition() + getXOffset() - width, yPos + getYMargin(), width, height);
+        // if the object is arriving or blocked, we draw the accompanying thread
+        RelativePosition relativePosition = getRelativePosition();
+        if (relativePosition == RelativePosition.Before || relativePosition == RelativePosition.At)
+        {
+            Color color = getThreadContext().getColor(this);
+            graphics.setColor(color);
+            if (relativePosition != RelativePosition.In) {
+                int xPosition = getXPosition();
+                int yPosition = getYPosition();
+                graphics.drawLine(xPosition - arrowLength + getXOffset() - width + 15, yPosition, xPosition + getXOffset() - width, yPosition);
+                renderMessage(graphics);
+                drawThreadCap(graphics,  -width);
+            }
+        }
     }
 
     @Override
