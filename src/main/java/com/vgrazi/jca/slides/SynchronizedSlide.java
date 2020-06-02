@@ -85,7 +85,7 @@ public class SynchronizedSlide extends Slide {
 
     public void reset() {
         super.reset();
-        threadContext.setSlideLabel("synchronized/wait/notify");
+        threadContext.setSlideLabel("synchronized");
         setSnippetFile("synchronized.html");
         setImage("images/VisibilityAndSynchronization.png");
         mutex = new Object();
