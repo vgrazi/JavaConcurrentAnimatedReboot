@@ -105,86 +105,12 @@ public class CompletableFutureSlide extends Slide {
             }
         });
 
-        threadContext.addButton("get()", () -> {
-            if (!bigFutureSprites.isEmpty()) {
-                setState(5);
-                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                FutureSprite futureSprite = bigFutureSprites.get(bigFutureSprites.size() - 1);
-                getter.setYPosition(futureSprite.getYCenter());
-                getter.attachAndStartRunnable(() -> {
-                    CompletableFuture future = futureSprite.getFuture();
-                    try {
-                        Object value = future.get();
-                        getter.setLabel(String.valueOf(value));
-                        threadContext.stopThread(getter);
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                });
-                threadContext.addSprite(getter);
-            }
-            else if(!completableFutures.isEmpty()) {
-                setState(5);
-                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                int pointer = smallFuturePointer;
-                if(pointer < smallFutureSprites.size() -1) {
-                    smallFuturePointer++;
-                }
-                FutureSprite futureSprite = smallFutureSprites.get(pointer);
-                getter.setYPosition(futureSprite.getYCenter());
-                getter.attachAndStartRunnable(() -> {
-                    CompletableFuture future = futureSprite.getFuture();
-                    try {
-                        Object value = future.get();
-                        getter.setLabel(String.valueOf(value));
-                        threadContext.stopThread(getter);
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                });
-                threadContext.addSprite(getter);
+        threadContext.addButton("get()", () -> addGetAction(5, "get"));
 
-            }
-        });
-
-        threadContext.addButton("getNow()", () -> {
-            if (!bigFutureSprites.isEmpty()) {
-                setState(7);
-                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                FutureSprite futureSprite = bigFutureSprites.get(bigFutureSprites.size() - 1);
-                getter.setYPosition(futureSprite.getYCenter());
-                getter.attachAndStartRunnable(() -> {
-                    CompletableFuture future = futureSprite.getFuture();
-                    Object value = future.getNow("\"valueIfAbsent\"");
-                    getter.setLabel(String.valueOf(value));
-                    threadContext.stopThread(getter);
-                });
-                threadContext.addSprite(getter);
-            }
-            else if(!completableFutures.isEmpty()) {
-                setState(7);
-                GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
-                int pointer = smallFuturePointer;
-                if(pointer < smallFutureSprites.size() -1) {
-                    smallFuturePointer++;
-                }
-                FutureSprite futureSprite = smallFutureSprites.get(pointer);
-                getter.setYPosition(futureSprite.getYCenter());
-                getter.attachAndStartRunnable(() -> {
-                    CompletableFuture future = futureSprite.getFuture();
-                    Object value = future.getNow("\"valueIfAbsent\"");
-                    getter.setLabel(String.valueOf(value));
-                    threadContext.stopThread(getter);
-                });
-                threadContext.addSprite(getter);
-
-            }
-        });
+        threadContext.addButton("getNow()", () -> addGetAction(7, "get-now"));
 
         threadContext.addButton("thenRun", () -> {
-
             if (!bigFutureSprites.isEmpty()) {
-
                 setState(8);
                 RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
                 threadContext.reclaimYPosition();
@@ -293,6 +219,65 @@ public class CompletableFutureSlide extends Slide {
         threadContext.addButton("Reset", this::reset);
 
         threadContext.setVisible();
+    }
+
+    private void addGetAction(int state, String type) {
+        if (!bigFutureSprites.isEmpty()) {
+            setState(state);
+            GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
+            FutureSprite futureSprite = bigFutureSprites.get(bigFutureSprites.size() - 1);
+            getter.setYPosition(futureSprite.getYCenter());
+            getter.attachAndStartRunnable(() -> {
+                CompletableFuture future = futureSprite.getFuture();
+                Object value = null;
+                if(type.equals("get")){
+                    try {
+                        value = future.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(type.equals("join")){
+                    value = future.join();
+                }
+                else if(type.equals("get-now")){
+                    value = future.getNow("\"valueIfAbsent\"");
+                }
+                getter.setLabel(String.valueOf(value));
+                threadContext.stopThread(getter);
+            });
+            threadContext.addSprite(getter);
+        }
+        else if(!completableFutures.isEmpty()) {
+            setState(state);
+            GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
+            int pointer = smallFuturePointer;
+            if(pointer < smallFutureSprites.size() -1) {
+                smallFuturePointer++;
+            }
+            FutureSprite futureSprite = smallFutureSprites.get(pointer);
+            getter.setYPosition(futureSprite.getYCenter());
+            getter.attachAndStartRunnable(() -> {
+                CompletableFuture future = futureSprite.getFuture();
+                Object value = null;
+                if(type.equals("get")){
+                    try {
+                        value = future.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(type.equals("join")){
+                    value = future.join();
+                }
+                else if(type.equals("get-now")){
+                    value = future.getNow("\"valueIfAbsent\"");
+                }
+                getter.setLabel(String.valueOf(value));
+                threadContext.stopThread(getter);
+            });
+            threadContext.addSprite(getter);
+        }
     }
 
     /**
