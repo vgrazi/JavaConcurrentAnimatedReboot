@@ -35,77 +35,20 @@ public class TransferQueueSlide extends Slide {
         reset();
 
         threadContext.addButton("transferQueue.transfer(object)", () -> {
-            setState(1);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            threadContext.addSprite(objectSprite);
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(rightBorder - 10);
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                try {
-                    transferQueue.transfer("xxx");
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
+            addAction(1, "transfer");
         });
 
         threadContext.addButton("transferQueue.tryTransfer(object)", () -> {
-            setState(3);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            threadContext.addSprite(objectSprite);
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(rightBorder - 10);
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                boolean success = transferQueue.tryTransfer("xxx");
-                if(!success) {
-                    objectSprite.setRetreating();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
+            addAction(3, "try-transfer");
         });
 
         threadContext.addButton("transferQueue.tryTransfer(object, 2,TimeUnit.SECONDS)", () -> {
-            setState(5);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            threadContext.addSprite(objectSprite);
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(rightBorder - 10);
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                try {
-                    boolean success = transferQueue.tryTransfer("xxx", 2000, TimeUnit.MILLISECONDS);
-                    if(!success) {
-                        objectSprite.setRetreating();
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
+            addAction(5, "try-timed-transfer");
         });
 
         threadContext.addButton("transferQueue.put()", () -> {
             setState(6);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            objectSprite.setAction("waiting");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
             if (getter != null) {
@@ -116,18 +59,19 @@ public class TransferQueueSlide extends Slide {
                 try {
                     transferQueue.put("xxx");
                     if (getter == null) {
+                        objectSprite.setAction("waiting");
                         while("waiting".equals(objectSprite.getAction())){
                             Thread.yield();
                         }
                     }
-                    threadContext.stopThread(objectSprite);
-                    if (getter != null) {
-                        threadContext.stopThread(getter);
-                    }
-
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+                threadContext.stopThread(objectSprite);
+                if (getter != null) {
+                    threadContext.stopThread(getter);
+                }
+
             });
         });
 
@@ -171,6 +115,44 @@ public class TransferQueueSlide extends Slide {
 
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
+    }
+
+    private void addAction(int state, String type) {
+        setState(state);
+        ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+        GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+        threadContext.addSprite(objectSprite);
+        if (getter != null) {
+            objectSprite.setYPosition(getter.getYPosition());
+            objectSprite.setXPosition(rightBorder - 10);
+        }
+        objectSprite.attachAndStartRunnable(() -> {
+            if (type.equals("try-transfer")) {
+                boolean success = transferQueue.tryTransfer("xxx");
+                if (!success) {
+                    objectSprite.setRetreating();
+                }
+            } else if (type.equals("transfer")) {
+                try {
+                    transferQueue.transfer("xxx");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } else if (type.equals("try-timed-transfer")) {
+                try {
+                    boolean success = transferQueue.tryTransfer("xxx", 2000, TimeUnit.MILLISECONDS);
+                    if (!success) {
+                        objectSprite.setRetreating();
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            threadContext.stopThread(objectSprite);
+            if (getter != null) {
+                threadContext.stopThread(getter);
+            }
+        });
     }
 
     public void reset() {
