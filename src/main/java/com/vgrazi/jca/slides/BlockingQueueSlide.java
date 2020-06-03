@@ -63,10 +63,11 @@ public class BlockingQueueSlide extends Slide {
             setState(2);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             objectSprite.setAction("running");
+            threadContext.addSprite(objectSprite);
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             if (getter != null) {
                 objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(leftBorder);
+                objectSprite.setXPosition(rightBorder - 10);
                 objectSprite.setAction("exit");
             }
             objectSprite.attachAndStartRunnable(() -> {
@@ -82,7 +83,6 @@ public class BlockingQueueSlide extends Slide {
                     threadContext.stopThread(getter);
                 }
             });
-            threadContext.addSprite(objectSprite);
         });
 
         threadContext.addButton("offer(obj, 5, TimeUnit.SECONDS)", () -> {
