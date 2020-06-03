@@ -53,80 +53,8 @@ public class CompletableFutureSlide extends Slide {
 
     public void run() {
         reset();
-
-        threadContext.addButton("supplyAsync", () -> {
-            setState(2);
-            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
-            if (firstThread == null) {
-                firstThread = threadSprite;
-            }
-            threadSprite.setXPosition(leftBorder + arrowLength);
-            threadCount++;
-            // we need to create a future, a thread to attach to it, and sprites for each of those
-            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
-            smallFutureSprites.add(futureSprite);
-            futureSprite.setXMargin(15);
-            futureSprite.setXRightMargin(15);
-            futureSprite.setYMargin(+6);
-            futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
-            // the holder contains the running status. When it is done, will be set to false
-            threadSprite.setHolder(true);
-            CompletableFuture future = CompletableFuture.supplyAsync(() -> {
-                while (threadSprite.getHolder()) {
-                    Thread.yield();
-                }
-                threadContext.stopThread(threadSprite);
-                return "value " + valueIdGenerator.incrementAndGet();
-            });
-            println("CREATED FUTURE:" + future);
-            completableFutures.add(future);
-            futureSprite.setFuture(future);
-            futureSprite.setHeight(completableFutureHeight);
-            threadContext.addSprite(0, futureSprite);
-            threadSprite.attachAndStartRunnable(() -> {
-                while (threadSprite.isRunning()) {
-                    Thread.yield();
-                }
-                println(threadSprite + " exiting");
-            });
-            threadContext.addSprite(threadSprite);
-        });
-
-        threadContext.addButton("runAsync", () -> {
-            setState(1);
-            ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
-            if (firstThread == null) {
-                firstThread = threadSprite;
-            }
-            threadSprite.setXPosition(leftBorder + arrowLength);
-            threadCount++;
-            // we need to create a future, a thread to attach to it, and sprites for each of those
-            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
-            smallFutureSprites.add(futureSprite);
-            futureSprite.setXMargin(15);
-            futureSprite.setXRightMargin(15);
-            futureSprite.setYMargin(+6);
-            futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
-            // the holder contains the running status. When it is done, will be set to false
-            threadSprite.setHolder(true);
-            CompletableFuture future = CompletableFuture.runAsync(() -> {
-                while (threadSprite.getHolder()) {
-                    Thread.yield();
-                }
-                threadContext.stopThread(threadSprite);
-            });
-            completableFutures.add(future);
-            futureSprite.setFuture(future);
-            futureSprite.setHeight(completableFutureHeight);
-            threadContext.addSprite(0, futureSprite);
-            threadSprite.attachAndStartRunnable(() -> {
-                while (threadSprite.isRunning()) {
-                    Thread.yield();
-                }
-                println(threadSprite + " exiting");
-            });
-            threadContext.addSprite(threadSprite);
-        });
+        threadContext.addButton("supplyAsync", () -> addCreateAction(2, "supply-async"));
+        threadContext.addButton("runAsync", () -> addCreateAction(1, "run-async"));
 
         threadContext.addButton("CompletableFuture.anyOf()", () -> {
             if (!completableFutures.isEmpty()) {
@@ -226,13 +154,12 @@ public class CompletableFutureSlide extends Slide {
                 FutureSprite futureSprite = bigFutureSprites.get(bigFutureSprites.size() - 1);
                 getter.setYPosition(futureSprite.getYCenter());
                 getter.attachAndStartRunnable(() -> {
-                    CompletableFuture<String> future = futureSprite.getFuture();
-                    println("Getter attached to " + future);
-                    String value = future.getNow("\"valueIfAbsent\"");
-                    getter.setLabel(value);
-                    threadContext.addSprite(getter);
+                    CompletableFuture future = futureSprite.getFuture();
+                    Object value = future.getNow("\"valueIfAbsent\"");
+                    getter.setLabel(String.valueOf(value));
                     threadContext.stopThread(getter);
                 });
+                threadContext.addSprite(getter);
             }
             else if(!completableFutures.isEmpty()) {
                 setState(7);
@@ -244,8 +171,8 @@ public class CompletableFutureSlide extends Slide {
                 FutureSprite futureSprite = smallFutureSprites.get(pointer);
                 getter.setYPosition(futureSprite.getYCenter());
                 getter.attachAndStartRunnable(() -> {
-                    CompletableFuture<String> future = futureSprite.getFuture();
-                    String value = future.getNow("\"valueIfAbsent\"");
+                    CompletableFuture future = futureSprite.getFuture();
+                    Object value = future.getNow("\"valueIfAbsent\"");
                     getter.setLabel(String.valueOf(value));
                     threadContext.stopThread(getter);
                 });
@@ -366,6 +293,61 @@ public class CompletableFutureSlide extends Slide {
         threadContext.addButton("Reset", this::reset);
 
         threadContext.setVisible();
+    }
+
+    /**
+     * Called by the runAsynch and supplyAsync methods
+     */
+    private void addCreateAction(int state, String type) {
+        setState(state);
+        ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("runnerThreadSprite");
+        if (firstThread == null) {
+            firstThread = threadSprite;
+        }
+        threadSprite.setXPosition(leftBorder + arrowLength);
+        threadCount++;
+        // we need to create a future, a thread to attach to it, and sprites for each of those
+        FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+        smallFutureSprites.add(futureSprite);
+        futureSprite.setXMargin(15);
+        futureSprite.setXRightMargin(15);
+        futureSprite.setYMargin(+6);
+        futureSprite.setYPosition(threadSprite.getYPosition() - futureTopMargin);
+        // the holder contains the running status. When it is done, will be set to false
+        threadSprite.setHolder(true);
+        CompletableFuture future = null;
+        switch (type) {
+            case "run-async": {
+                future = CompletableFuture.runAsync(() -> {
+                    while (threadSprite.getHolder()) {
+                        Thread.yield();
+                    }
+                    threadContext.stopThread(threadSprite);
+                });
+                break;
+            }
+            case "supply-async": {
+                future = CompletableFuture.supplyAsync(() -> {
+                    while (threadSprite.getHolder()) {
+                        Thread.yield();
+                    }
+                    threadContext.stopThread(threadSprite);
+                    return "value " + valueIdGenerator.incrementAndGet();
+                });
+                break;
+            }
+        }
+        completableFutures.add(future);
+        futureSprite.setFuture(future);
+        futureSprite.setHeight(completableFutureHeight);
+        threadContext.addSprite(0, futureSprite);
+        threadSprite.attachAndStartRunnable(() -> {
+            while (threadSprite.isRunning()) {
+                Thread.yield();
+            }
+            println(threadSprite + " exiting");
+        });
+        threadContext.addSprite(threadSprite);
     }
 
     /**
