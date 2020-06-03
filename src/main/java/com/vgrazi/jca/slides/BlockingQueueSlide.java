@@ -32,87 +32,15 @@ public class BlockingQueueSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("put()", () -> {
-            setState(1);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            objectSprite.setAction("running");
-            threadContext.addSprite(objectSprite);
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(rightBorder - 10);
-                objectSprite.setAction("exit");
-
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                try {
-                    blockingQueue.put("xxx");
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                while("running".equals(objectSprite.getAction())){
-                    Thread.yield();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
+            addAction(1, "put");
         });
 
         threadContext.addButton("offer(obj)", () -> {
-            setState(2);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            objectSprite.setAction("running");
-            threadContext.addSprite(objectSprite);
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(rightBorder - 10);
-                objectSprite.setAction("exit");
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                boolean success = blockingQueue.offer("xxx");
-                setMessage("Success: " + success);
-                if(!success) objectSprite.setRetreating();
-//                    threadContext.stopThread(objectSprite);
-                while("running".equals(objectSprite.getAction())){
-                    Thread.yield();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
+            addAction(2, "offer");
         });
 
         threadContext.addButton("offer(obj, 5, TimeUnit.SECONDS)", () -> {
-            setState(4);
-            ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
-            objectSprite.setAction("running");
-            GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
-            if (getter != null) {
-                objectSprite.setYPosition(getter.getYPosition());
-                objectSprite.setXPosition(leftBorder);
-                objectSprite.setAction("exit");
-            }
-            objectSprite.attachAndStartRunnable(() -> {
-                try {
-                    boolean success = blockingQueue.offer("xxx", 5, TimeUnit.SECONDS);
-                    setMessage("Success: " + success);
-                    if(!success) objectSprite.setRetreating();
-//                    threadContext.stopThread(objectSprite);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                while("running".equals(objectSprite.getAction())){
-                    Thread.yield();
-                }
-                threadContext.stopThread(objectSprite);
-                if (getter != null) {
-                    threadContext.stopThread(getter);
-                }
-            });
-            threadContext.addSprite(objectSprite);
+            addAction(4, "timed-offer");
         });
 
         threadContext.addButton("take()", () -> {
@@ -151,6 +79,52 @@ public class BlockingQueueSlide extends Slide {
 
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
+    }
+
+    private void addAction(int state, String type) {
+        setState(state);
+        ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
+        objectSprite.setAction("running");
+        threadContext.addSprite(objectSprite);
+        GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
+        if (getter != null) {
+            objectSprite.setYPosition(getter.getYPosition());
+            objectSprite.setXPosition(rightBorder - 10);
+            objectSprite.setAction("exit");
+        }
+        objectSprite.attachAndStartRunnable(() -> {
+            switch (type) {
+                case "put":
+                    try {
+                        blockingQueue.put("xxx");
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    break;
+                case "offer": {
+                    boolean success = blockingQueue.offer("xxx");
+                    setMessage("Success: " + success);
+                    if (!success) objectSprite.setRetreating();
+                }
+                break;
+                case "timed-offer":
+                    try {
+                        boolean success = blockingQueue.offer("xxx", 5, TimeUnit.SECONDS);
+                        setMessage("Success: " + success);
+                        if (!success) objectSprite.setRetreating();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    break;
+            }
+            while ("running".equals(objectSprite.getAction())) {
+                Thread.yield();
+            }
+            threadContext.stopThread(objectSprite);
+            if (getter != null) {
+                threadContext.stopThread(getter);
+            }
+        });
     }
 
     public void reset() {
