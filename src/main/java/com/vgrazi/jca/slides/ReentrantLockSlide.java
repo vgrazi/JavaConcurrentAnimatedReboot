@@ -147,7 +147,7 @@ public class ReentrantLockSlide extends Slide {
         addAwaitSignalButton("condition.signal()", "signal", 8);
         addAwaitSignalButton("condition.signalAll()", "signalAll", 9);
         threadContext.addButton("lock.unlock()", () -> {
-            setCssSelected("unlock");
+            setState(2);
             ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
             runningSprite.setHolder(false);
             // The new running thread should call notify

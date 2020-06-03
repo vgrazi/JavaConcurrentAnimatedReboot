@@ -10,7 +10,6 @@
      acquired = lock.tryLock(<3 literal>1L<3 default>, TimeUnit.SECONDS);
      <3 keyword>if<3 default>(acquired) {
          doSomething();
-     }
      } <3 keyword>catch<3 default> (InterruptedException e) {...
  } <3 keyword>finally {
      if <3 default>(acquired) {
