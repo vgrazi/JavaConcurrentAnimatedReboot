@@ -21,71 +21,9 @@ public class CyclicBarrierSlide extends Slide {
     private int count;
     public void run() {
         reset();
-        threadContext.addButton("await()", () -> {
-            setMessage("");
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setAction("await");
-            sprite.attachAndStartRunnable(() -> {
-                try {
-                    setState(1);
-                    if (firstThread == null) {
-                        firstThread = sprite;
-                    }
-                    else {
-                        sprite.setXPosition(firstThread.getXPosition()-20);
-                    }
-                    count++;
-                    setCssSelected("await");
-                    cyclicBarrier.await();
-                    count--;
-                    if(count == 0) {
-                        firstThread = null;
-                    }
-                } catch (InterruptedException | BrokenBarrierException e) {
-                    e.printStackTrace();
-                    sprite.setRetreating();
-                    setMessage(e.toString());
-                }
-                finally {
-                    threadContext.stopThread(sprite);
-                }
-            });
-            threadContext.addSprite(sprite);
-        });
+        threadContext.addButton("await()", () -> createAwaitSprite("await", 1, false, "await"));
 
-        threadContext.addButton("await(time, TimeUnit)", () -> {
-            setMessage("");
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
-            sprite.setAction("await");
-            sprite.attachAndStartRunnable(() -> {
-                setState(2);
-                try {
-                    if (firstThread == null) {
-                        firstThread = sprite;
-                    }
-                    else {
-                        sprite.setXPosition(firstThread.getXPosition()-20);
-                    }
-                    count++;
-                    setCssSelected("await-timed");
-                    cyclicBarrier.await(2, TimeUnit.SECONDS);
-
-                    threadContext.stopThread(sprite);
-                    count--;
-                    if(count == 0) {
-                        firstThread = null;
-                    }
-                } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
-                    e.printStackTrace();
-                    setMessage(e.getMessage());
-                    sprite.setRetreating();
-                }
-                finally {
-                    threadContext.stopThread(sprite);
-                }
-            });
-            threadContext.addSprite(sprite);
-        });
+        threadContext.addButton("await(time, TimeUnit)", () -> createAwaitSprite("await", 2, true, "await-timed"));
 
         threadContext.addButton("barrier.reset()", () ->{
             setMessage("");
@@ -96,6 +34,45 @@ public class CyclicBarrierSlide extends Slide {
 
         threadContext.addButton("reset", this::reset);
         threadContext.setVisible();
+    }
+
+    private void createAwaitSprite(String action, int state, boolean timed, String cssSelected) {
+        setMessage("");
+        ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
+        sprite.setAction(action);
+        sprite.attachAndStartRunnable(() -> {
+            try {
+                setState(state);
+                if (firstThread == null) {
+                    firstThread = sprite;
+                }
+                else {
+                    sprite.setXPosition(firstThread.getXPosition()-20);
+                }
+                count++;
+                setCssSelected(cssSelected);
+                if (timed) {
+                    cyclicBarrier.await(2, TimeUnit.SECONDS);
+                }
+                else {
+                    cyclicBarrier.await();
+                }
+
+                threadContext.stopThread(sprite);
+                count--;
+                if(count == 0) {
+                    firstThread = null;
+                }
+            } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
+                e.printStackTrace();
+                setMessage(e.getMessage());
+                sprite.setRetreating();
+            }
+            finally {
+                threadContext.stopThread(sprite);
+            }
+        });
+        threadContext.addSprite(sprite);
     }
 
     public void reset() {
