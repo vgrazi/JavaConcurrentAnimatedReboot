@@ -21,9 +21,9 @@ public class CyclicBarrierSlide extends Slide {
     private int count;
     public void run() {
         reset();
-        threadContext.addButton("await()", () -> createAwaitSprite("await", 1, false, "await"));
+        threadContext.addButton("await()", () -> createAwaitSprite("await", 1, false));
 
-        threadContext.addButton("await(time, TimeUnit)", () -> createAwaitSprite("await", 2, true, "await-timed"));
+        threadContext.addButton("await(time, TimeUnit)", () -> createAwaitSprite("await", 2, true));
 
         threadContext.addButton("barrier.reset()", () ->{
             setMessage("");
@@ -36,7 +36,7 @@ public class CyclicBarrierSlide extends Slide {
         threadContext.setVisible();
     }
 
-    private void createAwaitSprite(String action, int state, boolean timed, String cssSelected) {
+    private void createAwaitSprite(String action, int state, boolean timed) {
         setMessage("");
         ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
         sprite.setAction(action);
@@ -50,7 +50,6 @@ public class CyclicBarrierSlide extends Slide {
                     sprite.setXPosition(firstThread.getXPosition()-20);
                 }
                 count++;
-                setCssSelected(cssSelected);
                 if (timed) {
                     cyclicBarrier.await(2, TimeUnit.SECONDS);
                 }

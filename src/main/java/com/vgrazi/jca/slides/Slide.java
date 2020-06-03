@@ -165,6 +165,7 @@ public abstract class Slide {
         String snippet = getSnippet();
         snippet = applyState(state, snippet);
         getSnippetLabel().setText(snippet);
+        // scroll the snippet scroll pane to the top left
         getSnippetLabel().setCaretPosition(0);
     }
 
@@ -181,14 +182,12 @@ public abstract class Slide {
         String snippetText = this.snippetText == null?"":this.snippetText;
         int fontSize = snippetFont.getSize();
         return "<html><head><style type=\"text/css\"> \n" +
-                "pre{font-size:" +
-                fontSize +
-                ";}\n" +
+                "pre{font-size:" + fontSize + ";}\n" +
                 ".default { font-weight: bold}\n" +
                 ".keyword { color: rgb(0,0,200); font-weight: bold; }\n" +
                 ".highlight { color: rgb(0,0,0); background-color: yellow; font-weight: normal; }\n" +
                 ".literal { color: rgb(0,0,255); font-weight: bold}\n" +
-                ".comment { color: rgb(128,128,128);}\n" +
+                ".comment { color: rgb(150,150,150);}\n" +
                 ".unselected { color: rgb(128,128,128); }\n" +
                 "</style> \n" +
                 "</head>\n" +
@@ -227,9 +226,9 @@ public abstract class Slide {
             snippet = snippet.replaceAll("<state\\d:(\\w+)>", "unselected");
 //          "<format state=3, class=\"keyword\"/>int </format>"
 
-
-            snippet = snippet.replaceAll(String.format("<%d\\s+(\\w+)>", state), String.format("</span><span class=\"%s\">", "$1"));
-            snippet = snippet.replaceAll("<\\d+\\s*(\\w+)>", "</span><span class=\"unselected\">");
+// we support comma separated ids, eg <0 keyword> or <0,12 default>
+            snippet = snippet.replaceAll(String.format("<(\\d+,)*%d(,\\d+)*\\s+(\\w+)>", state), String.format("</span><span class=\"%s\">", "$3"));
+            snippet = snippet.replaceAll("<(\\d+,)*\\d+(,\\d+)*\\s+(\\w+)>", "</span><span class=\"unselected\">");
 
         }
         return snippet;
