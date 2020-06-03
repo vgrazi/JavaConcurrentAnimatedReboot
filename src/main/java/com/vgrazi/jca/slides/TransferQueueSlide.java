@@ -34,17 +34,11 @@ public class TransferQueueSlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("transferQueue.transfer(object)", () -> {
-            addAction(1, "transfer");
-        });
+        threadContext.addButton("transferQueue.transfer(object)", () -> addAction(1, "transfer"));
 
-        threadContext.addButton("transferQueue.tryTransfer(object)", () -> {
-            addAction(3, "try-transfer");
-        });
+        threadContext.addButton("transferQueue.tryTransfer(object)", () -> addAction(3, "try-transfer"));
 
-        threadContext.addButton("transferQueue.tryTransfer(object, 2,TimeUnit.SECONDS)", () -> {
-            addAction(5, "try-timed-transfer");
-        });
+        threadContext.addButton("transferQueue.tryTransfer(object, 2,TimeUnit.SECONDS)", () -> addAction(5, "try-timed-transfer"));
 
         threadContext.addButton("transferQueue.put()", () -> {
             setState(6);
