@@ -205,31 +205,9 @@ public abstract class Slide {
     private String applyState(int state, String snippet) {
 //        println("ConcurrentExample.applyState " + state);
         if (snippet != null) {
-            if (state == -1) {
-                snippet = snippet.replaceAll("<state\\d:(#\\d\\d\\d\\d\\d\\d)>", "$1");
-            } else {
-                snippet = snippet.replaceAll("<state" + state + ":(#\\d\\d\\d\\d\\d\\d)>", "$1");
-                snippet = snippet.replaceAll("<state\\d:(#\\d\\d\\d\\d\\d\\d)>", htmlDisabledColor);
-            }
-            // in order to change the size of the selected font, include a size css font style as follows: font-size:state2-size
-            // the state number (in this example state2) corresponds to the state parameter
-            if (state >= 0) {
-                snippet = snippet.replaceAll(String.format("state%d-size", state), "24pt");
-                snippet = snippet.replaceAll(String.format("state[~%d]-size", state), "21pt");
-            }
-
-            // for newer html output, intelliJ is spitting out css. The default css class is .s9
-            // Look for <state2:s1> if state == 2 convert that to s1 else s9
-//          println(snippet);
-            snippet = snippet.replaceAll("<state" + state + "\\:(\\w*)>", "$1");
-            snippet = snippet.replaceAll("<state\\d:(s\\w+)>", "s9");
-            snippet = snippet.replaceAll("<state\\d:(\\w+)>", "unselected");
-//          "<format state=3, class=\"keyword\"/>int </format>"
-
-// we support comma separated ids, eg <0 keyword> or <0,12 default>
+            // we support comma separated ids, eg <0 keyword> or <0,12 default>
             snippet = snippet.replaceAll(String.format("<(\\d+,)*%d(,\\d+)*\\s+(\\w+)>", state), String.format("</span><span class=\"%s\">", "$3"));
             snippet = snippet.replaceAll("<(\\d+,)*\\d+(,\\d+)*\\s+(\\w+)>", "</span><span class=\"unselected\">");
-
         }
         return snippet;
     }
