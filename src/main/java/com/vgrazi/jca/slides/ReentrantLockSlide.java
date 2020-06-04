@@ -109,11 +109,11 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("interrupt interruptibly", () -> {
-            addInterruptAction(6, 1);
+            addInterruptAction(11, 1);
         });
 
         threadContext.addButton("(interrupt waiting)", () -> {
-            addInterruptAction(5, 0);
+            addInterruptAction(10, 0);
         });
 
 
