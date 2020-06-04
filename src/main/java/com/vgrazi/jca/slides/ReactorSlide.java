@@ -26,14 +26,12 @@ public class ReactorSlide extends Slide {
 
         threadContext.addButton("prestartAllCoreThreads()", () -> {
             ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
-            setCssSelected("prestartAll");
 
         });
 
         threadContext.addButton("submit", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
-            setCssSelected("submit");
 
             executor.submit(() -> {
                 Thread thread = Thread.currentThread();
@@ -57,7 +55,6 @@ public class ReactorSlide extends Slide {
 
         threadContext.addButton("(done)", () -> {
             PooledThreadSprite<String> sprite = threadContext.getRunningPooledThread();
-            setCssSelected("done");
             if (sprite != null) {
                 sprite.setRunning(false);
                 sprite.setPooled(true);

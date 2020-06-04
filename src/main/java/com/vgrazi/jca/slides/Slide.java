@@ -83,13 +83,6 @@ public abstract class Slide {
         this.messages.setText(message);
     }
 
-    /**
-     * Sets the specified selector as selected, and everything else unselected
-     */
-    protected void setCssSelected(String selectedSelector) {
-        // todo: Change to set state
-    }
-
     public void reset() {
         threadContext.reset();
         threadCanvas.hideMonolith(false);

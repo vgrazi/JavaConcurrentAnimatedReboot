@@ -67,7 +67,7 @@ public class ReentrantLockSlide extends Slide {
             setState(1);
         });
         threadContext.addButton("lock.lockInterrubtibly()", () -> {
-            setCssSelected("lock-interruptibly");
+            setState(4);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.setSpecialId(1);
             // set the holder to true for running
@@ -84,7 +84,6 @@ public class ReentrantLockSlide extends Slide {
                 }
             });
             threadContext.addSprite(sprite);
-            setState(4);
         });
 
         threadContext.addButton("tryLock()", () -> {
@@ -110,32 +109,17 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("interrupt interruptibly", () -> {
-            setCssSelected("interrupt");
-
-            ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(1);
-            if (sprite != null) {
-                sprite.setRetreating();
-                sprite.getThread().interrupt();
-                setState(6);
-            }
+            addInterruptAction(6, 1);
         });
 
         threadContext.addButton("(interrupt waiting)", () -> {
-            setCssSelected("interrupt");
-
-            ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(0);
-            if (sprite != null) {
-                sprite.setRetreating();
-                sprite.getThread().interrupt();
-                setState(5);
-            }
+            addInterruptAction(5, 0);
         });
 
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
         threadContext.addButton("lock.newCondition()", () -> {
-            setCssSelected("condition");
             setState(5);
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null && !runningSprite.hasCondition()) {
@@ -154,12 +138,20 @@ public class ReentrantLockSlide extends Slide {
             runningSprite.setAction("release");
             log("Set release on ", runningSprite);
             threadContext.stopThread(runningSprite);
-//                setCssSelected("release");
         });
 
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
 
+    }
+
+    private void addInterruptAction(int state, int specialId) {
+        setState(state);
+        ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(specialId);
+        if (sprite != null) {
+            sprite.setRetreating();
+            sprite.getThread().interrupt();
+        }
     }
 
     /**
@@ -240,7 +232,6 @@ public class ReentrantLockSlide extends Slide {
                                     runningSprite.setCondition(condition, sprite.getConditionId());
                                     runningSprite.setAction(action);
                                 }
-//            setCssSelected("wait");
                             }
                         } else {
                             runningSprite.setAction(action);

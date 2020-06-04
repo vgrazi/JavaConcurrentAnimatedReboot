@@ -79,7 +79,6 @@ public class ExecutorsSlide extends Slide {
         threadContext.addButton("(done)", () -> {
             PooledThreadSprite<String> sprite = threadContext.getRunningPooledThread();
             if (sprite != null) {
-                setCssSelected("done");
                 sprite.setRunning(false);
                 sprite.setPooled(true);
             }

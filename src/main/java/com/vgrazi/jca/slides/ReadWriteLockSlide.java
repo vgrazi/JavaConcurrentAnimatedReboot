@@ -37,7 +37,6 @@ public class ReadWriteLockSlide extends Slide {
                     Thread.yield();
                 }
                 readWriteLock.readLock().unlock();
-                setCssSelected("readlock-unlock");
             });
             threadContext.addSprite(sprite);
         });
@@ -83,7 +82,6 @@ public class ReadWriteLockSlide extends Slide {
             ThreadSprite<String> runningWriteThread = (ThreadSprite<String>) threadContext.getFirstRunningThreadOfSpecialId(1);
             if (runningWriteThread != null) {
                 setState(4);
-                setCssSelected("writelock-downgrade");
                 runningWriteThread.setHolder("downgrade");
             }
         });
