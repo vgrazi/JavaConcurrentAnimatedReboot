@@ -133,11 +133,13 @@ public class ReentrantLockSlide extends Slide {
         threadContext.addButton("lock.unlock()", () -> {
             setState(2);
             ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
-            runningSprite.setHolder(false);
-            // The new running thread should call notify
-            runningSprite.setAction("release");
-            log("Set release on ", runningSprite);
-            threadContext.stopThread(runningSprite);
+            if (runningSprite != null) {
+                runningSprite.setHolder(false);
+                // The new running thread should call notify
+                runningSprite.setAction("release");
+                log("Set release on ", runningSprite);
+                threadContext.stopThread(runningSprite);
+            }
         });
 
         threadContext.addButton("Reset", this::reset);
