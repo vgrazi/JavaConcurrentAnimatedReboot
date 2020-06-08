@@ -407,7 +407,7 @@ public class ThreadContext<S> implements InitializingBean {
 
     public List<ObjectSprite> getAllObjectSprites() {
         List<ObjectSprite> collect = sprites.stream()
-                .filter(sprite -> sprite instanceof FutureSprite)
+                .filter(sprite -> sprite instanceof CompletableFutureSprite)
                 .map(sprite -> (ObjectSprite) sprite)
                 .collect(Collectors.toList());
         return collect;
@@ -486,10 +486,10 @@ public class ThreadContext<S> implements InitializingBean {
         return getterThreadSprites;
     }
 
-    private List<FutureSprite> getAllFutureSprites() {
-        List<FutureSprite> collect = sprites.stream()
-                .filter(sprite -> sprite instanceof FutureSprite)
-                .map(sprite -> (FutureSprite) sprite)
+    private List<CompletableFutureSprite> getAllFutureSprites() {
+        List<CompletableFutureSprite> collect = sprites.stream()
+                .filter(sprite -> sprite instanceof CompletableFutureSprite)
+                .map(sprite -> (CompletableFutureSprite) sprite)
                 .collect(Collectors.toList());
         return collect;
     }

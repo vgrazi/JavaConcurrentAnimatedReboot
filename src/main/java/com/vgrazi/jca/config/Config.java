@@ -41,8 +41,8 @@ public class Config {
 
     @Bean
     @Scope("prototype")
-    FutureSprite futureSprite() {
-        return new FutureSprite();
+    CompletableFutureSprite completableFutureSprite() {
+        return new CompletableFutureSprite();
     }
 
     @Bean

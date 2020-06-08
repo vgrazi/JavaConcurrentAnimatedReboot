@@ -9,12 +9,17 @@
   <3 default>   CompletableFuture.allOf(completableFutures
   <3 default>     .toArray(<3 keyword>new<3 default> CompletableFuture[0]));
 
-  <6 default>  Object value = future.join();
+  <6 keyword>  try {
+  <6 default>    Object value = future.join();
+  <6 keyword>  } catch <5 default>(CompletionException e) {..}<6 comment>//RuntimeException
 
   <5 keyword>  try {
   <5 default>    Object value = future.get();
   <5 keyword>  } catch <5 default>(InterruptedException
     <5 default>    | ExecutionException e) {..}
+    <5 default>    | CompletionException e) {..}
   <8 default>completableFuture.thenRun(<9 default>()-> someRunMethod()<8 default>);
+  <7 keyword>  try {
   <7 default>  Object value = future.getNow("valueIfAbsent");
+  <7 keyword>  } catch <5 default>(CompletionException e) {..}<6 comment>//RuntimeException
 

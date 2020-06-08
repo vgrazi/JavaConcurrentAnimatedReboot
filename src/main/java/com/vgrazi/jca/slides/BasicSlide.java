@@ -48,7 +48,7 @@ public class BasicSlide extends Slide {
             runnableSprite.setMessage("RunnableSprite");
             threadContext.addSprite(runnableSprite);
             threadContext.addYPixels(10);
-//            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("futureSprite");
+//            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("completableFutureSprite");
 //            attachAndStartRunnable(futureSprite);
 //            futureSprite.setMessage("FutureSprite");
 //            threadContext.addSprite(futureSprite);

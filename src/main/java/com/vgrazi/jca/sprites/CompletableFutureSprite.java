@@ -16,7 +16,7 @@ import static com.vgrazi.jca.util.Parsers.parseFont;
  * Note: We should really create the thread in the constructor, but its Runnable needs access to this class's
  * running flag. So construct the sprite, then add the Runnable.
  */
-public class FutureSprite extends Sprite implements InitializingBean {
+public class CompletableFutureSprite extends Sprite implements InitializingBean {
     private Color futureDefaultColor;
     private Color futureDoneColor;
     private Color futureTextColor;
@@ -59,7 +59,13 @@ public class FutureSprite extends Sprite implements InitializingBean {
             graphics.fill3DRect(getXPosition() + getXOffset() - getXMargin() , getYPosition() - getYMargin() -1, width + getXMargin() + getXRightMargin(), height + getYMargin() * 2, true);
             renderLabel(graphics);
             if(future.isDone()) {
-                String value = String.valueOf(future.join());
+                String value="";
+                if (!future.isCompletedExceptionally()) {
+                    value = String.valueOf(future.join());
+                }
+                else {
+                    value = "canceled";
+                }
                 graphics.setColor(futureTextColor);
                 graphics.setFont(futureTextFont);
                 FontMetrics fm = graphics.getFontMetrics();
