@@ -8,4 +8,5 @@ In this reboot version, there is a single background thread per slide that carri
 Many of the original animations have been enhanced to provide more control over the underlying threads, and CompletableFuture has been added.
 
 Sprites List:
+
 ![image](src/main/resources/images/SpritesList.jpg)
