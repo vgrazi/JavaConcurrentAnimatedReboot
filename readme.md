@@ -10,3 +10,5 @@ Many of the original animations have been enhanced to provide more control over 
 Sprites List:
 
 ![image](src/main/resources/images/SpritesList.jpg)
+
+To run this - Clone the repo, build via Maven using mvn package, then double click the jar that is produced (under targets)
