@@ -210,7 +210,7 @@ public class JCAFrame extends JFrame {
         addComponentListener(adapter);
         menuPanel.addComponentListener(adapter);
 
-        /**
+        /*
          * set the red laser pointer in the thread canvas
          */
         SwingUtilities.invokeLater(() -> {
