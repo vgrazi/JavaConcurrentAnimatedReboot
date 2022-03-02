@@ -76,6 +76,7 @@ public class CyclicBarrierSlide extends Slide {
 
     public void reset() {
         super.reset();
+        threadCanvas.setThinMonolith();
         setState(0);
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");

@@ -75,6 +75,7 @@ public class CountDownLatchSlide extends Slide {
 
     public void reset() {
         super.reset();
+        threadCanvas.setThinMonolith();
         threadContext.setSlideLabel("CountDownLatch");
         setSnippetFile("countdown-latch.html");
         setImage("images/countdownLatch.jpg");

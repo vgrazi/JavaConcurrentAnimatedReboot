@@ -25,6 +25,12 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${monolith-right-border}")
     private int rightBorder;
 
+    /**
+     * We create a copy so that if we reset the right border to a thin monolith, we have the original right border
+     */
+    @Value("${monolith-right-border}")
+    private int rightDefaultBorder;
+
     @Value("${initial-y-position}")
     private int initialYPosition;
 
@@ -70,6 +76,14 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     @Value("${BOTTOM-LABEL-COLOR}")
     public void setBottomLabelColor(String color) {
         this.bottomLabelColor = parseColor(color);
+    }
+
+    public int getRightBorder() {
+        return rightBorder;
+    }
+
+    public void setRightBorder(int rightBorder) {
+        this.rightBorder = rightBorder;
     }
 
     @Override
@@ -144,12 +158,6 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         bottomLabelFontStyle = Parsers.parseFontStyle(style);
     }
 
-    /**
-     * False by default, call this with true to prevent the monolith from drawing
-     */
-    public void hideMonolith(boolean b) {
-        hideMonolith = b;
-    }
 
     public void setSlideLabel(String slideLabel) {
         this.slideLabel = slideLabel;
@@ -157,5 +165,24 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     public void setBottomLabel(String label) {
         this.bottomLabel = label;
+    }
+
+    public int getLeftBorder() {
+        return leftBorder;
+    }
+
+    /**
+     * False by default, call this with true to prevent the monolith from drawing
+     */
+    public void hideMonolith(boolean b) {
+        hideMonolith = b;
+    }
+
+    public void setThinMonolith() {
+        setRightBorder(getLeftBorder() + 20);
+    }
+
+    public void setStandardMonolith() {
+        setRightBorder(rightDefaultBorder);
     }
 }

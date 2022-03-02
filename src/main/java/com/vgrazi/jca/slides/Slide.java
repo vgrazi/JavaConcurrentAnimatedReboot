@@ -86,6 +86,7 @@ public abstract class Slide {
     public void reset() {
         threadContext.reset();
         threadCanvas.hideMonolith(false);
+        threadCanvas.setStandardMonolith();
         this.messages.setText("");
         setMessage("     ");
         imageLabel.setIcon(null);

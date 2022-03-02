@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.net.URL;
 
 @Component
 public class JCAFrame extends JFrame {
@@ -130,10 +132,10 @@ public class JCAFrame extends JFrame {
     }
 
     @PostConstruct
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws IOException {
         snippetCanvas.setBackground(Color.white);
         snippetCanvas.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
-        snippetCanvas.setFontSize( 18);
+        snippetCanvas.setFontSize(18);
         snippetScrollPane = new JScrollPane(snippetCanvas);
         snippetScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         snippetScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -199,7 +201,7 @@ public class JCAFrame extends JFrame {
                 super.componentResized(e);
                 animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
                 wholePane.setDividerLocation(location);
-                Slide slide  = threadContext.getSlide();
+                Slide slide = threadContext.getSlide();
                 if(slide instanceof IntroSlide) {
                     ((IntroSlide) slide).resetImage();
                 }
@@ -207,6 +209,18 @@ public class JCAFrame extends JFrame {
         };
         addComponentListener(adapter);
         menuPanel.addComponentListener(adapter);
+
+        /**
+         * set the red laser pointer in the thread canvas
+         */
+        SwingUtilities.invokeLater(() -> {
+            URL imgURL = getClass().getResource("/images/cursor.png");
+            ImageIcon icon = new ImageIcon(imgURL, "pointer");
+            Image image = icon.getImage();
+            Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(1, 1), "customCursor");
+            threadCanvas.setCursor(cursor);
+        });
+
         add(wholePane);
     }
 

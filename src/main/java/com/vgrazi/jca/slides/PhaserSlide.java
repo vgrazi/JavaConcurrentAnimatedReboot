@@ -82,6 +82,7 @@ public class PhaserSlide extends Slide {
 
     public void reset() {
         super.reset();
+        threadCanvas.setThinMonolith();
         threadContext.setSlideLabel("Phaser");
         phaser = new Phaser(4) {
             @Override

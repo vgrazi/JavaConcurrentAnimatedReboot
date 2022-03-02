@@ -1,7 +1,6 @@
 package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.ThreadSprite;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -55,6 +54,7 @@ public class AtomicIntegerSlide extends Slide {
 
     public void reset() {
         super.reset();
+        threadCanvas.setThinMonolith();
         counter = new AtomicInteger();
         threadContext.setSlideLabel("AtomicInteger");
         setSnippetFile("atomic-integer.html");
