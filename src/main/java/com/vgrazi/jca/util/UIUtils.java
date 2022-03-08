@@ -32,7 +32,7 @@ public class UIUtils {
         }
     }
 
-    private ImageIcon getImageIcon(String imageName) {
+    public ImageIcon getImageIcon(String imageName) {
         try {
             URL url = getClass().getClassLoader().getResource(imageName);
             ImageIcon imageIcon = new ImageIcon(url);

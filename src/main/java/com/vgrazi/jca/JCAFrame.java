@@ -4,6 +4,7 @@ package com.vgrazi.jca;
 import com.vgrazi.jca.context.ThreadContext;
 import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.util.Parsers;
+import com.vgrazi.jca.util.UIUtils;
 import com.vgrazi.jca.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,6 +109,9 @@ public class JCAFrame extends JFrame {
     @Value("${animation-pane-to-snippet-divider-ratio}")
     private double animationPaneToSnippetDividerRatio;
 
+    @Autowired
+    private UIUtils uiUtils;
+
     private JScrollPane snippetScrollPane;
 
 
@@ -207,6 +211,7 @@ public class JCAFrame extends JFrame {
                 }
             }
         };
+
         addComponentListener(adapter);
         menuPanel.addComponentListener(adapter);
 
@@ -214,8 +219,7 @@ public class JCAFrame extends JFrame {
          * set the red laser pointer in the thread canvas
          */
         SwingUtilities.invokeLater(() -> {
-            URL imgURL = getClass().getResource("/images/cursor.png");
-            ImageIcon icon = new ImageIcon(imgURL, "pointer");
+            ImageIcon icon = uiUtils.getImageIcon("images/cursor.png");
             Image image = icon.getImage();
             Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(1, 1), "customCursor");
             threadCanvas.setCursor(cursor);
