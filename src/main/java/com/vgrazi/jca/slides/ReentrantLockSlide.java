@@ -80,6 +80,7 @@ public class ReentrantLockSlide extends Slide {
                     lock.unlock();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    sprite.setRetreating();
                     sprite.setMessage(e.toString());
                 }
             });
@@ -108,14 +109,13 @@ public class ReentrantLockSlide extends Slide {
             setState(3);
         });
 
-        threadContext.addButton("interrupt interruptibly", () -> {
-            addInterruptAction(11, 1);
-        });
-
         threadContext.addButton("(interrupt waiting)", () -> {
             addInterruptAction(10, 0);
         });
 
+        threadContext.addButton("(interrupt interruptible)", () -> {
+            addInterruptAction(11, 1);
+        });
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
@@ -150,8 +150,10 @@ public class ReentrantLockSlide extends Slide {
     private void addInterruptAction(int state, int specialId) {
         setState(state);
         ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(specialId);
+        if(sprite==null) {
+            sprite = threadContext.getRunnableThread();
+        }
         if (sprite != null) {
-            sprite.setRetreating();
             sprite.getThread().interrupt();
         }
     }

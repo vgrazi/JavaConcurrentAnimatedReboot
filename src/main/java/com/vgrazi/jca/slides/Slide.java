@@ -149,7 +149,8 @@ public abstract class Slide {
     }
 
     /**
-     * Sets the state and redraws the snippet. State == -1 colors the entire snippet. State == 0 colors the constructor, etc
+     * Sets the state and redraws the snippet. State == -1 colors the entire snippet. State == 0 colors the constructor, etc.
+     * The state index represents the index in the html snippet associated with this slide.
      *
      * @param state -1 colors the entire snippet. 0 colors the constructor, etc
      */
