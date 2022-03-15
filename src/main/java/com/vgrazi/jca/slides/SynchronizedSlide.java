@@ -72,8 +72,7 @@ public class SynchronizedSlide extends Slide {
             if (runningSprite != null) {
                 // The new running thread should call notify
                 runningSprite.setAction("interrupt");
-                threadContext.stopThread(runningSprite);
-                runningSprite.setRetreating();
+                runningSprite.getThread().interrupt();
                 log("Set interrupt on ", runningSprite);
                 setState(6);
             }
@@ -122,7 +121,9 @@ public class SynchronizedSlide extends Slide {
                     println(sprite + " exiting");
                 }
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                sprite.setRetreating();
+                System.out.println("Setting message:" + e);
+                sprite.setMessage(e.toString());
             }
         });
         threadContext.addSprite(sprite);

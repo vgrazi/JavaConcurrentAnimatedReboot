@@ -2,10 +2,58 @@ package com.vgrazi.javaconcurrentanimated.study;
 
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.junit.Assert.fail;
+
 public class ReentrantLockStudy{
+    @Test
+    public void testAwaitAfterInterrupted() throws InterruptedException{
+
+        // spin thread1
+        // thread1 grab lock
+        // call thread1.interrupt
+        // thread1 call await
+        // expect an InterruptedException
+        CountDownLatch latch = new CountDownLatch(1);
+        final boolean[] expected = {true};
+        boolean[] flag = new boolean[]{true};
+        // create the lock
+        ReentrantLock lock = new ReentrantLock();
+        Thread thread1 = new Thread(()->
+        {
+            lock.lock();
+            // loop until flag becomes false, after interrupt is called
+            while(flag[0]);
+            // interrupt was called. Now await and prove the interrupt falls thru
+            Condition condition = lock.newCondition();
+            try{
+                Thread.currentThread().interrupt();
+                condition.await();
+                System.out.println("Thread 1 Exiting");
+                // Interrupt never happeed. test failed
+                expected[0] = false;
+            }catch(InterruptedException e){
+                e.printStackTrace();
+                // test passed
+            }
+            latch.countDown();
+        });
+        System.out.println("Starting thread1");
+        thread1.start();
+        System.out.println("Interrupting thread1");
+        thread1.interrupt();
+        // set flag to false to force the loop to exit
+        System.out.println("Setting flag=false to signal thread1 to await()");
+        flag[0] = false;
+        latch.await();
+        if(!expected[0]){
+            fail();
+        }
+    }
+
     @Test
     public void testInterruptOnPlainLock() throws InterruptedException {
         // spin thread1
