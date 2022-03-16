@@ -32,6 +32,8 @@ public class CountDownLatchSlide extends Slide {
                     threadContext.stopThread(sprite);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    sprite.setMessage(e);
+                    sprite.setRetreating();
                 }
             });
             threadContext.addSprite(sprite);
@@ -48,9 +50,10 @@ public class CountDownLatchSlide extends Slide {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    setMessage(e.getMessage());
+                    sprite.setRetreating();
+                    sprite.setMessage(e);
                 } finally {
-                    threadContext.stopThread(sprite);
+//                    threadContext.stopThread(sprite);
                 }
             });
             threadContext.addSprite(sprite);
@@ -67,7 +70,14 @@ public class CountDownLatchSlide extends Slide {
             });
             threadContext.addSprite(sprite);
         });
-        ;
+
+        threadContext.addButton("interrupt", () -> {
+            setState(2);
+            ThreadSprite sprite=threadContext.getFirstWaitingThread();
+            if(sprite != null) {
+                sprite.getThread().interrupt();
+            }
+        });
 
         threadContext.addButton("reset", this::reset);
         threadContext.setVisible();

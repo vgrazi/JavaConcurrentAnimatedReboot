@@ -190,6 +190,10 @@ public abstract class Sprite<T> {
         this.message = message;
     }
 
+    public void setMessage(Object object) {
+        this.message = object==null ? null : String.valueOf(object);
+    }
+
     /**
      * A label is a value that can be displayed on top of a thread.
      * For example, on a GetterThreadSprite, to display the value it got.
