@@ -41,7 +41,7 @@ public class TransferQueueSlide extends Slide {
         threadContext.addButton("transferQueue.tryTransfer(object, 2,TimeUnit.SECONDS)", () -> addAction(5, "try-timed-transfer"));
 
         threadContext.addButton("transferQueue.put()", () -> {
-            setState(6);
+            highlightSnippet(6);
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
             GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
             threadContext.addSprite(objectSprite);
@@ -71,7 +71,7 @@ public class TransferQueueSlide extends Slide {
 
         threadContext.addButton("transferQueue.take()", () -> {
                     // If there are waiting objects, don't create a new sprite
-                    setState(2);
+                    highlightSnippet(2);
                     ObjectSprite objectSprite = threadContext.getFirstWaitingObjectSprite();
 
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");
@@ -112,7 +112,7 @@ public class TransferQueueSlide extends Slide {
     }
 
     private void addAction(int state, String type) {
-        setState(state);
+        highlightSnippet(state);
         ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
         GetterThreadSprite getter = threadContext.getFirstGetterThreadSprite();
         threadContext.addSprite(objectSprite);

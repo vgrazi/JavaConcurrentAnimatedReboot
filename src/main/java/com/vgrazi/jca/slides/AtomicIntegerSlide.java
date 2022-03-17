@@ -26,7 +26,7 @@ public class AtomicIntegerSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("getAndIncrement()", () -> {
-            setState(2);
+            highlightSnippet(2);
             for (int i = 0; i < 5; i++) {
                 ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
                 sprite.attachAndStartRunnable(()-> {

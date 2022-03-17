@@ -35,7 +35,7 @@ public class SaturationPolicySlide extends Slide {
         threadContext.addButton("execute", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
-            setState(2);
+            highlightSnippet(2);
 
             try {
                 Runnable[] runnables = new Runnable[1];
@@ -52,7 +52,7 @@ public class SaturationPolicySlide extends Slide {
                         sprite.setPooled(true);
                         runnableSprite.setDone();
                         threadContext.stopThread(runnableSprite);
-                        setState(0);
+                        highlightSnippet(0);
                     } else {
                         threadContext.stopThread(runnableSprite);
                         runnableSprite.setRetreating();

@@ -27,7 +27,7 @@ public class CyclicBarrierSlide extends Slide {
 
         threadContext.addButton("barrier.reset()", () ->{
             setMessage("");
-            setState(3);
+            highlightSnippet(3);
             cyclicBarrier.reset();
             initializeInstanceFields();
         });
@@ -42,7 +42,7 @@ public class CyclicBarrierSlide extends Slide {
         sprite.setAction(action);
         sprite.attachAndStartRunnable(() -> {
             try {
-                setState(state);
+                highlightSnippet(state);
                 if (firstThread == null) {
                     firstThread = sprite;
                 }
@@ -77,14 +77,14 @@ public class CyclicBarrierSlide extends Slide {
     public void reset() {
         super.reset();
         threadCanvas.setThinMonolith();
-        setState(0);
+        highlightSnippet(0);
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");
         setSnippetFile("cyclic-barrier.html");
         setImage("images/cyclicBarrier.jpg");
         setMessage("");
         cyclicBarrier = new CyclicBarrier(4, ()->{
-            setState(4);
+            highlightSnippet(4);
             setMessage("Barrier Action Hit!!");
         });
     }

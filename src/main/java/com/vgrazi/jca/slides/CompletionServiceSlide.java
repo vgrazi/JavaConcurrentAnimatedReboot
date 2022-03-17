@@ -2,7 +2,6 @@ package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.sprites.FutureRunnableSprite;
 import com.vgrazi.jca.sprites.GetterThreadSprite;
-import com.vgrazi.jca.sprites.Sprite;
 import com.vgrazi.jca.sprites.ThreadSprite;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class CompletionServiceSlide extends Slide {
     public void run() {
         reset();
         threadContext.addButton("submit()", () -> {
-                    setState(1);
+                    highlightSnippet(1);
                     // create a new sprite
                     FutureRunnableSprite sprite = (FutureRunnableSprite) applicationContext.getBean("futureRunnableSprite");
                     // set to starting, so that it won't come up when we get all the runners when the complete button is pressed
@@ -52,7 +51,7 @@ public class CompletionServiceSlide extends Slide {
 
         threadContext.addButton("take().get()", () -> {
             executor.execute(() -> {
-                setState(2);
+                highlightSnippet(2);
                 GetterThreadSprite getter = (GetterThreadSprite) applicationContext.getBean("getterSprite");
                 threadContext.setGetterNextYPos(getter);
                 threadContext.addSprite(getter);

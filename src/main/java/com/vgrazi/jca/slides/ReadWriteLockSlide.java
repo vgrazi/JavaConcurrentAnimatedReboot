@@ -29,7 +29,7 @@ public class ReadWriteLockSlide extends Slide {
         reset();
         threadContext.addButton("readWriteLock.readLock().lock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
-            setState(1);
+            highlightSnippet(1);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 readWriteLock.readLock().lock();
@@ -46,7 +46,7 @@ public class ReadWriteLockSlide extends Slide {
             sprite.setHolder("write-lock");
             sprite.setSpecialId(1);
             sprite.attachAndStartRunnable(() -> {
-                setState(2);
+                highlightSnippet(2);
                 readWriteLock.writeLock().lock();
                 while ("write-lock".equals(sprite.getHolder())) {
                     Thread.yield();
@@ -72,7 +72,7 @@ public class ReadWriteLockSlide extends Slide {
         threadContext.addButton("lock.unlock()", () -> {
             ThreadSprite<String> runningThread = (ThreadSprite<String>) threadContext.getRunningThread();
             if (runningThread != null) {
-                setState(3);
+                highlightSnippet(3);
                 runningThread.setHolder("release");
                 threadContext.stopThread(runningThread);
             }
@@ -81,7 +81,7 @@ public class ReadWriteLockSlide extends Slide {
         threadContext.addButton("(downgrade to read)", () -> {
             ThreadSprite<String> runningWriteThread = (ThreadSprite<String>) threadContext.getFirstRunningThreadOfSpecialId(1);
             if (runningWriteThread != null) {
-                setState(4);
+                highlightSnippet(4);
                 runningWriteThread.setHolder("downgrade");
             }
         });

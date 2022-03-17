@@ -34,7 +34,7 @@ public class StampedLockSlide extends Slide {
 
         threadContext.addButton("lock.readLock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
-            setState(1);
+            highlightSnippet(1);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.readLock();
@@ -68,7 +68,7 @@ public class StampedLockSlide extends Slide {
 
         threadContext.addButton("lock.writeLock()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("writeThreadSprite");
-            setState(6);
+            highlightSnippet(6);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 long stamp = stampedLock.writeLock();
@@ -88,7 +88,7 @@ public class StampedLockSlide extends Slide {
 
         threadContext.addButton("lock.tryOptimisticRead()", () -> {
             ThreadSprite<String> sprite = (ThreadSprite<String>) applicationContext.getBean("runnerThreadSprite");
-            setState(5);
+            highlightSnippet(5);
             sprite.setStroke(dottedStroke);
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
@@ -119,7 +119,7 @@ public class StampedLockSlide extends Slide {
         threadContext.addButton("lock.unlockRead(stamp)", () -> {
             Long stamp = readStamps.peek();
             if (stamp != null) {
-                setState(2);
+                highlightSnippet(2);
                 ThreadSprite readLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if(readLockSprite != null) {
                     readStamps.poll();
@@ -134,7 +134,7 @@ public class StampedLockSlide extends Slide {
         threadContext.addButton("lock.unlockRead(wrong_stamp)", () -> {
             Long stamp = readStamps.peek();
             if (stamp != null) {
-                setState(2);
+                highlightSnippet(2);
                 ThreadSprite readLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if(readLockSprite != null) {
                     readStamps.poll();
@@ -149,7 +149,7 @@ public class StampedLockSlide extends Slide {
         threadContext.addButton("lock.unlockWrite(stamp)", () -> {
             Long stamp = writeStamps.peek();
             if (stamp != null) {
-                setState(3);
+                highlightSnippet(3);
                 ThreadSprite writeLockSprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if(writeLockSprite != null) {
                     writeStamps.poll();
@@ -163,7 +163,7 @@ public class StampedLockSlide extends Slide {
         threadContext.addButton("validate(stamp)", () -> {
             Long stamp = optimisticReadStamps.peek();
             if (stamp != null) {
-                setState(4);
+                highlightSnippet(4);
                 ThreadSprite sprite = threadContext.getFirstRunningThreadOfSpecialId(stamp);
                 if (sprite != null) {
                     optimisticReadStamps.poll();

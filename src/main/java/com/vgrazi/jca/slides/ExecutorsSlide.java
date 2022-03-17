@@ -27,7 +27,7 @@ public class ExecutorsSlide extends Slide {
         threadContext.addButton("execute", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
-            setState(2);
+            highlightSnippet(2);
 
             executor.execute(() -> {
                 Thread thread = Thread.currentThread();
@@ -40,7 +40,7 @@ public class ExecutorsSlide extends Slide {
                     while (sprite.isRunning()) {
                         Thread.yield();
                     }
-                    setState(5);
+                    highlightSnippet(5);
                     sprite.setPooled(true);
                     runnableSprite.setDone();
                     threadContext.stopThread(runnableSprite);
@@ -53,7 +53,7 @@ public class ExecutorsSlide extends Slide {
         threadContext.addButton("submit", () -> {
             RunnableSprite runnableSprite = (RunnableSprite) applicationContext.getBean("runnableSprite");
             threadContext.addSprite(runnableSprite);
-            setState(3);
+            highlightSnippet(3);
 
             executor.submit(() -> {
                 Thread thread = Thread.currentThread();
@@ -66,7 +66,7 @@ public class ExecutorsSlide extends Slide {
                     while (sprite.isRunning()) {
                         Thread.yield();
                     }
-                    setState(6);
+                    highlightSnippet(6);
                     sprite.setPooled(true);
                     runnableSprite.setDone();
                     threadContext.stopThread(runnableSprite);
@@ -86,7 +86,7 @@ public class ExecutorsSlide extends Slide {
 
         threadContext.addButton("prestartAllCoreThreads()", () -> {
             ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
-            setState(4);
+            highlightSnippet(4);
         });
 
         threadContext.addButton("reset", this::reset);

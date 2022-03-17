@@ -22,7 +22,7 @@ public class SynchronizedSlide extends Slide {
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             addYieldRunnable(mutex, sprite);
-            setState(1);
+            highlightSnippet(1);
         });
 
         threadContext.addButton("exit synchronized", () -> {
@@ -31,7 +31,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("release");
                 log("Set release on ", runningSprite);
-                setState(2);
+                highlightSnippet(2);
             }
         });
 
@@ -43,7 +43,7 @@ public class SynchronizedSlide extends Slide {
             if (runningSprite != null) {
                 runningSprite.setAction("waiting");
                 log("Calling wait() on Runnable", runningSprite);
-                setState(3);
+                highlightSnippet(3);
             }
         });
 
@@ -53,7 +53,7 @@ public class SynchronizedSlide extends Slide {
                 // The new running thread should call notify
                 runningSprite.setAction("notifying");
                 log("Set notifying on ", runningSprite);
-                setState(4);
+                highlightSnippet(4);
             }
         });
 
@@ -62,7 +62,7 @@ public class SynchronizedSlide extends Slide {
             if (runningSprite != null) {
                 // The new running thread should call notify
                 runningSprite.setAction("notifyingAll");
-                setState(5);
+                highlightSnippet(5);
                 log("Set notifyAll on ", runningSprite);
             }
         });
@@ -74,7 +74,7 @@ public class SynchronizedSlide extends Slide {
                 runningSprite.setAction("interrupt");
                 runningSprite.getThread().interrupt();
                 log("Set interrupt on ", runningSprite);
-                setState(6);
+                highlightSnippet(6);
             }
         });
 

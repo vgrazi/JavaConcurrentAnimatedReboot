@@ -27,7 +27,7 @@ public class CountDownLatchSlide extends Slide {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.attachAndStartRunnable(() -> {
                 try {
-                    setState(1);
+                    highlightSnippet(1);
                     countDownLatch.await();
                     threadContext.stopThread(sprite);
                 } catch (InterruptedException e) {
@@ -43,7 +43,7 @@ public class CountDownLatchSlide extends Slide {
             sprite.attachAndStartRunnable(() -> {
                 boolean success;
                 try {
-                    setState(3);
+                    highlightSnippet(3);
                     success = countDownLatch.await(3, TimeUnit.SECONDS);
                     if(!success) {
                         sprite.setRetreating();
@@ -61,7 +61,7 @@ public class CountDownLatchSlide extends Slide {
         threadContext.addButton("countDown()", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.attachAndStartRunnable(() -> {
-                setState(2);
+                highlightSnippet(2);
                 countDownLatch.countDown();
                 while(countDownLatch.getCount() >0 && sprite.getXPosition() < rightBorder-10) {
                     Thread.yield();
@@ -72,7 +72,7 @@ public class CountDownLatchSlide extends Slide {
         });
 
         threadContext.addButton("interrupt", () -> {
-            setState(2);
+            highlightSnippet(2);
             ThreadSprite sprite=threadContext.getFirstWaitingThread();
             if(sprite != null) {
                 sprite.getThread().interrupt();

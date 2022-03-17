@@ -25,7 +25,7 @@ public class SemaphoreSlide extends Slide {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
-                setState(1);
+                highlightSnippet(1);
                 try {
                     log("About to acquire", sprite);
                     semaphore.acquire();
@@ -43,7 +43,7 @@ public class SemaphoreSlide extends Slide {
         });
 
         threadContext.addButton("semaphore.tryAcquire()", () -> {
-            setState(3);
+            highlightSnippet(3);
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
@@ -65,7 +65,7 @@ public class SemaphoreSlide extends Slide {
 
         threadContext.addButton("semaphore.tryAcquire(3, TimeUnit.SECONDS)", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
-            setState(4);
+            highlightSnippet(4);
             sprite.attachAndStartRunnable(()-> {
                 threadContext.addSprite(sprite);
                 try {
@@ -91,7 +91,7 @@ public class SemaphoreSlide extends Slide {
 
         threadContext.addButton("semaphore.release()", () -> {
             ThreadSprite sprite = threadContext.getRunningThread();
-            setState(2);
+            highlightSnippet(2);
             semaphore.release();
             printAvailablePermits();
             if (sprite != null) {
@@ -102,7 +102,7 @@ public class SemaphoreSlide extends Slide {
         });
 
         threadContext.addButton("semaphore.drainPermits()", ()->{
-            setState(5);
+            highlightSnippet(5);
             int count = semaphore.drainPermits();
             printAvailablePermits();
         });

@@ -44,7 +44,7 @@ public class BlockingQueueSlide extends Slide {
         });
 
         threadContext.addButton("take()", () -> {
-            setState(5);
+            highlightSnippet(5);
                     // If there are waiting objects, don't create a new sprite
                     ObjectSprite objectSprite = threadContext.getFirstRunningObjectSprite();
                     ThreadSprite getter = (ThreadSprite) applicationContext.getBean("getterSprite");
@@ -82,7 +82,7 @@ public class BlockingQueueSlide extends Slide {
     }
 
     private void addAction(int state, String type) {
-        setState(state);
+        highlightSnippet(state);
         ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
         objectSprite.setAction("running");
         threadContext.addSprite(objectSprite);

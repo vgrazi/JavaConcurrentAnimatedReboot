@@ -90,7 +90,7 @@ public abstract class Slide {
         this.messages.setText("");
         setMessage("     ");
         imageLabel.setIcon(null);
-        setState(0);
+        highlightSnippet(0);
         ((CardLayout) cardPanel.getLayout()).first(cardPanel);
     }
 
@@ -108,7 +108,7 @@ public abstract class Slide {
                     e.printStackTrace();
                 }
             }
-            setState(0);
+            highlightSnippet(0);
         }
     }
 
@@ -149,16 +149,16 @@ public abstract class Slide {
     }
 
     /**
-     * Sets the state and redraws the snippet. State == -1 colors the entire snippet. State == 0 colors the constructor, etc.
-     * The state index represents the index in the html snippet associated with this slide.
+     * Sets the index and redraws the snippet. Index == -1 colors the entire snippet. Index == 0 colors the constructor, etc.
+     * The "index" parameter represents the index in the html snippet associated with this slide.
      *
-     * @param state -1 colors the entire snippet. 0 colors the constructor, etc
+     * @param index -1 colors the entire snippet. 0 colors the constructor, etc
      */
-    public void setState(int state) {
+    public void highlightSnippet(int index) {
         setMessage("");
-        this.state = state;
+        this.state = index;
         String snippet = getSnippet();
-        snippet = applyState(state, snippet);
+        snippet = applyState(index, snippet);
         getSnippetLabel().setText(snippet);
         // scroll the snippet scroll pane to the top left
         getSnippetLabel().setCaretPosition(0);
@@ -221,6 +221,6 @@ public abstract class Slide {
     public void setSnippetFontSize(float size) {
         this.snippetFontSize = size;
         snippetFont = snippetFont.deriveFont(size);
-        setState(state);
+        highlightSnippet(state);
     }
 }

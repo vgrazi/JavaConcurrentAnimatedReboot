@@ -21,34 +21,34 @@ public class PhaserSlide extends Slide {
         threadContext.addButton("awaitAdvance(phase)", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
-            setState(4);
+            highlightSnippet(4);
             addRunnable(phaser, sprite, true);
         });
 
         threadContext.addButton("awaitAdvance(oldPhase)", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("awaitAdvance");
-            setState(4);
+            highlightSnippet(4);
             addRunnable(phaser, sprite, false);
         });
 
         threadContext.addButton("arrive()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arrive");
-            setState(1);
+            highlightSnippet(1);
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("arriveAndAwaitAdvance()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arriveAndAwaitAdvance");
-            setState(3);
+            highlightSnippet(3);
             addRunnable(phaser, sprite);
         });
         threadContext.addButton("arriveAndDeregister()", ()->{
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("arriveAndDeregister");
-            setState(2);
+            highlightSnippet(2);
             addRunnable(phaser, sprite);
         });
 
@@ -57,7 +57,7 @@ public class PhaserSlide extends Slide {
             //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("register");
-            setState(5);
+            highlightSnippet(5);
             addRunnable(phaser, sprite);
         });
 
@@ -66,12 +66,12 @@ public class PhaserSlide extends Slide {
             //  of permits. No need to create a thread
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("threadSprite");
             sprite.setAction("bulk-register");
-            setState(6);
+            highlightSnippet(6);
             addRunnable(phaser, sprite);
         });
 
         threadContext.addButton("getPhase()", ()->{
-            setState(8);
+            highlightSnippet(8);
             int phase = phaser.getPhase();
             displayPhaseAndPermits("");
         });
@@ -87,7 +87,7 @@ public class PhaserSlide extends Slide {
         phaser = new Phaser(4) {
             @Override
             protected boolean onAdvance(int phase, int registeredParties) {
-                setState(7);
+                highlightSnippet(7);
                 SwingUtilities.invokeLater(()-> displayPhaseAndPermits("onAdvance called."));
                 return false;
             }
