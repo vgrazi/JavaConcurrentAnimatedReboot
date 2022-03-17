@@ -13,6 +13,7 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,24 +51,26 @@ public class ReentrantLockSlide extends Slide {
         reset();
 
         threadContext.addButton("lock.lock()", () -> {
-            setState(1);
+            highlightSnippet(1);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
             sprite.attachAndStartRunnable(() -> {
-                lock.lock();
                 try {
+                    lock.lock();
                     whileLock(sprite);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                    interruptSprite(sprite, e);
                 }
-                lock.unlock();
+                finally{
+                    lock.unlock();
+                }
             });
             threadContext.addSprite(sprite);
-            setState(1);
+            highlightSnippet(1);
         });
         threadContext.addButton("lock.lockInterrubtibly()", () -> {
-            setState(4);
+            highlightSnippet(4);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.setSpecialId(1);
             // set the holder to true for running
@@ -77,18 +80,18 @@ public class ReentrantLockSlide extends Slide {
                 try {
                     lock.lockInterruptibly();
                     whileLock(sprite);
-                    lock.unlock();
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    sprite.setRetreating();
-                    sprite.setMessage(e.toString());
+                    interruptSprite(sprite, e);
+                }
+                finally{
+                    lock.unlock();
                 }
             });
             threadContext.addSprite(sprite);
         });
 
         threadContext.addButton("tryLock()", () -> {
-            setState(6);
+            highlightSnippet(6);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             // set the holder to true for running
             sprite.setHolder(true);
@@ -98,7 +101,7 @@ public class ReentrantLockSlide extends Slide {
                     try {
                         whileLock(sprite);
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                        interruptSprite(sprite, e);
                     }
                     lock.unlock();
                 } else {
@@ -106,7 +109,33 @@ public class ReentrantLockSlide extends Slide {
                 }
             });
             threadContext.addSprite(sprite);
-            setState(3);
+            highlightSnippet(3);
+        });
+
+        threadContext.addButton("tryLock(time, TimeUnit)", () -> {
+            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
+            // set the holder to true for running
+            sprite.setHolder(true);
+            sprite.attachAndStartRunnable(() -> {
+                boolean acquired = false;
+                try{
+                    acquired = lock.tryLock(5, TimeUnit.SECONDS);
+                    if(acquired){
+                        try{
+                            whileLock(sprite);
+                        }catch(InterruptedException e){
+                            Thread.currentThread().interrupt();
+                        }
+                        lock.unlock();
+                    }else{
+                        sprite.setRetreating();
+                    }
+                }catch(InterruptedException e) {
+                    interruptSprite(sprite, e);
+                }
+            });
+            threadContext.addSprite(sprite);
+            highlightSnippet(3);
         });
 
         threadContext.addButton("(interrupt waiting)", () -> {
@@ -120,7 +149,7 @@ public class ReentrantLockSlide extends Slide {
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
         threadContext.addButton("lock.newCondition()", () -> {
-            setState(5);
+            highlightSnippet(5);
             ThreadSprite runningSprite = threadContext.getRunningThread();
             if (runningSprite != null && !runningSprite.hasCondition()) {
                 runningSprite.setAction("newCondition");
@@ -131,7 +160,7 @@ public class ReentrantLockSlide extends Slide {
         addAwaitSignalButton("condition.signal()", "signal", 8);
         addAwaitSignalButton("condition.signalAll()", "signalAll", 9);
         threadContext.addButton("lock.unlock()", () -> {
-            setState(2);
+            highlightSnippet(2);
             ThreadSprite<Boolean> runningSprite = threadContext.getRunningThread();
             if (runningSprite != null) {
                 runningSprite.setHolder(false);
@@ -148,7 +177,7 @@ public class ReentrantLockSlide extends Slide {
     }
 
     private void addInterruptAction(int state, int specialId) {
-        setState(state);
+        highlightSnippet(state);
         ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(specialId);
         if(sprite==null) {
             sprite = threadContext.getRunnableThread();
@@ -202,7 +231,7 @@ public class ReentrantLockSlide extends Slide {
      */
     private void addAwaitSignalButton(String label, String action, int state) {
         threadContext.addButton(label, () -> {
-            setState(state);
+            highlightSnippet(state);
             ThreadSprite runningSprite = threadContext.getRunnableThread();
                     if (runningSprite != null) {
                         if (!runningSprite.hasCondition()) {

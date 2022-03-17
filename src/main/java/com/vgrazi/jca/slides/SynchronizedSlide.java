@@ -121,9 +121,7 @@ public class SynchronizedSlide extends Slide {
                     println(sprite + " exiting");
                 }
             } catch (InterruptedException e) {
-                sprite.setRetreating();
-                System.out.println("Setting message:" + e);
-                sprite.setMessage(e.toString());
+                interruptSprite(sprite, e);
             }
         });
         threadContext.addSprite(sprite);

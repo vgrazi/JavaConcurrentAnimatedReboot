@@ -33,7 +33,7 @@ public class ReentrantLockStudy{
                 Thread.currentThread().interrupt();
                 condition.await();
                 System.out.println("Thread 1 Exiting");
-                // Interrupt never happeed. test failed
+                // Interrupt never happened. test failed
                 expected[0] = false;
             }catch(InterruptedException e){
                 e.printStackTrace();

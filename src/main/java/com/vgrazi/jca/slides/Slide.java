@@ -1,6 +1,7 @@
 package com.vgrazi.jca.slides;
 
 import com.vgrazi.jca.context.ThreadContext;
+import com.vgrazi.jca.sprites.ThreadSprite;
 import com.vgrazi.jca.util.UIUtils;
 import com.vgrazi.jca.view.SnippetCanvas;
 import com.vgrazi.jca.view.ThreadCanvas;
@@ -81,6 +82,16 @@ public abstract class Slide {
     protected void setMessage(String message, Color foreground) {
         this.messages.setForeground(foreground);
         this.messages.setText(message);
+    }
+
+    /**
+     * Calls interrupt on the thread associated with this sprite, then sets
+     * the sprite as retreating, and displays the interruptedException
+     */
+    public void interruptSprite(ThreadSprite<Boolean> sprite, InterruptedException e){
+        sprite.getThread().interrupt();
+        sprite.setRetreating();
+        sprite.setMessage(e);
     }
 
     public void reset() {
