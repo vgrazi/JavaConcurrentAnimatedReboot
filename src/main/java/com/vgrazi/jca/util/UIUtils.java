@@ -42,6 +42,15 @@ public class UIUtils {
             throw e;
         }
     }
+    public Image getImage(String imageName) {
+        try {
+            ImageIcon imageIcon = getImageIcon(imageName);
+            return imageIcon.getImage();
+        } catch (RuntimeException e) {
+            println("UIUtils.getImageIcon Can't find image at " + imageName);
+            throw e;
+        }
+    }
 
     private Image getScaledImage(Image srcImg, int width, int height) {
         if(width <= 0 || height <= 0) {

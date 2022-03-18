@@ -67,13 +67,14 @@ public class SynchronizedSlide extends Slide {
             }
         });
 
-        threadContext.addButton("interrupt running", () -> {
-            ThreadSprite runningSprite = threadContext.getRunningThread();
-            if (runningSprite != null) {
+        threadContext.addButton("interrupt", () -> {
+            // find a sprite that is not interrupted, (starting with running sprites), and interrupt it
+            ThreadSprite sprite = threadContext.getFirstNonInterruptedThreadSpritePreferRunning();
+            if (sprite != null) {
                 // The new running thread should call notify
-                runningSprite.setAction("interrupt");
-                runningSprite.getThread().interrupt();
-                log("Set interrupt on ", runningSprite);
+                sprite.setAction("interrupt");
+                sprite.getThread().interrupt();
+                log("Set interrupt on ", sprite);
                 highlightSnippet(6);
             }
         });

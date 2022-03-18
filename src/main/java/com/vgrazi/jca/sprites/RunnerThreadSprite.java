@@ -2,19 +2,21 @@ package com.vgrazi.jca.sprites;
 
 import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.util.RenderUtils;
+import com.vgrazi.jca.util.UIUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
 
 import static com.vgrazi.jca.util.Parsers.parseColor;
 import static com.vgrazi.jca.util.Parsers.parseFont;
-import static com.vgrazi.jca.util.UIUtils.applyAlpha;
 
 /**
  * This is a regular thread sprite, except that when it is running (inside the monolith), it renders as a round rectangle
  * instead of as a thread
  */
-public class RunnerThreadSprite<S> extends ThreadSprite<S> {
+public class RunnerThreadSprite<S> extends ThreadSprite<S> implements InitializingBean {
     protected Font conditionFont;
     protected Color conditionColor;
     private int margin;
@@ -25,6 +27,10 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
     private int ellipseRadius;
     private int lineStart;
     private int lineEnd;
+
+    @Autowired
+    private UIUtils uiUtils;
+
     @Value("${monolith-left-border}")
     protected int monolithLeftBorder;
 
@@ -51,6 +57,8 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         conditionFont = parseFont(font);
     }
 
+    private Image flagImage;
+
     @Value("${condition-color}")
     private void setConditionColor(String color) {
         conditionColor = parseColor(color);
@@ -72,6 +80,14 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
 
     }
 
+    /**
+     * Sets the interrupted Flag image
+     */
+    @Override
+    public void afterPropertiesSet(){
+        super.afterPropertiesSet();
+        flagImage = uiUtils.getImage("images/flag.png");
+    }
 
     @Override
     public void render(Graphics2D graphics) {
@@ -85,18 +101,26 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         Color color = getThreadContext().getColor(this);
 //        Color color = getColorByThreadState();
         graphics.setColor(color);
-        if (relativePosition != RelativePosition.In) {// && relativePosition != RelativePosition.At) {
-            int xPosition = getXPosition();
-            int yPosition = getYPosition();
-            graphics.drawLine(xPosition - arrowLength + getXOffset(), yPosition, xPosition + getXOffset(), yPosition);
-        } else {
+        if(isInMonolith(relativePosition)){
             graphics.drawArc(leftBound + getXOffset(), topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
             graphics.drawArc(rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
             graphics.drawLine(lineStart + getXOffset(), topBound, lineEnd + getXOffset(), topBound);
             graphics.drawLine(lineStart + getXOffset(), bottomBound, lineEnd + getXOffset(), bottomBound);
+
+        }else{// && relativePosition != RelativePosition.At) {
+            // render the runner thread before it enters the monolith
+            int xPosition = getXPosition();
+            int yPosition = getYPosition();
+            graphics.drawLine(xPosition - arrowLength + getXOffset(), yPosition, xPosition + getXOffset(), yPosition);
         }
+
         renderMessage(graphics);
         drawThreadCap(graphics);
+        renderInterrupt(graphics, relativePosition);
+    }
+
+    private boolean isInMonolith(RelativePosition relativePosition){
+        return relativePosition == RelativePosition.In;
     }
 
     /**
@@ -106,8 +130,19 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         drawThreadCap(graphics, 0);
     }
 
+    private void renderInterrupt(Graphics2D graphics, RelativePosition relativePosition){
+        if(getThread().isInterrupted()) {
+            if(isInMonolith(relativePosition)){
+                graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound-8, null);
+            }else {
+                graphics.drawImage(flagImage, xPosition - arrowLength/2, yPosition-10, null);
+            }
+        }
+    }
+
+
     /**
-     * Draws the ball (or whatever) at the end of the thread line
+     * Draws the ball at the end of the thread shaft, and the condition if any
      * If the sprite is attached to a condition, draws a C with the
      * condition id (1-based serial), instead of the ball
      */
@@ -115,19 +150,16 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> {
         graphics.setColor(getThreadContext().getColorByInstance(this));
         int yPos = RenderUtils.getCapYPosition(leftBound, rightBound, topBound, bottomBound, ballDiameter, this);
         int offset = isRetreating() && getDirection() == Direction.left ? arrowLength : 0;
-        if (hasCondition()) {
-            Graphics2D graphicsCopy = (Graphics2D) graphics.create();
-            graphicsCopy.setFont(conditionFont);
-            graphicsCopy.setColor(conditionColor);
-            FontMetrics fm = graphicsCopy.getFontMetrics();
+//        Graphics2D graphicsCopy = (Graphics2D) graphics.create();
+        if (hasCondition()){
+            graphics.setFont(conditionFont);
+            graphics.setColor(conditionColor);
+            FontMetrics fm = graphics.getFontMetrics();
             int height = fm.getHeight();
-
-            graphicsCopy.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset + capOffset, yPos + height/2);
-            graphicsCopy.dispose();
+            graphics.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset + capOffset, yPos + height / 2);
         } else {
             graphics.fillOval(getXPosition() + getXOffset() - 8 - offset + capOffset, yPos, ballDiameter, ballDiameter);
         }
-
     }
 
 // leftBound     ___________________________________     rightBound

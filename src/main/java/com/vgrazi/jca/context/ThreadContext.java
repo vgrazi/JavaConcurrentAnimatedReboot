@@ -15,10 +15,8 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -403,6 +401,19 @@ public class ThreadContext<S> implements InitializingBean {
         ThreadSprite<S> threadSprite = getThreadOfState(runnable);
 
         return threadSprite;
+    }
+
+    public ThreadSprite<S> getFirstNonInterruptedThreadSpritePreferRunning() {
+        ThreadSprite sprite = (ThreadSprite) sprites.stream().
+                filter(s -> s instanceof ThreadSprite &&
+                        s.isRunning() &&
+                        !((ThreadSprite<?>) s).getThread().isInterrupted()).findFirst().orElse(null);
+        if(sprite == null) {
+            sprite = (ThreadSprite) sprites.stream().
+                    filter(s -> s instanceof ThreadSprite &&
+                            !((ThreadSprite<?>) s).getThread().isInterrupted()).findFirst().orElse(null);
+        }
+        return sprite;
     }
 
     public List<ObjectSprite> getAllObjectSprites() {
