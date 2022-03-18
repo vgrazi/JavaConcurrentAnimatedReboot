@@ -97,7 +97,6 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
 //        graphicsDebug.setColor(Color.yellow);
 //        graphicsDebug.drawRect(leftBound, topBound, width, runnerEllipseHeight);
 
-        RelativePosition relativePosition = getRelativePosition();
         Color color = getThreadContext().getColor(this);
 //        Color color = getColorByThreadState();
         graphics.setColor(color);

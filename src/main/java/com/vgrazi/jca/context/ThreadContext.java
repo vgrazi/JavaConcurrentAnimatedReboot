@@ -330,8 +330,8 @@ public class ThreadContext<S> implements InitializingBean {
         engine.render(canvas);
     }
 
-    private final Color[] colors = {Color.red, Color.CYAN, Color.BLUE, Color.DARK_GRAY,
-            Color.gray, Color.GREEN, Color.YELLOW
+    private final Color[] colors = {Color.red, Color.CYAN,
+            Color.YELLOW, Color.MAGENTA, Color.GREEN, Color.orange,  Color.BLUE.brighter()
     };
 
     private int colorPointer = 0;
