@@ -135,7 +135,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
             if(isInMonolith(relativePosition)){
                 graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound-8, null);
             }else {
-                graphics.drawImage(flagImage, xPosition - arrowLength/2, yPosition-10, null);
+                graphics.drawImage(flagImage, xPosition - arrowLength/4*3, yPosition-20, null);
             }
         }
     }
