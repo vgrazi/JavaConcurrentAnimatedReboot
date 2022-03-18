@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.*;
 
-/**
- * Use this as a starting point for constructing new slides. To use, uncomment the addButton for basicSlide in JCAFrame
- */
 @Component
 public class SaturationPolicySlide extends Slide {
 

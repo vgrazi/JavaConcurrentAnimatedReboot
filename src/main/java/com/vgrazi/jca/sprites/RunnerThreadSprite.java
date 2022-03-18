@@ -101,7 +101,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
         Color color = getThreadContext().getColor(this);
 //        Color color = getColorByThreadState();
         graphics.setColor(color);
-        if(isInMonolith(relativePosition)){
+        if(isInMonolith()){
             graphics.drawArc(leftBound + getXOffset(), topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
             graphics.drawArc(rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
             graphics.drawLine(lineStart + getXOffset(), topBound, lineEnd + getXOffset(), topBound);
@@ -116,11 +116,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
 
         renderMessage(graphics);
         drawThreadCap(graphics);
-        renderInterrupt(graphics, relativePosition);
-    }
-
-    private boolean isInMonolith(RelativePosition relativePosition){
-        return relativePosition == RelativePosition.In;
+        renderInterrupt(graphics);
     }
 
     /**
@@ -130,10 +126,13 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
         drawThreadCap(graphics, 0);
     }
 
-    private void renderInterrupt(Graphics2D graphics, RelativePosition relativePosition){
+    /**
+     * First checks if the thread is interrupted. If it is, renders an interrupt flag
+     */
+    private void renderInterrupt(Graphics2D graphics){
         if(getThread().isInterrupted()) {
-            if(isInMonolith(relativePosition)){
-                graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound-8, null);
+            if(isInMonolith()){
+                graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound, null);
             }else {
                 graphics.drawImage(flagImage, xPosition - arrowLength/4*3, yPosition-20, null);
             }

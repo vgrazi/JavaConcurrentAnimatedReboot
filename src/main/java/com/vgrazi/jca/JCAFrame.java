@@ -16,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
-import java.net.URL;
 
 @Component
 public class JCAFrame extends JFrame {
@@ -181,7 +180,7 @@ public class JCAFrame extends JFrame {
         addButton("CompletableFuture", completableFutureSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
-        addButton("Basic Slide", basicSlide);
+        addButton("Credits", basicSlide);
         addButton("Titles", introSlide);
 
         menuPanel.add(controlPanel);

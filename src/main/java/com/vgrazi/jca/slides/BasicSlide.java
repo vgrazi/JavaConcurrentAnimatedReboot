@@ -25,7 +25,7 @@ public class BasicSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("Add running thread", () -> {
+        threadContext.addButton("Take a bow", () -> {
             reset();
             // create a new sprite
             ObjectSprite objectSprite = (ObjectSprite) applicationContext.getBean("objectSprite");
@@ -48,6 +48,7 @@ public class BasicSlide extends Slide {
             runnableSprite.setMessage("RunnableSprite");
             threadContext.addSprite(runnableSprite);
             threadContext.addYPixels(10);
+
 //            FutureSprite futureSprite = (FutureSprite) applicationContext.getBean("completableFutureSprite");
 //            attachAndStartRunnable(futureSprite);
 //            futureSprite.setMessage("FutureSprite");
@@ -58,6 +59,17 @@ public class BasicSlide extends Slide {
             futureRunnableSprite.setMessage("FutureRunnableSprite");
             threadContext.addSprite(futureRunnableSprite);
             threadContext.addYPixels(10);
+
+            ThreadSprite interruptedSprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
+            interruptedSprite.attachAndStartRunnable(()->{
+                while(true);
+            });
+            interruptedSprite.setMessage("InterruptedSprite");
+            interruptedSprite.getThread().interrupt();
+            threadContext.addSprite(interruptedSprite);
+            threadContext.addYPixels(10);
+
+
             PooledThreadSprite pooledThreadSprite  = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
             pooledThreadSprite.setYPosition(threadContext.getNextPooledYPosition());
             attachAndStartRunnable(pooledThreadSprite);
@@ -116,10 +128,9 @@ public class BasicSlide extends Slide {
         });
     }
 
-
     public void reset() {
         super.reset();
-        threadContext.setSlideLabel("Basic Slide");
+        threadContext.setSlideLabel("Credits");
         setSnippetFile("some.html");
     }
 }

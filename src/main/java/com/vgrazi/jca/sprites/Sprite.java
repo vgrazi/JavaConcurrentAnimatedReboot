@@ -70,6 +70,12 @@ public abstract class Sprite<T> {
         this.running = running;
     }
 
+    /**
+     * Returns true if the sprite is in the monolith
+     */
+    protected boolean isInMonolith(){
+        return getRelativePosition() == RelativePosition.In;
+    }
 
     public int getID() {
         return ID;
@@ -160,11 +166,14 @@ public abstract class Sprite<T> {
      */
     public void renderMessage(Graphics2D graphics) {
         if(getMessage() != null) {
-            Graphics graphics1 = graphics.create();
-            graphics1.setColor(Color.white);
-            graphics1.setFont(messageFont);
-            graphics1.drawString(message, getXPosition() + xOffset - arrowLength + xOffset, getYPosition() - 8);
-            graphics1.dispose();
+            graphics.setColor(Color.white);
+            graphics.setFont(messageFont);
+            if(!isInMonolith()) {
+                graphics.drawString(message, getXPosition() + xOffset - arrowLength + xOffset, getYPosition() - 8);
+            }
+            else {
+                graphics.drawString(message, monolithLeftBorder, getYPosition() - 8);
+            }
         }
     }
 
