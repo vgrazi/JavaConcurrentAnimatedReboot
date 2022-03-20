@@ -452,6 +452,19 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     /**
+     * Gets the first waiting thread that is not in the exclusions set
+     */
+    public ThreadSprite getFirstWaitingThreadExcept(Set<ThreadSprite> exclusions) {
+        ThreadSprite threadSprites = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .filter(sprite->!exclusions.contains(sprite))
+                .findFirst().orElse(null);
+        return threadSprites;
+    }
+
+    /**
      * Returns the first object sprite that is in the waiting state, or null
      */
     public ObjectSprite getFirstWaitingObjectSprite() {
