@@ -239,7 +239,7 @@ public class ThreadContext<S> implements InitializingBean {
 
     public void reset() {
         threadColors.clear();
-        nextYPos = initialYPos;
+        resetYPos();
         nextPooledYPos = initialPooledYPos;
         getAllThreads().stream().filter(sprite->sprite.getThread() != null).forEach(sprite -> sprite.getThread().stop());
         canvas.setSlideLabel("");
@@ -404,15 +404,20 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     public ThreadSprite<S> getFirstNonInterruptedThreadSpritePreferRunning() {
-        ThreadSprite sprite = (ThreadSprite) sprites.stream().
-                filter(s -> s instanceof ThreadSprite &&
-                        s.isRunning() &&
-                        !((ThreadSprite<?>) s).getThread().isInterrupted()).findFirst().orElse(null);
+        ThreadSprite sprite=getFirstNonInterruptedRunningThreadSprite();
         if(sprite == null) {
             sprite = (ThreadSprite) sprites.stream().
                     filter(s -> s instanceof ThreadSprite &&
                             !((ThreadSprite<?>) s).getThread().isInterrupted()).findFirst().orElse(null);
         }
+        return sprite;
+    }
+
+    public ThreadSprite getFirstNonInterruptedRunningThreadSprite() {
+        ThreadSprite sprite = (ThreadSprite) sprites.stream().
+                filter(s -> s instanceof ThreadSprite &&
+                        s.isRunning() &&
+                        !((ThreadSprite<?>) s).getThread().isInterrupted()).findFirst().orElse(null);
         return sprite;
     }
 
@@ -639,7 +644,7 @@ public class ThreadContext<S> implements InitializingBean {
 
     public int getNextYPosition(int height) {
         if (sprites.isEmpty()) {
-            nextYPos = initialYPos;
+            resetYPos();
         }
         int nextYPos = this.nextYPos;
         this.nextYPos += height;
@@ -691,9 +696,13 @@ public class ThreadContext<S> implements InitializingBean {
         frame.setSize(frameWidth, frameHeight);
         // center the frame
         frame.setLocationRelativeTo(null);
-        nextYPos = initialYPos;
+        resetYPos();
         fontSize = initialFontSize;
         render();
+    }
+
+    public void resetYPos() {
+        nextYPos = initialYPos;
     }
 
     public JButton addButton(String text, Runnable runnable) {

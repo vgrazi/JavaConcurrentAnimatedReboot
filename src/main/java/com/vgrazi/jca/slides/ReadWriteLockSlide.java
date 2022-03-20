@@ -86,6 +86,22 @@ public class ReadWriteLockSlide extends Slide {
             }
         });
 
+        threadContext.addButton("interrupt waiting", () -> {
+            highlightSnippet(5);
+            ThreadSprite sprite=threadContext.getFirstWaitingThread();
+            if(sprite != null) {
+                sprite.getThread().interrupt();
+            }
+        });
+
+        threadContext.addButton("interrupt running", () -> {
+            highlightSnippet(5);
+            ThreadSprite sprite=threadContext.getFirstNonInterruptedRunningThreadSprite();
+            if(sprite != null) {
+                sprite.getThread().interrupt();
+            }
+        });
+
         threadContext.addButton("reset", this::reset);
 
         threadContext.setVisible();

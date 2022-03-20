@@ -77,6 +77,33 @@ public class BlockingQueueSlide extends Slide {
                 }
         );
 
+        threadContext.addButton("remove()", ()-> {
+            highlightSnippet(5);
+            // If there are waiting objects, don't create a new sprite
+            ThreadSprite getter=(ThreadSprite) applicationContext.getBean("getterSprite");
+            getter.attachAndStartRunnable(() -> {
+                try {
+                    // remove the next. We don't use the result. If it works great, else throws an exception
+                    Object remove=blockingQueue.remove();
+                    ObjectSprite objectSprite=threadContext.getFirstRunningObjectSprite();
+                    objectSprite.setXPosition(rightBorder - 20);
+                    getter.setYPosition(objectSprite.getYPosition());
+                    objectSprite.setAction("done");
+                    threadContext.stopThread(objectSprite);
+                } catch(Exception e) {
+                    getter.setXPosition(rightBorder+arrowLength);
+                    threadContext.setGetterNextYPos(getter);
+                    getter.setMessage(e);
+                    setMessage(String.valueOf(e));
+                }
+                finally {
+                    threadContext.stopThread(getter);
+                }
+            });
+
+            threadContext.addSprite(getter);
+        });
+
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
     }
