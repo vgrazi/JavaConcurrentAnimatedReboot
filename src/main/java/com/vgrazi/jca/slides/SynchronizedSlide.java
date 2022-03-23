@@ -67,9 +67,30 @@ public class SynchronizedSlide extends Slide {
             }
         });
 
-        threadContext.addButton("interrupt", () -> {
+        threadContext.addButton("interrupt (running)", () -> {
             // find a sprite that is not interrupted, (starting with running sprites), and interrupt it
-            ThreadSprite sprite = threadContext.getFirstNonInterruptedThreadSpritePreferRunning();
+            ThreadSprite sprite = threadContext.getRunnableThread();
+            if (sprite != null) {
+                // The new running thread should call notify
+                sprite.getThread().interrupt();
+                log("Set interrupt on ", sprite);
+                highlightSnippet(6);
+            }
+        });
+        threadContext.addButton("interrupt (blocked)", () -> {
+            // find a sprite that is not interrupted, (starting with running sprites), and interrupt it
+            ThreadSprite sprite = threadContext.getBlockedNotInterruptedThreadSprite();
+            if (sprite != null) {
+                // The new running thread should call notify
+                sprite.getThread().interrupt();
+                log("Set interrupt on ", sprite);
+                highlightSnippet(6);
+            }
+        });
+
+        threadContext.addButton("interrupt (waiting)", () -> {
+            // find a sprite that is not interrupted, (starting with running sprites), and interrupt it
+            ThreadSprite sprite = threadContext.getWaitingNotInterruptedThread();
             if (sprite != null) {
                 // The new running thread should call notify
                 sprite.setAction("interrupt");
@@ -79,13 +100,25 @@ public class SynchronizedSlide extends Slide {
             }
         });
 
+        threadContext.addButton("stop (blocked)", () -> {
+            // find a sprite that is not interrupted, (starting with running sprites), and interrupt it
+            ThreadSprite sprite=threadContext.getBlockedNotInterruptedThreadSprite();
+            if(sprite!=null) {
+                // The new running thread should call notify
+                sprite.getThread().stop();
+                log("Set stop on ", sprite);
+//                highlightSnippet(6);
+            }
+        });
+
         threadContext.addButton("Reset", this::reset);
         threadContext.setVisible();
     }
 
     public void reset() {
         super.reset();
-        threadContext.setSlideLabel("synchronized(){}");
+        threadContext.setSlideLabel("synchronized()",0);
+        threadContext.setSlideLabel("{           }", 1);
         setSnippetFile("synchronized.html");
         setImage("images/VisibilityAndSynchronization.png");
         mutex = new Object();

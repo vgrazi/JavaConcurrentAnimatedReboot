@@ -13,6 +13,7 @@ import java.awt.*;
 import java.util.List;
 
 import static com.vgrazi.jca.util.Parsers.parseColor;
+import static com.vgrazi.jca.util.StringUtils.isBlank;
 
 @Component
 public class ThreadCanvas extends JPanel implements InitializingBean {
@@ -61,7 +62,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private boolean hideMonolith;
     private Color slideLabelColor;
     private Color bottomLabelColor;
-    private String slideLabel = "";
+    private String[] slideLabel = {"",""};
 
     @Value("${MONOLITH-COLOR}")
     public void setMonolithColor(String color) {
@@ -118,9 +119,17 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         g.setColor(slideLabelColor);
         g.setFont(new Font(labelFontName, labelFontStyle, labelFontSize));
         FontMetrics fm = g.getFontMetrics();
-        int width = fm.stringWidth(slideLabel);
+        int width = fm.stringWidth(slideLabel[0]);
         int height = fm.getHeight();
-        g.drawString(slideLabel, (rightBorder + leftBorder - width) / 2, initialYPosition - 20 - height / 2 + fm.getDescent());
+        if(isBlank(slideLabel[1])){
+            g.drawString(slideLabel[0], (rightBorder + leftBorder - width) / 2, initialYPosition - 20 - height / 2 + fm.getDescent());
+        }
+        else {
+
+            int width2 = fm.stringWidth(slideLabel[1]);
+            g.drawString(slideLabel[0], (rightBorder + leftBorder - width) / 2, initialYPosition - 20 -3* height / 2 + fm.getDescent());
+            g.drawString(slideLabel[1], (rightBorder + leftBorder - width2) / 2, initialYPosition - 20 - height / 2 + fm.getDescent());
+        }
     }
 
     private void paintBottomLabel(Graphics2D g) {
@@ -160,7 +169,12 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
 
     public void setSlideLabel(String slideLabel) {
-        this.slideLabel = slideLabel;
+        setSlideLabel(slideLabel, 0);
+        setSlideLabel("", 1);
+    }
+
+    public void setSlideLabel(String slideLabel, int line) {
+        this.slideLabel[line] = slideLabel;
     }
 
     public void setBottomLabel(String label) {

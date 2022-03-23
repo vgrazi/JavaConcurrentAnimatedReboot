@@ -62,7 +62,7 @@ public class BasicSlide extends Slide {
 
             ThreadSprite interruptedSprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             interruptedSprite.attachAndStartRunnable(()->{
-                while(true);
+                while(true){Thread.yield();}
             });
             interruptedSprite.setMessage("InterruptedSprite");
             interruptedSprite.getThread().interrupt();

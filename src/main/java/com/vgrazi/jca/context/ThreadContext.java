@@ -292,6 +292,9 @@ public class ThreadContext<S> implements InitializingBean {
     public void setSlideLabel(String label) {
         canvas.setSlideLabel(label);
     }
+    public void setSlideLabel(String label, int line) {
+        canvas.setSlideLabel(label, line);
+    }
 
     public void setBottomLabel(String label) {
         canvas.setBottomLabel(label);
@@ -413,6 +416,38 @@ public class ThreadContext<S> implements InitializingBean {
         return sprite;
     }
 
+    public ThreadSprite<S> getFirstBlockedThreadSprite() {
+        ThreadSprite sprite=(ThreadSprite) sprites.stream().
+                filter(s -> s instanceof ThreadSprite &&
+                        ((ThreadSprite<?>) s).getThread().getState() == Thread.State.BLOCKED).findFirst().orElse(null);
+        return sprite;
+    }
+
+    /**
+     * Gets the next blocked thread that is not contained in the list of exclusions
+     */
+    public ThreadSprite<S> getFirstBlockedThreadSprite(Set<ThreadSprite> exclusions) {
+        ThreadSprite sprite=(ThreadSprite) sprites.stream()
+                .filter(s -> s instanceof ThreadSprite)
+                .filter(s->((ThreadSprite<?>) s).getThread().getState() == Thread.State.BLOCKED)
+                .filter(s-> !exclusions.contains(s))
+                .findFirst().orElse(null);
+        return sprite;
+    }
+
+    /**
+     * Gets the next blocked thread that is not contained in the list of exclusions
+     */
+    public ThreadSprite<S> getBlockedNotInterruptedThreadSprite() {
+        ThreadSprite sprite=(ThreadSprite) sprites.stream()
+                .filter(s -> s instanceof ThreadSprite)
+                .filter(s->((ThreadSprite<?>) s).getThread().getState() == Thread.State.BLOCKED)
+                .filter(s->!((ThreadSprite<?>)s).getThread().isInterrupted())
+                .findFirst().orElse(null);
+        return sprite;
+    }
+
+
     public ThreadSprite getFirstNonInterruptedRunningThreadSprite() {
         ThreadSprite sprite = (ThreadSprite) sprites.stream().
                 filter(s -> s instanceof ThreadSprite &&
@@ -452,6 +487,15 @@ public class ThreadContext<S> implements InitializingBean {
                 .filter(sprite -> sprite instanceof ThreadSprite)
                 .map(sprite -> (ThreadSprite) sprite)
                 .filter(sprite -> sprite.getState() == waiting)
+                .findFirst().orElse(null);
+        return threadSprites;
+    }
+    public ThreadSprite getWaitingNotInterruptedThread() {
+        ThreadSprite threadSprites = sprites.stream()
+                .filter(sprite -> sprite instanceof ThreadSprite)
+                .map(sprite -> (ThreadSprite) sprite)
+                .filter(sprite -> sprite.getState() == waiting)
+                .filter(sprite -> !sprite.getThread().isInterrupted())
                 .findFirst().orElse(null);
         return threadSprites;
     }

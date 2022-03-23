@@ -133,6 +133,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
                 "ID=" + getID() +
                 ", state=" + getState() +
                 ", native-state=" + (thread != null?thread.getState().toString():"") +
+                ", interrupt:" + (thread != null?thread.isInterrupted():"") +
 //                ", x-position=" + getXPosition() +
                 ", y-position=" + getYPosition() +
                 ", relative_position=" + getRelativePosition() +
