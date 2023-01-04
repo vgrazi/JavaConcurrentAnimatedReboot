@@ -26,6 +26,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
 
     private Condition condition;
     private int conditionId;
+    private static long threadSequenceNumber;
 
     public Thread getThread() {
         return thread;
@@ -50,7 +51,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
      * Create the thread associated with this runnable, and starts it
      */
     public void attachAndStartRunnable(Runnable runnable) {
-        thread = new Thread(runnable);
+        thread = new Thread(runnable, String.format("JCA Thread %d", ++threadSequenceNumber));
         thread.start();
     }
 
