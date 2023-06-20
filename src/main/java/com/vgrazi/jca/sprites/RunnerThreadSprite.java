@@ -1,6 +1,5 @@
 package com.vgrazi.jca.sprites;
 
-import com.vgrazi.jca.context.RelativePosition;
 import com.vgrazi.jca.util.RenderUtils;
 import com.vgrazi.jca.util.UIUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -115,7 +114,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
 
         renderMessage(graphics);
         drawThreadCap(graphics);
-        renderInterrupt(graphics);
+        renderInterruptedFlag(graphics);
     }
 
     /**
@@ -128,7 +127,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
     /**
      * First checks if the thread is interrupted. If it is, renders an interrupt flag
      */
-    private void renderInterrupt(Graphics2D graphics){
+    private void renderInterruptedFlag(Graphics2D graphics){
         if(getThread().isInterrupted()) {
             if(isInMonolith()){
                 graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound, null);
