@@ -64,7 +64,7 @@ public class CyclicBarrierSlide extends Slide {
                 }
             } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
                 e.printStackTrace();
-                setMessage(e.getMessage());
+                setMessage(e);
                 sprite.setRetreating();
             }
             finally {
