@@ -7,8 +7,16 @@
  <1 default>Thread putThread = <1 keyword>new <1 default>Thread() {
    <1 keyword>public void <1 default>run() {
      <1 keyword>try <1 default>{
-       queue.put();
-     } <1 keyword>catch<1 default>(InterruptedException e) { }}
+       queue.put(someObject);
+     } <1 keyword>catch<1 default>(InterruptedException e) {..}}
+
+ <6 comment>// add is like put
+ <6 comment>// except throws IllegalStateException (unchecked) if full
+ <6 default>Thread addingThread = <6 keyword>new <6 default>Thread() {
+ <6 keyword>public void <6 default>run() {
+ <6 default>    try{
+        queue.add(someObject); <6 comment>// ignore boolean return type, always true
+ <6 default>   }<6 keyword>catch<6 default>(IllegalStateException e){..} }}
 
  <2 comment>// offer is like put except returns false if no room
  <2 default>Thread offerThread = <2 keyword>new <2 default>Thread() {

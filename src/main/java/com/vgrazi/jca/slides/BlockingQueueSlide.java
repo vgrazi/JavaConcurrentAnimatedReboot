@@ -34,6 +34,9 @@ public class BlockingQueueSlide extends Slide {
         threadContext.addButton("put()", () -> {
             addAction(1, "put");
         });
+        threadContext.addButton("add()", () -> {
+            addAction(6, "add");
+        });
 
         threadContext.addButton("offer(obj)", () -> {
             addAction(2, "offer");
@@ -127,6 +130,15 @@ public class BlockingQueueSlide extends Slide {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+                    break;
+                case "add":
+                    try {
+                        blockingQueue.add("xxx");
+                    } catch(IllegalStateException e) {
+                        setMessage(e.toString());
+                        objectSprite.setRetreating();
+                    }
+
                     break;
                 case "offer": {
                     boolean success = blockingQueue.offer("xxx");
