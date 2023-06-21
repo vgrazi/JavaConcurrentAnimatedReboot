@@ -33,9 +33,8 @@ public class ReadWriteLockSlide extends Slide {
             sprite.setHolder("running");
             sprite.attachAndStartRunnable(() -> {
                 readWriteLock.readLock().lock();
-                while ("running".equals(sprite.getHolder())) {
-                    Thread.yield();
-                }
+                String state="running";
+                spinDuringState(sprite, state);
                 readWriteLock.readLock().unlock();
             });
             threadContext.addSprite(sprite);
@@ -48,17 +47,13 @@ public class ReadWriteLockSlide extends Slide {
             sprite.attachAndStartRunnable(() -> {
                 highlightSnippet(2);
                 readWriteLock.writeLock().lock();
-                while ("write-lock".equals(sprite.getHolder())) {
-                    Thread.yield();
-                }
+                spinDuringState(sprite, "write-lock");
                 if ("downgrade".equals(sprite.getHolder())) {
                     readWriteLock.readLock().lock();
                     readWriteLock.writeLock().unlock();
                     sprite.setStroke(basicStroke);
                     sprite.setHolder("running");
-                    while ("running".equals(sprite.getHolder())) {
-                        Thread.yield();
-                    }
+                    spinDuringState(sprite, "running");
                     readWriteLock.readLock().unlock();
                 } else {
                     readWriteLock.writeLock().unlock();
@@ -105,6 +100,12 @@ public class ReadWriteLockSlide extends Slide {
         threadContext.addButton("reset", this::reset);
 
         threadContext.setVisible();
+    }
+
+    private void spinDuringState(ThreadSprite<String> sprite, String state) {
+        while(state.equals(sprite.getHolder())) {
+            Thread.yield();
+        }
     }
 
     @Override
