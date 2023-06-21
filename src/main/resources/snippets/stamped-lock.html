@@ -1,5 +1,5 @@
    <0 default>StampedLock lock = <0 keyword>new <0 default>StampedLock();<br>
-   <1 keyword>long <1 default>stamp = lock.readLock();<br>
+   <1 keyword>long <1 default>stamp = lock.readLock();<1 comment>//methods return a stamp if successful else 0.<br>
    <6 keyword>long <6 default>stamp = lock.writeLock();<br>
    <5 keyword>long <5 default>stamp = lock.tryOptimisticRead();<br>
    <2 default>lock.unlockRead(stamp);<br>
