@@ -13,7 +13,7 @@
  <2 comment>// offer is like put except returns false if no room
  <2 default>Thread offerThread = <2 keyword>new <2 default>Thread() {
    <2 keyword>public void <2 default>run() {
-       queue.offer(someObject);
+       boolean success = queue.offer(someObject);
      }}
 
  <4 comment>// offer(time) is like put except that it times out
@@ -21,7 +21,7 @@
  <4 default>Thread offerThread = <4 keyword>new <4 default>Thread() {
    <4 keyword>public void <4 default>run() {
      <4 keyword>try<4 default> {
-       queue.offer(someObject, 1L,
+       boolean success = queue.offer(someObject, 1L,
                     TimeUnit.SECONDS);
      } <4 keyword>catch<4 default>(InterruptedException e) { }}
 
