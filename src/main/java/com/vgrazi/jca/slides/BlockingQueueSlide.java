@@ -158,7 +158,7 @@ public class BlockingQueueSlide extends Slide {
         super.reset();
         threadContext.setSlideLabel("BlockingQueue");
         setSnippetFile("blocking-queue.html");
-        setImage("images/blockingQueue.jpg");
+        setImage("images/blockingQueue.jpg", .7f);
         blockingQueue  = new ArrayBlockingQueue(4);
     }
 }

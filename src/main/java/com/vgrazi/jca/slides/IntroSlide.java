@@ -31,6 +31,6 @@ public class IntroSlide extends Slide {
     }
 
     public void resetImage() {
-        setImage("images/mesh.png");
+        setImage("images/mesh.png", 1);
     }
 }

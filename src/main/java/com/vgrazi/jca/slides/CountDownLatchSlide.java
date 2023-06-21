@@ -88,7 +88,7 @@ public class CountDownLatchSlide extends Slide {
         threadCanvas.setThinMonolith();
         threadContext.setSlideLabel("CountDownLatch");
         setSnippetFile("countdown-latch.html");
-        setImage("images/countdownLatch.jpg");
+        setImage("images/countdownLatch.jpg", .7f);
         countDownLatch = new CountDownLatch(totalCount);
     }
 }

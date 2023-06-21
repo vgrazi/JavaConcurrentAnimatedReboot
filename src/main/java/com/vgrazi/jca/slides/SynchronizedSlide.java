@@ -120,7 +120,7 @@ public class SynchronizedSlide extends Slide {
         threadContext.setSlideLabel("synchronized()",0);
         threadContext.setSlideLabel("{           }", 1);
         setSnippetFile("synchronized.html");
-        setImage("images/VisibilityAndSynchronization.png");
+        setImage("images/VisibilityAndSynchronization.png", .7f);
         mutex = new Object();
     }
 

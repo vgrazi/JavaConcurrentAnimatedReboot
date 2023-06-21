@@ -101,7 +101,7 @@ public class ExecutorsSlide extends Slide {
         threadContext.setSlideLabel("Executors");
         threadContext.setBottomLabel("Pooled\nThreads");
         setSnippetFile("executors.html");
-        setImage("images/executors.jpg");
+        setImage("images/executors.jpg", .7f);
 
         executor = Executors.newFixedThreadPool(4, r -> {
             PooledThreadSprite<String> sprite = (PooledThreadSprite) applicationContext.getBean("pooledThreadSprite");
