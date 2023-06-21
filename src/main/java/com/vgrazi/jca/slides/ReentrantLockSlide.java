@@ -139,11 +139,11 @@ public class ReentrantLockSlide extends Slide {
         });
 
         threadContext.addButton("(interrupt waiting)", () -> {
-            addInterruptAction(10, 0);
+            addInterruptAction(10, 0, false);
         });
 
         threadContext.addButton("(interrupt interruptible)", () -> {
-            addInterruptAction(11, 1);
+            addInterruptAction(11, 1, false);
         });
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
@@ -176,10 +176,10 @@ public class ReentrantLockSlide extends Slide {
 
     }
 
-    private void addInterruptAction(int state, int specialId) {
+    private void addInterruptAction(int state, int specialId, boolean findRunnableIfNoWaiting) {
         highlightSnippet(state);
         ThreadSprite sprite = threadContext.getFirstWaitingThreadOfSpecialId(specialId);
-        if(sprite==null) {
+        if(sprite==null && findRunnableIfNoWaiting) {
             sprite = threadContext.getRunnableThread();
         }
         if (sprite != null) {
