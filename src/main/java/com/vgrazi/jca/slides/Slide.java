@@ -164,8 +164,8 @@ public abstract class Slide {
         return styles;
     }
 
-    protected void setImage(String imageFile) {
-        uiUtils.setImage(imageFile, imageLabel);
+    protected void setImage(String imageFile, float scaling) {
+        uiUtils.setImage(imageFile, imageLabel, scaling);
     }
 
     /**
