@@ -58,6 +58,6 @@ public class AtomicIntegerSlide extends Slide {
         counter = new AtomicInteger();
         threadContext.setSlideLabel("AtomicInteger");
         setSnippetFile("atomic-integer.html");
-        setImage("images/AtomicInteger.jpg");
+        setImage("images/AtomicInteger.jpg", .7f);
     }
 }

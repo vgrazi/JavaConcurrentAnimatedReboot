@@ -137,6 +137,10 @@ public class ThreadContext<S> implements InitializingBean {
         getter.setYPosition(next + GETTER_DELTA);
     }
 
+    public JCAFrame getJCAFrame() {
+        return frame;
+    }
+
     private enum ColorationScheme {
         byState, byInstance;
     }

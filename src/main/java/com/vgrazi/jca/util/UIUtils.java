@@ -19,13 +19,13 @@ public class UIUtils {
     @Autowired
     private JPanel cardPanel;
 
-    public void setImage(String imageName, JLabel jlabel) {
+    public void setImage(String imageName, JLabel jlabel, float scaling) {
         ImageIcon imageIcon = getImageIcon(imageName);
         jlabel.setIcon(imageIcon);
         Image image = imageIcon.getImage();
-        int width = jlabel.getWidth();
-        int height = jlabel.getHeight();
-        Image scaledImage = getScaledImage(image, width, height);
+        int width = (int) (jlabel.getWidth()*.7);
+        int height = (int) (jlabel.getHeight()*.7);
+        Image scaledImage = getScaledImage(image, width, height, scaling);
         if (scaledImage != null) {
             imageIcon.setImage(scaledImage);
             jlabel.setIcon(imageIcon);
@@ -52,7 +52,7 @@ public class UIUtils {
         }
     }
 
-    private Image getScaledImage(Image srcImg, int width, int height) {
+    private Image getScaledImage(Image srcImg, int width, int height, float scaling) {
         if(width <= 0 || height <= 0) {
             return null;
         }
@@ -74,7 +74,9 @@ public class UIUtils {
         Graphics2D g2 = resizedImg.createGraphics();
 
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, 0, 0, width, height, null);
+        g2.setColor(Color.black);
+        g2.fillRect(0,0, 5000,5000);
+        g2.drawImage(srcImg, (int) (width * (1-scaling)/2), (int) (height*(1-scaling)/2), (int) (width*scaling), (int) (height*scaling), null);
         g2.dispose();
 
         return resizedImg;

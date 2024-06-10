@@ -64,7 +64,7 @@ public class CyclicBarrierSlide extends Slide {
                 }
             } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
                 e.printStackTrace();
-                setMessage(e.getMessage());
+                setMessage(e);
                 sprite.setRetreating();
             }
             finally {
@@ -81,7 +81,7 @@ public class CyclicBarrierSlide extends Slide {
         initializeInstanceFields();
         threadContext.setSlideLabel("CyclicBarrier");
         setSnippetFile("cyclic-barrier.html");
-        setImage("images/cyclicBarrier.jpg");
+        setImage("images/cyclicBarrier.jpg", .7f);
         setMessage("");
         cyclicBarrier = new CyclicBarrier(4, ()->{
             highlightSnippet(4);

@@ -79,9 +79,18 @@ public abstract class Slide {
         setMessage(message, Color.white);
     }
 
+    protected void setMessage(Throwable e) {
+        String message = e.getMessage();
+        if(message == null){
+            message = e.toString();
+        }
+
+        setMessage(message, Color.white);
+    }
+
     protected void setMessage(String message, Color foreground) {
         this.messages.setForeground(foreground);
-        this.messages.setText(message);
+        this.messages.setText("   " + message);
     }
 
     /**
@@ -155,8 +164,8 @@ public abstract class Slide {
         return styles;
     }
 
-    protected void setImage(String imageFile) {
-        uiUtils.setImage(imageFile, imageLabel);
+    protected void setImage(String imageFile, float scaling) {
+        uiUtils.setImage(imageFile, imageLabel, scaling);
     }
 
     /**

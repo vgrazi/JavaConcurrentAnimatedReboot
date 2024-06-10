@@ -345,7 +345,7 @@ public class CompletableFutureSlide extends Slide {
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("CompletableFuture");
         setSnippetFile("completable-future.html");
-        setImage("images/future.jpg");
+        setImage("images/future.jpg", .7f);
         firstThread = null;
         threadCount = 0;
         completableFutures.clear();

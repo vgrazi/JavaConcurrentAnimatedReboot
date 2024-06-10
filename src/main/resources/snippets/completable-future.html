@@ -10,11 +10,11 @@
   <3 default>     .toArray(<3 keyword>new<3 default> CompletableFuture[0]));
 
   <6 keyword>  try {
-  <6 default>    Object value = future.join();
+  <6 default>    Object value = future.join();<6 comment>// Blocks until result ready or exception.
   <6 keyword>  } catch <5 default>(CompletionException e) {..}<6 comment>//RuntimeException
 
   <5 keyword>  try {
-  <5 default>    Object value = future.get();
+  <5 default>    Object value = future.get();// Blocks until result ready or exception.
   <5 keyword>  } catch <5 default>(InterruptedException
     <5 default>    | ExecutionException e) {..}
     <5 default>    | CompletionException e) {..}
