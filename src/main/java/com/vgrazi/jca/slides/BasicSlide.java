@@ -63,7 +63,7 @@ public class BasicSlide extends Slide {
             ThreadSprite interruptedSprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             interruptedSprite.attachAndStartRunnable(()->{
                 while(true){Thread.yield();}
-            });
+            }, true);
             interruptedSprite.setMessage("InterruptedSprite");
             interruptedSprite.getThread().interrupt();
             threadContext.addSprite(interruptedSprite);
@@ -97,7 +97,7 @@ public class BasicSlide extends Slide {
                     Thread.yield();
                 }
                 threadContext.stopThread(runnerThreadSprite);
-            });
+            }, true);
             // Always add the sprite to the thread context.
             threadContext.addSprite(runnerThreadSprite);
         });
@@ -125,7 +125,7 @@ public class BasicSlide extends Slide {
                     e.printStackTrace();
                 }
             }
-        });
+        }, true);
     }
 
     public void reset() {

@@ -149,7 +149,7 @@ public class PhaserSlide extends Slide {
                 }
             }
             println(sprite + " exiting");
-        });
+        }, true);
         threadContext.addSprite(sprite);
     }
 

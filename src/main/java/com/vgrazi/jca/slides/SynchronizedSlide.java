@@ -21,7 +21,12 @@ public class SynchronizedSlide extends Slide {
         reset();
         threadContext.addButton("Add thread", () -> {
             ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
-            addYieldRunnable(mutex, sprite);
+            addYieldRunnable(mutex, sprite, true);
+            highlightSnippet(1);
+        });
+        threadContext.addButton("Add virtual thread", () -> {
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
+            addYieldRunnable(mutex, sprite, false);
             highlightSnippet(1);
         });
 
@@ -124,7 +129,7 @@ public class SynchronizedSlide extends Slide {
         mutex = new Object();
     }
 
-    private void addYieldRunnable(Object mutex, ThreadSprite sprite) {
+    private void addYieldRunnable(Object mutex, ThreadSprite sprite, boolean isPlatform) {
         sprite.attachAndStartRunnable(() -> {
             try {
                 synchronized (mutex) {
@@ -157,7 +162,7 @@ public class SynchronizedSlide extends Slide {
             } catch (InterruptedException e) {
                 interruptSprite(sprite, e);
             }
-        });
+        }, isPlatform);
         threadContext.addSprite(sprite);
         println("Added " + sprite);
     }

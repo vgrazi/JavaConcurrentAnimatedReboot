@@ -43,7 +43,7 @@ public class CompletionServiceSlide extends Slide {
 
                             return sprite;
                         });
-                    });
+                    }, true);
                     // Always add the sprite to the thread context.
                     threadContext.addSprite(sprite);
                 }
@@ -73,7 +73,7 @@ public class CompletionServiceSlide extends Slide {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
-                });
+                }, true);
             });
         });
 

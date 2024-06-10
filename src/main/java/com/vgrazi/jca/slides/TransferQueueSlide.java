@@ -66,7 +66,7 @@ public class TransferQueueSlide extends Slide {
                     threadContext.stopThread(getter);
                 }
 
-            });
+            }, true);
         });
 
         threadContext.addButton("transferQueue.take()", () -> {
@@ -86,7 +86,7 @@ public class TransferQueueSlide extends Slide {
                                 Thread.currentThread().interrupt();
                             }
                             threadContext.stopThread(getter);
-                        });
+                        }, true);
                     } else {
                         getter.attachAndStartRunnable(() -> {
                             try {
@@ -101,7 +101,7 @@ public class TransferQueueSlide extends Slide {
                             }
                             threadContext.stopThread(objectSprite);
                             threadContext.stopThread(getter);
-                        });
+                        }, true);
                     }
                     threadContext.addSprite(getter);
                 }
@@ -146,7 +146,7 @@ public class TransferQueueSlide extends Slide {
             if (getter != null) {
                 threadContext.stopThread(getter);
             }
-        });
+        }, true);
     }
 
     public void reset() {

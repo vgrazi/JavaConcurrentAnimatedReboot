@@ -42,7 +42,7 @@ public class AtomicIntegerSlide extends Slide {
                             break;
                         }
                     }
-                });
+                }, true);
                 threadContext.addSprite(sprite);
             }
         });

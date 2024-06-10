@@ -45,7 +45,7 @@ public class SemaphoreSlide extends Slide {
                     Thread.currentThread().interrupt();
                     sprite.setRetreating();
                 }
-            });
+            }, true);
         });
 
         threadContext.addButton("semaphore.acquireUninterruptibly()", () -> {
@@ -62,7 +62,7 @@ public class SemaphoreSlide extends Slide {
                     Thread.yield();
                 }
                 threadContext.stopThread(sprite);
-            });
+            }, true);
         });
 
         threadContext.addButton("semaphore.tryAcquire()", () -> {
@@ -82,7 +82,7 @@ public class SemaphoreSlide extends Slide {
                     sprite.setRetreating();
                 }
                 threadContext.stopThread(sprite);
-            });
+            }, true);
         });
 
         threadContext.addButton("semaphore.tryAcquire(3, TimeUnit.SECONDS)", () -> {
@@ -108,7 +108,7 @@ public class SemaphoreSlide extends Slide {
                     Thread.currentThread().interrupt();
                     sprite.setRetreating();
                 }
-            });
+            }, true);
         });
 
         threadContext.addButton("semaphore.release()", () -> {
@@ -119,7 +119,7 @@ public class SemaphoreSlide extends Slide {
             if(sprite!=null) {
                 sprite.attachAndStartRunnable(() -> {
                     threadContext.stopThread(sprite);
-                });
+                }, true);
             }
         });
 

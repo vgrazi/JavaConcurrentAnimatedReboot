@@ -37,7 +37,7 @@ public class ReadWriteLockSlide extends Slide {
                     Thread.yield();
                 }
                 readWriteLock.readLock().unlock();
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 
@@ -65,7 +65,7 @@ public class ReadWriteLockSlide extends Slide {
                 }
                 threadContext.stopThread(sprite);
 
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 

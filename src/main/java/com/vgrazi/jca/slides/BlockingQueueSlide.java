@@ -57,7 +57,7 @@ public class BlockingQueueSlide extends Slide {
                                 Thread.currentThread().interrupt();
                             }
                             threadContext.stopThread(getter);
-                        });
+                        }, true);
                     } else {
                         getter.attachAndStartRunnable(() -> {
                             try {
@@ -71,7 +71,7 @@ public class BlockingQueueSlide extends Slide {
                             objectSprite.setAction("done");
                             threadContext.stopThread(objectSprite);
                             threadContext.stopThread(getter);
-                        });
+                        }, true);
                     }
                     threadContext.addSprite(getter);
                 }
@@ -99,7 +99,7 @@ public class BlockingQueueSlide extends Slide {
                 finally {
                     threadContext.stopThread(getter);
                 }
-            });
+            }, true);
 
             threadContext.addSprite(getter);
         });
@@ -151,7 +151,7 @@ public class BlockingQueueSlide extends Slide {
             if (getter != null) {
                 threadContext.stopThread(getter);
             }
-        });
+        }, true);
     }
 
     public void reset() {

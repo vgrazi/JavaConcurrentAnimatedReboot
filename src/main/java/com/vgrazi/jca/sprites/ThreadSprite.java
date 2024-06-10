@@ -50,9 +50,16 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
     /**
      * Create the thread associated with this runnable, and starts it
      */
-    public void attachAndStartRunnable(Runnable runnable) {
-        thread = new Thread(runnable, String.format("JCA Thread %d", ++threadSequenceNumber));
-        thread.start();
+    public void attachAndStartRunnable(Runnable runnable, boolean platform) {
+        if(platform){
+            thread = new Thread(runnable, String.format("JCA Platform Thread %d", ++threadSequenceNumber));
+            thread.start();
+        }
+        else {
+            thread = Thread.ofVirtual()
+               .name(String.format("JCA virtual Thread %d", ++threadSequenceNumber))
+               .unstarted(runnable);
+        }
     }
 
     public void setNextXPosition() {

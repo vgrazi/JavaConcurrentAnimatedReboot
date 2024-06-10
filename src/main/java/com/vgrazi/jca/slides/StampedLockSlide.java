@@ -62,7 +62,7 @@ public class StampedLockSlide extends Slide {
                     setMessage("unlockedRead. Stamp=" + stamp);
                 }
                 threadContext.stopThread(sprite);
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 
@@ -82,7 +82,7 @@ public class StampedLockSlide extends Slide {
                 stampedLock.unlockWrite(stamp);
                 setMessage("unlockedWrite. Stamp=" + stamp);
                 threadContext.stopThread(sprite);
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 
@@ -112,7 +112,7 @@ public class StampedLockSlide extends Slide {
                 }
                 println(valid);
                 threadContext.stopThread(sprite);
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 

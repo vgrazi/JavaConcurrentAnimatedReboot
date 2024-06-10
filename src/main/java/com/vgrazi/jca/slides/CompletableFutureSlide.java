@@ -117,7 +117,7 @@ public class CompletableFutureSlide extends Slide {
 
                                 threadContext.stopThread(runnerThreadSprite);
                                 threadContext.stopThread(runnableSprite);
-                            });
+                            }, true);
                             threadContext.addSprite(runnerThreadSprite);
                         }
                 );
@@ -126,7 +126,7 @@ public class CompletableFutureSlide extends Slide {
                         Thread.yield();
                     }
                     println(runnableSprite + " exiting");
-                });
+                }, true);
                 threadContext.addSprite(runnableSprite);
             }
             else if (!smallFutureSprites.isEmpty()) {
@@ -166,7 +166,7 @@ public class CompletableFutureSlide extends Slide {
 
                                 threadContext.stopThread(runnerThreadSprite);
                                 threadContext.stopThread(runnableSprite);
-                            });
+                            }, true);
                             threadContext.addSprite(runnerThreadSprite);
                         }
                 );
@@ -175,7 +175,7 @@ public class CompletableFutureSlide extends Slide {
                         Thread.yield();
                     }
                     println(runnableSprite + " exiting");
-                });
+                }, true);
                 threadContext.addSprite(runnableSprite);
             }
         });
@@ -246,7 +246,7 @@ public class CompletableFutureSlide extends Slide {
                     getter.setLabel(String.valueOf(value));
                 }
                 threadContext.stopThread(getter);
-            });
+            }, true);
             threadContext.addSprite(getter);
         }
     }
@@ -310,7 +310,7 @@ public class CompletableFutureSlide extends Slide {
                 Thread.yield();
             }
             println(threadSprite + " exiting");
-        });
+        }, true);
         threadContext.addSprite(threadSprite);
     }
 

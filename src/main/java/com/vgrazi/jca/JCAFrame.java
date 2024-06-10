@@ -6,11 +6,12 @@ import com.vgrazi.jca.slides.*;
 import com.vgrazi.jca.util.Parsers;
 import com.vgrazi.jca.util.UIUtils;
 import com.vgrazi.jca.view.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;

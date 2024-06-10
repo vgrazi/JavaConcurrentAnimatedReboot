@@ -70,7 +70,7 @@ public class CyclicBarrierSlide extends Slide {
             finally {
                 threadContext.stopThread(sprite);
             }
-        });
+        }, true);
         threadContext.addSprite(sprite);
     }
 

@@ -35,7 +35,7 @@ public class CountDownLatchSlide extends Slide {
                     sprite.setMessage(e);
                     sprite.setRetreating();
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
         threadContext.addButton("await(time, TimeUnit)", () -> {
@@ -55,7 +55,7 @@ public class CountDownLatchSlide extends Slide {
                 } finally {
 //                    threadContext.stopThread(sprite);
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
         threadContext.addButton("countDown()", () -> {
@@ -67,7 +67,7 @@ public class CountDownLatchSlide extends Slide {
                     Thread.yield();
                 }
                 threadContext.stopThread(sprite);
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 

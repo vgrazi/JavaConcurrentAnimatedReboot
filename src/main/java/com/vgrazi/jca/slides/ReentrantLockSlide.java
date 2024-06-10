@@ -65,7 +65,7 @@ public class ReentrantLockSlide extends Slide {
                 finally{
                     lock.unlock();
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
             highlightSnippet(1);
         });
@@ -86,7 +86,7 @@ public class ReentrantLockSlide extends Slide {
                 finally{
                     lock.unlock();
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
         });
 
@@ -107,7 +107,7 @@ public class ReentrantLockSlide extends Slide {
                 } else {
                     sprite.setRetreating();
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
             highlightSnippet(3);
         });
@@ -133,7 +133,7 @@ public class ReentrantLockSlide extends Slide {
                 }catch(InterruptedException e) {
                     interruptSprite(sprite, e);
                 }
-            });
+            }, true);
             threadContext.addSprite(sprite);
             highlightSnippet(3);
         });

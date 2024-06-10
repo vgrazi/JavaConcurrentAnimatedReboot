@@ -158,8 +158,8 @@ public class Config {
 
     @Value("${message-font}")
     public void setMessageFont(String messageFont) {
-        Font font = Parsers.parseFont(messageFont);
-        messages().setFont(font);
+//        Font font = Parsers.parseFont(messageFont);
+//        messages().setFont(font);
     }
 
 }
