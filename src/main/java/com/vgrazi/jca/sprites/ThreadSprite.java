@@ -58,7 +58,7 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
         else {
             thread = Thread.ofVirtual()
                .name(String.format("JCA virtual Thread %d", ++threadSequenceNumber))
-               .unstarted(runnable);
+               .start(runnable);
         }
     }
 
@@ -182,5 +182,9 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
 
     public void setConditionId(int conditionId) {
         this.conditionId = conditionId;
+    }
+
+    public void setStopped() {
+
     }
 }

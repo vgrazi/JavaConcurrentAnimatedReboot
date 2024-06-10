@@ -245,7 +245,7 @@ public class ThreadContext<S> implements InitializingBean {
         threadColors.clear();
         resetYPos();
         nextPooledYPos = initialPooledYPos;
-        getAllThreads().stream().filter(sprite->sprite.getThread() != null).forEach(sprite -> sprite.getThread().stop());
+        getAllThreads().stream().filter(sprite->sprite.getThread() != null).forEach(sprite -> sprite.getThread().interrupt());
         canvas.setSlideLabel("");
         canvas.setBottomLabel(null);
         clearSprites();
