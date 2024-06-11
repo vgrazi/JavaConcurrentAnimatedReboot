@@ -1,4 +1,12 @@
-  <1 keyword>synchronized <1 default>(object) {
+<0 default>Thread thread = Thread.ofVirtual()
+    .name(String.format("JCA virtual Thread"))
+    .start(runnable);
+
+<0 default>Thread thread = Thread.ofPlatform()
+    .name(String.format("JCA Thread"))
+    .start(runnable);
+
+<1 keyword>synchronized <1 default>(object) {
     // do some work
     <3 keyword>try {
       <3 keyword>while<3 default>(!condition){
