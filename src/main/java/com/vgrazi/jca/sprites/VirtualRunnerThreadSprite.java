@@ -14,8 +14,6 @@ import java.util.Map;
 public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
 
     public static final Font CARRIER_FONT = new Font("Arial", Font.PLAIN, 24);
-    @Autowired
-    private UIUtils uiUtils;
 
 //    String lastCarrier;
     @Override
@@ -34,12 +32,7 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
             graphics.drawArc(rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
             graphics.drawLine(lineStart + getXOffset(), topBound, lineEnd + getXOffset(), topBound);
             graphics.drawLine(lineStart + getXOffset(), bottomBound, lineEnd + getXOffset(), bottomBound);
-            Map.Entry<String, String> entry = ThreadUtils.getVirtualToCarrierMapping(getThread());
-            String carrier = "";
-            if(entry != null) {
-//                lastCarrier = entry.getValue().replaceAll("ForkJoinPool-\\d+-","");
-                carrier = entry.getValue().replaceAll("ForkJoinPool-\\d+-","");
-            }
+            String carrier = ThreadUtils.getCarrier(this.getThread());
 //            else if(getThread().getState() != Thread.State.RUNNABLE){
 //                carrier = "";
 //            }
@@ -95,7 +88,7 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
             graphics1.fill3DRect(xPos, yPosition + 3, arrowLength + 20, 12, true);
 //            carrier = carrier.replaceAll("ForkJoinPool-\\d+-", "");
            graphics1.setFont(CARRIER_FONT);
-           graphics.drawString(carrier, lineEnd + getXOffset() + 15, bottomBound);
+           graphics1.drawString(carrier, lineEnd + getXOffset() + 25, yPosition + 3 + 12 + 2);
 
            graphics1.dispose();
         }

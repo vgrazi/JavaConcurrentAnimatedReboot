@@ -491,6 +491,13 @@ public class ThreadContext<S> implements InitializingBean {
                         ((ThreadSprite<?>) s).getThread().getState() == Thread.State.BLOCKED).findFirst().orElse(null);
         return sprite;
     }
+    public ThreadSprite<S> getFirstNonWaitingThreadSprite() {
+        ThreadSprite sprite=(ThreadSprite) sprites.stream().
+                filter(s -> s instanceof ThreadSprite &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.WAITING).findFirst().orElse(null);
+        System.out.println("ThreadContext.getFirstNonBlockedThreadSprite returning " + sprite);
+        return sprite;
+    }
 
     /**
      * Gets the next blocked thread that is not contained in the list of exclusions

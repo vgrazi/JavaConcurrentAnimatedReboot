@@ -26,4 +26,17 @@ public class ThreadUtils {
       return Map.entry(virtualName, carrier);
    }
 
+   public static String getCarrier(Thread thread){
+      String threadReference = thread.toString();
+      String carrier;
+      Matcher matcher = carrierNameMappingPattern.matcher(threadReference);
+      if(matcher.find()) {
+         carrier = matcher.group(1);
+      }
+      else {
+         carrier = "";
+      }
+
+     return carrier;
+   }
 }
