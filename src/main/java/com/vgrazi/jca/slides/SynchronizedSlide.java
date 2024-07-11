@@ -25,7 +25,7 @@ public class SynchronizedSlide extends Slide {
             highlightSnippet(1);
         });
         threadContext.addButton("Add virtual thread", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
+            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
             addYieldRunnable(mutex, sprite, false);
             highlightSnippet(1);
         });
@@ -49,6 +49,15 @@ public class SynchronizedSlide extends Slide {
                 runningSprite.setAction("waiting");
                 log("Calling wait() on Runnable", runningSprite);
                 highlightSnippet(3);
+            }
+        });
+        threadContext.addButton("sleep()", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+
+            if (runningSprite != null) {
+                runningSprite.setAction("sleeping");
+                log("Calling sleep() on Runnable", runningSprite);
+                highlightSnippet(7);
             }
         });
 
@@ -140,6 +149,10 @@ public class SynchronizedSlide extends Slide {
                             break;
                         }
                         switch (sprite.getAction()) {
+                            case "sleeping":
+                                Thread.sleep(5000);
+                                sprite.setAction("default");
+                                break;
                             case "waiting":
                                 mutex.wait();
                                 sprite.setAction("default");

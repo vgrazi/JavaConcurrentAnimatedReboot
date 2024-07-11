@@ -23,9 +23,9 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
     protected int rightBound;
     protected int topBound;
     protected int bottomBound;
-    private int ellipseRadius;
-    private int lineStart;
-    private int lineEnd;
+    protected int ellipseRadius;
+    protected int lineStart;
+    protected int lineEnd;
 
     @Autowired
     private UIUtils uiUtils;
@@ -127,7 +127,7 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
     /**
      * First checks if the thread is interrupted. If it is, renders an interrupt flag
      */
-    private void renderInterruptedFlag(Graphics2D graphics){
+    void renderInterruptedFlag(Graphics2D graphics){
         if(getThread().isInterrupted()) {
             if(isInMonolith()){
                 graphics.drawImage(flagImage, (rightBound + leftBound)/2-flagImage.getWidth(null)/2, topBound, null);
@@ -155,8 +155,12 @@ public class RunnerThreadSprite<S> extends ThreadSprite<S> implements Initializi
             int height = fm.getHeight();
             graphics.drawString("C" + getConditionId(), getXPosition() + getXOffset() - 8 - offset + capOffset, yPos + height / 2);
         } else {
-            graphics.fillOval(getXPosition() + getXOffset() - 8 - offset + capOffset, yPos, ballDiameter, ballDiameter);
+            drawHead(graphics, capOffset, offset, yPos);
         }
+    }
+
+    protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
+        graphics.fillOval(getXPosition() + getXOffset() - 8 - offset + capOffset, yPos, ballDiameter, ballDiameter);
     }
 
 // leftBound     ___________________________________     rightBound
