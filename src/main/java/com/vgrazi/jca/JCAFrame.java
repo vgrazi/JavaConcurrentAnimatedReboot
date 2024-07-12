@@ -47,8 +47,12 @@ public class JCAFrame extends JFrame {
 
     @Autowired
     private ThreadCanvas threadCanvas;
+
     @Autowired
     private SynchronizedSlide synchronizedSlide;
+
+    @Autowired
+    private VirtualThreadsSlide virtualThreadsSlide;
 
     @Autowired
     private ExecutorsSlide executorsSlide;
@@ -167,6 +171,7 @@ public class JCAFrame extends JFrame {
         menuPanel.setLayout(new ButtonLayout(vgap));
 
         addButton("Synchronized", synchronizedSlide);
+        addButton("Virtual Threads", virtualThreadsSlide);
         addButton("ReentrantLock", reentrantLockSlide);
         addButton("Semaphore", semaphoreSlide);
         addButton("ReadWriteLock", readWriteLockSlide);

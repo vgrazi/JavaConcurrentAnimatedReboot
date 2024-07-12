@@ -17,10 +17,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -35,11 +35,21 @@ import static com.vgrazi.jca.util.Parsers.parseColor;
 public class ThreadContext<S> implements InitializingBean {
     @Value("${pixels-per-step-runner}")
     public int initialPixelsPerStepRunner;
+
+    private final Random random = new Random();
+
+    private final Lock LOCK = new ReentrantLock();
     public int pixelsPerStepRunner;
 
     @Value("${snippet-font-size}")
     private int initialFontSize;
     private int fontSize;
+    private final Map<String, Color> carrierColorMap = new LinkedHashMap<>(){
+        @Override
+        public Color computeIfAbsent(String key, Function<? super String, ? extends Color> mappingFunction) {
+            return super.computeIfAbsent(key, mappingFunction);
+        }
+    };
 
     @Autowired
     private JPanel cardPanel;
@@ -80,6 +90,12 @@ public class ThreadContext<S> implements InitializingBean {
 
     public RunnerThreadSprite getRunnableThread() {
         return (RunnerThreadSprite) sprites.stream().filter(sprite -> sprite instanceof RunnerThreadSprite)
+                .filter(sprite1 -> ((RunnerThreadSprite) sprite1).getState() == runnable)
+                .findFirst()
+                .orElse(null);
+    }
+    public VirtualRunnerThreadSprite getVirtualRunnableThread() {
+        return (VirtualRunnerThreadSprite) sprites.stream().filter(sprite -> sprite instanceof RunnerThreadSprite)
                 .filter(sprite1 -> ((RunnerThreadSprite) sprite1).getState() == runnable)
                 .findFirst()
                 .orElse(null);
@@ -139,6 +155,31 @@ public class ThreadContext<S> implements InitializingBean {
 
     public JCAFrame getJCAFrame() {
         return frame;
+    }
+
+    public Color getCarrierColor(String carrier, VirtualRunnerThreadSprite threadSprite) {
+        Color color;
+        if(carrier != null) {
+            color = carrierColorMap.computeIfAbsent(carrier, c -> getNextCarrierColor());
+        }
+        else {
+            color = Color.black;
+        }
+//        String index = getCarrierIndex(color);
+//        logger.info(index + ";" + color + ";" + threadSprite.getThreadState() + ";" + threadSprite.getThread().getState());
+        return color;
+    }
+
+    private String getCarrierIndex(Color color) {
+        Iterator<Map.Entry<String, Color>> entries = carrierColorMap.entrySet().iterator();
+        for(int i = 0; entries.hasNext();i++){
+            Map.Entry<String, Color> entry = entries.next();
+            Color mapColor = entry.getValue();
+            if(mapColor == color){
+                return i + "..."+ entry.getKey() + " " + mapColor;
+            }
+        }
+        return "UNKNOWN";
     }
 
     private enum ColorationScheme {
@@ -243,6 +284,9 @@ public class ThreadContext<S> implements InitializingBean {
 
     public void reset() {
         threadColors.clear();
+        carrierColorMap.clear();
+        colorPointer = 0;
+        carrierColorPointer = 0;
         resetYPos();
         nextPooledYPos = initialPooledYPos;
         getAllThreads().stream().filter(sprite->sprite.getThread() != null).forEach(sprite -> sprite.getThread().interrupt());
@@ -340,18 +384,31 @@ public class ThreadContext<S> implements InitializingBean {
     private final Color[] colors = {Color.red, Color.CYAN,
             Color.YELLOW, Color.MAGENTA, Color.GREEN, Color.orange,  Color.BLUE.brighter()
     };
+    private final Color[] carrierColors = {Color.CYAN.darker(), Color.YELLOW.darker(), Color.MAGENTA.darker(),
+       Color.GREEN.darker(), Color.orange.darker(),  Color.BLUE, Color.red.darker()
+    };
 
     private int colorPointer = 0;
+    private int carrierColorPointer = 0;
 
     private Color getNextColor() {
         Color color = colors[(colorPointer++) % colors.length];
         return color;
     }
+    private Color getNextCarrierColor() {
+        Color color = carrierColors[(carrierColorPointer++) % carrierColors.length];
+        return color;
+    }
 
-    public synchronized void addSprite(Sprite sprite) {
-        sprites.add(sprite);
-        if (sprite instanceof ThreadSprite) {
-            threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
+    public void addSprite(Sprite sprite) {
+        LOCK.lock();
+        try {
+            sprites.add(sprite);
+            if (sprite instanceof ThreadSprite) {
+                threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
+            }
+        } finally {
+            LOCK.unlock();
         }
     }
 
@@ -362,6 +419,10 @@ public class ThreadContext<S> implements InitializingBean {
         if (sprite instanceof ThreadSprite) {
             threadColors.put(((ThreadSprite<S>) sprite).getThread(), getNextColor());
         }
+    }
+
+    public void addCarrier(ThreadSprite carrier){
+
     }
 
     public List<Sprite> getAllSprites() {
@@ -375,28 +436,33 @@ public class ThreadContext<S> implements InitializingBean {
      *
      * @param threadSprite
      */
-    public synchronized void stopThread(ThreadSprite<S> threadSprite) {
-        threadSprite.setRunning(false);
-        new Thread(() -> {
-            try {
-                // while the sprite is visible, render it. Otherwise remove it
-                // remember, retreating sprites move from right to left
-                // todo: the measurement to the right border of the frame
-                while (threadSprite.getXPosition() >= 0 && threadSprite.getXPosition() < 600) {
-                    Thread.sleep(100);
+    public void stopThread(ThreadSprite<S> threadSprite) {
+        try {
+            LOCK.lock();
+            threadSprite.setRunning(false);
+            new Thread(() -> {
+                try {
+                    // while the sprite is visible, render it. Otherwise remove it
+                    // remember, retreating sprites move from right to left
+                    // todo: the measurement to the right border of the frame
+                    while (threadSprite.getXPosition() >= 0 && threadSprite.getXPosition() < 600) {
+                        Thread.sleep(100);
+                    }
+                    sprites.remove(threadSprite);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
-                sprites.remove(threadSprite);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }).start();
+            }).start();
+        } finally {
+            LOCK.unlock();
+        }
     }
 
     public void startAnimationThread() throws InterruptedException {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while (true) {
-            printAllThreads();
+//            logAllThreads();
             Thread.sleep(100);
         }
     }
@@ -425,6 +491,27 @@ public class ThreadContext<S> implements InitializingBean {
                 filter(s -> s instanceof ThreadSprite &&
                         ((ThreadSprite<?>) s).getThread().getState() == Thread.State.BLOCKED).findFirst().orElse(null);
         return sprite;
+    }
+    public ThreadSprite<S> getFirstNonWaitingThreadSprite() {
+        ThreadSprite sprite=(ThreadSprite) sprites.stream().
+                filter(s -> s instanceof ThreadSprite &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.WAITING &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.TIMED_WAITING &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.TERMINATED
+
+                ).findFirst().orElse(null);
+        System.out.println("ThreadContext.getFirstNonBlockedThreadSprite returning " + sprite);
+        return sprite;
+    }
+    public ThreadSprite<S> getRandomNonWaitingThreadSprite() {
+        List<Sprite> collect = (sprites.stream().
+           filter(s -> s instanceof ThreadSprite &&
+              ((ThreadSprite<?>) s).getThread().getState()!=Thread.State.WAITING &&
+              ((ThreadSprite<?>) s).getThread().getState()!=Thread.State.TIMED_WAITING
+
+           ).collect(Collectors.toList()));
+        int i = random.nextInt(collect.size());
+        return (ThreadSprite<S>) collect.get(i);
     }
 
     /**
@@ -614,7 +701,7 @@ public class ThreadContext<S> implements InitializingBean {
         return collect;
     }
 
-    public void printAllThreads() {
+    public void logAllThreads() {
         sprites.forEach(Logging::log);
     }
 

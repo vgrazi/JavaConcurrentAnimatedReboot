@@ -52,6 +52,12 @@ public class Config {
 
     @Bean
     @Scope("prototype")
+    VirtualRunnerThreadSprite virtualRunnerThreadSprite() {
+        return new VirtualRunnerThreadSprite();
+    }
+
+    @Bean
+    @Scope("prototype")
     PooledThreadSprite pooledThreadSprite() {
         return new PooledThreadSprite();
     }

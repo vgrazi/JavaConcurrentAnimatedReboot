@@ -24,11 +24,11 @@ public class SynchronizedSlide extends Slide {
             addYieldRunnable(mutex, sprite, true);
             highlightSnippet(1);
         });
-        threadContext.addButton("Add virtual thread", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
-            addYieldRunnable(mutex, sprite, false);
-            highlightSnippet(1);
-        });
+//        threadContext.addButton("Add virtual thread", () -> {
+//            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
+//            addYieldRunnable(mutex, sprite, false);
+//            highlightSnippet(1);
+//        });
 
         threadContext.addButton("exit synchronized", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
@@ -49,6 +49,15 @@ public class SynchronizedSlide extends Slide {
                 runningSprite.setAction("waiting");
                 log("Calling wait() on Runnable", runningSprite);
                 highlightSnippet(3);
+            }
+        });
+        threadContext.addButton("sleep()", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+
+            if (runningSprite != null) {
+                runningSprite.setAction("sleeping");
+                log("Calling sleep() on Runnable", runningSprite);
+                highlightSnippet(7);
             }
         });
 
@@ -140,6 +149,10 @@ public class SynchronizedSlide extends Slide {
                             break;
                         }
                         switch (sprite.getAction()) {
+                            case "sleeping":
+                                Thread.sleep(5000);
+                                sprite.setAction("default");
+                                break;
                             case "waiting":
                                 mutex.wait();
                                 sprite.setAction("default");
@@ -153,7 +166,6 @@ public class SynchronizedSlide extends Slide {
                                 sprite.setAction("default");
                                 break;
                             case "default":
-                                Thread.yield();
                                 break;
                         }
                     }

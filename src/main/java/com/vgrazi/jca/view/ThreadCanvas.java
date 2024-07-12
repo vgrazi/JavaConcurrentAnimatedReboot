@@ -127,8 +127,8 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         else {
 
             int width2 = fm.stringWidth(slideLabel[1]);
-            g.drawString(slideLabel[0], (rightBorder + leftBorder - width) / 2, initialYPosition - 20 -3* height / 2 + fm.getDescent());
-            g.drawString(slideLabel[1], (rightBorder + leftBorder - width2) / 2, initialYPosition - 20 - height / 2 + fm.getDescent());
+            g.drawString(slideLabel[0], (rightBorder + leftBorder - width) / 2, initialYPosition - 20 -3* height / 2 + fm.getDescent()+10);
+            g.drawString(slideLabel[1], (rightBorder + leftBorder - width2) / 2, initialYPosition - 20 - height / 2 + fm.getDescent()+10);
         }
     }
 

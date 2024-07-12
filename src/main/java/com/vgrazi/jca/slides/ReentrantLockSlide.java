@@ -69,6 +69,25 @@ public class ReentrantLockSlide extends Slide {
             threadContext.addSprite(sprite);
             highlightSnippet(1);
         });
+        boolean[] virtualRunning = new boolean[] {true};
+        threadContext.addButton("virtual thread ", () -> {
+            highlightSnippet(1);
+            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
+            // set the holder to true for running
+            sprite.setHolder(true);
+            sprite.attachAndStartRunnable(() -> {
+                while(virtualRunning[0]){
+
+                }
+                virtualRunning[0]=true;
+            }, false);
+            threadContext.addSprite(sprite);
+            highlightSnippet(1);
+        });
+        threadContext.addButton("end virtual", ()->{
+            virtualRunning[0] = false;
+        });
+
         threadContext.addButton("lock.lockInterrubtibly()", () -> {
             highlightSnippet(4);
             ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
@@ -148,6 +167,18 @@ public class ReentrantLockSlide extends Slide {
 
 //        // one of the threads (call it thread1, probably same as sprite1) is now runnable and the other (thread2) is blocked
 //
+        threadContext.addButton("Thread.sleep()", () -> {
+            highlightSnippet(5);
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+            if (runningSprite != null) {
+               try {
+                  runningSprite.getThread().sleep(5000);
+               } catch(InterruptedException e) {
+
+                   Thread.currentThread().interrupt();
+               }
+            }
+        });
         threadContext.addButton("lock.newCondition()", () -> {
             highlightSnippet(5);
             ThreadSprite runningSprite = threadContext.getRunningThread();
