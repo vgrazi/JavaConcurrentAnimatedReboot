@@ -16,16 +16,16 @@ public class VirtualThreadsSlide extends Slide {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Value("${completable-future-height}")
-    private int completableFutureHeight;
-
     @Value("${monolith-left-border}")
     private int leftBorder;
-    @Value("${monolith-right-border}")
-    private int rightBorder;
     @Value("${arrow-length}")
     private int arrowLength;
+
+    private int sleepMS = 2500;
     private final List<ThreadSprite> sleeping = new ArrayList<>();
+    private final List<ThreadSprite> waiting = new ArrayList<>();
+    private final List<ThreadSprite> yield = new ArrayList<>();
+    private final List<ThreadSprite> exit = new ArrayList<>();
     private final List<String> carriers = new ArrayList<>();
 
     /**
@@ -43,9 +43,12 @@ public class VirtualThreadsSlide extends Slide {
 
     public void run() {
         reset();
-        threadContext.addButton("Thread.ofVirtual().start(()->someAction())", () -> addCreateAction(2, ""));
+        threadContext.addButton("Thread.ofVirtual().start(()->someAction())", () -> addCreateAction(0));
 
-        threadContext.addButton("sleep()", () -> addSleepAction(6));
+        threadContext.addButton("sleep(" + sleepMS + ")", () -> addSleepAction(1));
+        threadContext.addButton("synchronized(lock){lock.wait(" + sleepMS + ");}", () -> addWaitAction(2));
+//        threadContext.addButton("Thread.yield()", () -> addYieldAction(3));
+        threadContext.addButton("exit", () -> addExitAction(4));
 
         threadContext.addButton("Reset", this::reset);
 
@@ -53,33 +56,70 @@ public class VirtualThreadsSlide extends Slide {
     }
 
     private void addSleepAction(int state) {
+        highlightSnippet(state);
         ThreadSprite runningThread = threadContext.getFirstNonWaitingThreadSprite();
         sleeping.add(runningThread);
+    }
 
+    private void addWaitAction(int state) {
+        highlightSnippet(state);
+        ThreadSprite runningThread = threadContext.getFirstNonWaitingThreadSprite();
+        waiting.add(runningThread);
+    }
+
+    private void addYieldAction(int state) {
+        highlightSnippet(state);
+        ThreadSprite runningThread = threadContext.getRandomNonWaitingThreadSprite();
+        yield.add(runningThread);
+    }
+    private void addExitAction(int state) {
+        highlightSnippet(state);
+        ThreadSprite runningThread = threadContext.getFirstNonWaitingThreadSprite();
+        exit.add(runningThread);
     }
 
 
     /**
      * Called by the runAsynch and supplyAsync methods, adds a completableFutureSprite to the screen
      */
-    private void addCreateAction(int state, String type) {
+    private void addCreateAction(int state) {
         highlightSnippet(state);
         ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("virtualRunnerThreadSprite");
         threadSprite.setXPosition(leftBorder + arrowLength);
         threadCount.incrementAndGet();
 
         threadSprite.attachAndStartRunnable(() -> {
-            while (threadSprite.isRunning()) {
+            while (!exit.contains(threadSprite)) {
                 if(sleeping.contains(threadSprite)){
                     sleeping.remove(threadSprite);
                   try {
-                    Thread.sleep(2_000);
+                    Thread.sleep(sleepMS);
+                      highlightSnippet(0);
                   } catch(InterruptedException e) {
                     throw new RuntimeException(e);
                   }
                 }
+                if(waiting.contains(threadSprite)){
+                    waiting.remove(threadSprite);
+                  try {
+                      synchronized(threadSprite) {
+                          threadSprite.wait(sleepMS);
+                          highlightSnippet(0);
+                      }
+                  } catch(InterruptedException e) {
+                    throw new RuntimeException(e);
+                  }
+                }
+                if(yield.contains(threadSprite)) {
+                    yield.remove(threadSprite);
+                    Thread.yield();
+                }
             }
+            exit.remove(threadSprite);
+            threadContext.stopThread(threadSprite);
             println(threadSprite + " exiting");
+            if(threadContext.getAllThreads().isEmpty())
+                threadCount.set(0);
         }, false);
         threadContext.addSprite(threadSprite);
     }
@@ -89,19 +129,15 @@ public class VirtualThreadsSlide extends Slide {
         super.reset();
         highlightSnippet(0);
         threadCanvas.hideMonolith(true);
-        threadContext.setSlideLabel("Virtual Threads");
-        threadContext.setSlideLabel("                                          Carrier", 1);
+        threadContext.setSlideLabel("Virtual Threads                  ");
+        threadContext.setSlideLabel("            Carrier", 1);
         threadCount.set(0);
         sleeping.clear();
         carriers.clear();
-//        setSnippetFile("completable-future.html");
-//        setImage("images/future.jpg", .7f);
-//        firstThread = null;
-//        completableFutures.clear();
-//        bigFutureSprites.clear();
-//        smallFutureSprites.clear();
-//        valueIdGenerator.set(0);
-//        smallFuturePointer = 0;
+        waiting.clear();
+        yield.clear();
+        exit.clear();
+        setSnippetFile("virtualthreads.html");
     }
 
 }

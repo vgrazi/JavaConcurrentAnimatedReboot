@@ -1,0 +1,19 @@
+<0 default>Thread thread = Thread.ofVirtual()
+    .name(String.format("JCA virtual Thread"))
+    .start(runnable);
+
+<1 default>Thread.sleep(2000);
+
+<2 keyword>synchronized <2 default>(object) {
+    // do some work
+    <2 keyword>try {
+      <2 default>  object.wait(2000);
+  <2 keyword>  catch <2 default>(InterruptedException e) {
+      Thread.currentThread().interrupt();
+    <2 default>// releasing lock
+
+<2 default>
+    }
+}
+
+<4 default>

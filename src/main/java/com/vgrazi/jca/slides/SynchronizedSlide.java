@@ -24,11 +24,11 @@ public class SynchronizedSlide extends Slide {
             addYieldRunnable(mutex, sprite, true);
             highlightSnippet(1);
         });
-        threadContext.addButton("Add virtual thread", () -> {
-            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
-            addYieldRunnable(mutex, sprite, false);
-            highlightSnippet(1);
-        });
+//        threadContext.addButton("Add virtual thread", () -> {
+//            ThreadSprite sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
+//            addYieldRunnable(mutex, sprite, false);
+//            highlightSnippet(1);
+//        });
 
         threadContext.addButton("exit synchronized", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
@@ -166,7 +166,6 @@ public class SynchronizedSlide extends Slide {
                                 sprite.setAction("default");
                                 break;
                             case "default":
-                                Thread.yield();
                                 break;
                         }
                     }

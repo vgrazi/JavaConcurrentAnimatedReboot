@@ -36,6 +36,8 @@ public class ThreadContext<S> implements InitializingBean {
     @Value("${pixels-per-step-runner}")
     public int initialPixelsPerStepRunner;
 
+    private final Random random = new Random();
+
     private final Lock LOCK = new ReentrantLock();
     public int pixelsPerStepRunner;
 
@@ -163,8 +165,8 @@ public class ThreadContext<S> implements InitializingBean {
         else {
             color = Color.black;
         }
-        String index = getCarrierIndex(color);
-        logger.info(index + ";" + color + ";" + threadSprite.getThreadState() + ";" + threadSprite.getThread().getState());
+//        String index = getCarrierIndex(color);
+//        logger.info(index + ";" + color + ";" + threadSprite.getThreadState() + ";" + threadSprite.getThread().getState());
         return color;
     }
 
@@ -395,7 +397,6 @@ public class ThreadContext<S> implements InitializingBean {
     }
     private Color getNextCarrierColor() {
         Color color = carrierColors[(carrierColorPointer++) % carrierColors.length];
-        logger.info("Carrier color:" + color);
         return color;
     }
 
@@ -461,7 +462,7 @@ public class ThreadContext<S> implements InitializingBean {
         executor.scheduleAtFixedRate(this::advanceSprites, 0, 100, TimeUnit.MILLISECONDS);
 
         while (true) {
-            logAllThreads();
+//            logAllThreads();
             Thread.sleep(100);
         }
     }
@@ -494,9 +495,23 @@ public class ThreadContext<S> implements InitializingBean {
     public ThreadSprite<S> getFirstNonWaitingThreadSprite() {
         ThreadSprite sprite=(ThreadSprite) sprites.stream().
                 filter(s -> s instanceof ThreadSprite &&
-                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.WAITING).findFirst().orElse(null);
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.WAITING &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.TIMED_WAITING &&
+                        ((ThreadSprite<?>) s).getThread().getState() != Thread.State.TERMINATED
+
+                ).findFirst().orElse(null);
         System.out.println("ThreadContext.getFirstNonBlockedThreadSprite returning " + sprite);
         return sprite;
+    }
+    public ThreadSprite<S> getRandomNonWaitingThreadSprite() {
+        List<Sprite> collect = (sprites.stream().
+           filter(s -> s instanceof ThreadSprite &&
+              ((ThreadSprite<?>) s).getThread().getState()!=Thread.State.WAITING &&
+              ((ThreadSprite<?>) s).getThread().getState()!=Thread.State.TIMED_WAITING
+
+           ).collect(Collectors.toList()));
+        int i = random.nextInt(collect.size());
+        return (ThreadSprite<S>) collect.get(i);
     }
 
     /**
