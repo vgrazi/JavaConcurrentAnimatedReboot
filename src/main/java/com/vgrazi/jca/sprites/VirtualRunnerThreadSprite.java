@@ -1,8 +1,6 @@
 package com.vgrazi.jca.sprites;
 
 import com.vgrazi.jca.util.ThreadUtils;
-import com.vgrazi.jca.util.UIUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
 import java.util.Map;
@@ -25,20 +23,16 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
 //        graphicsDebug.drawRect(leftBound, topBound, width, runnerEllipseHeight);
 
         Color color = getThreadContext().getColor(this);
-//        Color color = getColorByThreadState();
         graphics.setColor(color);
         if(isInMonolith()){
             graphics.drawArc(-100+leftBound + getXOffset(), topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
             graphics.drawArc(-100+rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
             graphics.drawLine(-100+lineStart + getXOffset(), topBound, -100 + lineEnd + getXOffset(), topBound);
             graphics.drawLine(-100+lineStart + getXOffset(), bottomBound, -100 + lineEnd + getXOffset(), bottomBound);
-            String carrier = ThreadUtils.getCarrier(this.getThread());
-            if(carrier != null) {
-                renderCarrier(graphics, rightBound, yPosition+height/2-5);
-                Graphics graphics1 = graphics.create();
-                graphics1.setFont(new Font("Arial", Font.PLAIN, 24));
+            renderCarrier(graphics, rightBound, yPosition+height/2-5);
+            Graphics graphics1 = graphics.create();
+            graphics1.setFont(new Font("Arial", Font.PLAIN, 24));
 //                graphics.drawString(carrier, lineEnd + getXOffset()+15, bottomBound );
-            }
         }else{// && relativePosition != RelativePosition.At) {
             // render the runner thread before it enters the monolith
             int xPosition = getXPosition();
@@ -56,7 +50,7 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
     protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
         Graphics graphics1 = graphics.create();
         graphics1.setFont(CARRIER_FONT);
-        int xpos = 0;
+        int xpos;
         if(isInMonolith()) {
             xpos = getXPosition() + getXOffset() - 8 - offset + capOffset;
             yPos = yPos + 10;
@@ -74,20 +68,21 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
         Map.Entry<String, String> entry = ThreadUtils.getVirtualToCarrierMapping(getThread());
 //        String virtual = entry.getKey();
         String carrier = entry.getValue();
-
+        String virtual = entry.getKey();
+        Graphics graphics1 = graphics.create();
+        graphics1.setFont(CARRIER_FONT);
 //            carrier = carrier.replaceAll("ForkJoinPool-\\d+-", "");
       if(carrier.contains("ForkJoinPool")) {
-            Graphics graphics1 = graphics.create();
             Color carrierColor = getThreadContext().getCarrierColor(carrier, this);
             graphics1.setColor(carrierColor);
             int xPos = -100 + (isInMonolith() ? xPosition - arrowLength - 10 : xPosition - arrowLength - 30);
             graphics1.fill3DRect(xPos, yPosition + 3, arrowLength + 20, 12, true);
 //            carrier = carrier.replaceAll("ForkJoinPool-\\d+-", "");
-           graphics1.setFont(CARRIER_FONT);
-           graphics1.drawString(carrier, lineEnd + getXOffset() + 25-100, yPosition + 3 + 12 + 2);
-
-           graphics1.dispose();
+           graphics1.drawString(carrier, lineEnd + getXOffset() + 25-100, yPosition + 3 + 12 + 2-2);
         }
+      // render virtual thread id
+        graphics1.drawString(virtual, lineEnd + getXOffset() + 25-100, yPosition + 3 + 12 + 2 - 30+2);
+        graphics1.dispose();
     }
 
 

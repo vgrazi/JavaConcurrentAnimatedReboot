@@ -69,24 +69,24 @@ public class ReentrantLockSlide extends Slide {
             threadContext.addSprite(sprite);
             highlightSnippet(1);
         });
-        boolean[] virtualRunning = new boolean[] {true};
-        threadContext.addButton("virtual thread ", () -> {
-            highlightSnippet(1);
-            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
-            // set the holder to true for running
-            sprite.setHolder(true);
-            sprite.attachAndStartRunnable(() -> {
-                while(virtualRunning[0]){
-
-                }
-                virtualRunning[0]=true;
-            }, false);
-            threadContext.addSprite(sprite);
-            highlightSnippet(1);
-        });
-        threadContext.addButton("end virtual", ()->{
-            virtualRunning[0] = false;
-        });
+//        boolean[] virtualRunning = new boolean[] {true};
+//        threadContext.addButton("virtual thread ", () -> {
+//            highlightSnippet(1);
+//            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
+//            // set the holder to true for running
+//            sprite.setHolder(true);
+//            sprite.attachAndStartRunnable(() -> {
+//                while(virtualRunning[0]){
+//
+//                }
+//                virtualRunning[0]=true;
+//            }, false);
+//            threadContext.addSprite(sprite);
+//            highlightSnippet(1);
+//        });
+//        threadContext.addButton("end virtual", ()->{
+//            virtualRunning[0] = false;
+//        });
 
         threadContext.addButton("lock.lockInterrubtibly()", () -> {
             highlightSnippet(4);
