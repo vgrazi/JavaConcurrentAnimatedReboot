@@ -18,7 +18,9 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <!-- Library versions -->
-        <junit.version>5.9.2</junit.version>
+        <junit.version>5.11.3</junit.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <micrometer-registry-atlas.version>1.3.0</micrometer-registry-atlas.version>
     </properties>
 
     <dependencies>
@@ -41,7 +43,7 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-atlas</artifactId>
-            <version>1.3.0</version>
+            <version>${micrometer-registry-atlas.version}</version>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
@@ -78,10 +80,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <compilerVersion>21</compilerVersion>
-                    <release>21</release>
+                    <compilerVersion>${maven.compiler.source}</compilerVersion>
+                    <release>${maven.compiler.target}</release>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
