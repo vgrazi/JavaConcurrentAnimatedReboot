@@ -13,10 +13,16 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>java-concurrent-animated-reboot</name>
     <description>java-concurrent-animated-reboot</description>
-<properties>
-    <java.version>21</java.version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <!-- Library versions -->
+        <junit.version>5.11.3</junit.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <micrometer-registry-atlas.version>1.3.0</micrometer-registry-atlas.version>
+    </properties>
 
-</properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,7 +43,7 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-atlas</artifactId>
-            <version>1.3.0</version>
+            <version>${micrometer-registry-atlas.version}</version>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
@@ -52,14 +58,17 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>RELEASE</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -71,9 +80,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <compilerVersion>${maven.compiler.source}</compilerVersion>
+                    <release>${maven.compiler.target}</release>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
         </plugins>
