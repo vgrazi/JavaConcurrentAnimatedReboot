@@ -1,6 +1,5 @@
 package com.vgrazi.javaconcurrentanimated.study;
 
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
