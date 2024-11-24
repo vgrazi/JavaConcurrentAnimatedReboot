@@ -88,6 +88,16 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                <includes>
+                    <!-- This will include no files, effectively ignoring the test dir -->
+                    <include>none</include>
+                </includes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
