@@ -136,9 +136,8 @@ public class ReentrantLockSlide extends Slide {
             // set the holder to true for running
             sprite.setHolder(true);
             sprite.attachAndStartRunnable(() -> {
-                boolean acquired = false;
                 try{
-                    acquired = lock.tryLock(5, TimeUnit.SECONDS);
+                    boolean acquired = lock.tryLock(5, TimeUnit.SECONDS);
                     if(acquired){
                         try{
                             whileLock(sprite);
