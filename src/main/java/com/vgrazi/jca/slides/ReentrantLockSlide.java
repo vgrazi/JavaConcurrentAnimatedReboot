@@ -147,7 +147,7 @@ public class ReentrantLockSlide extends Slide {
                         }
                         lock.unlock();
                     }else{
-                        sprite.setRetreating();
+                        sprite.setStopped();
                     }
                 }catch(InterruptedException e) {
                     interruptSprite(sprite, e);
