@@ -1,0 +1,7 @@
+cron=3.0pl1-162
+fonts-dejavu=2.37-6
+imagemagick=8:6.9.11.60+dfsg-1.6+deb12u13
+libreoffice-impress=4:7.4.7-1+deb12u14
+poppler-utils=22.12.0-2+deb12u3
+x11-utils=7.7+5
+xdotool=1:3.20160805.1-5
