@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JCAFrame extends JFrame {
@@ -53,6 +54,9 @@ public class JCAFrame extends JFrame {
 
     @Autowired
     private VirtualThreadsSlide virtualThreadsSlide;
+
+    @Autowired
+    StructuredConcurrencySlide structuredConcurrencySlide ;
 
     @Autowired
     private ExecutorsSlide executorsSlide;
@@ -172,6 +176,7 @@ public class JCAFrame extends JFrame {
 
         addButton("Synchronized", synchronizedSlide);
         addButton("Virtual Threads", virtualThreadsSlide);
+        addButton("Structured Concurrency", structuredConcurrencySlide);
         addButton("ReentrantLock", reentrantLockSlide);
         addButton("Semaphore", semaphoreSlide);
         addButton("ReadWriteLock", readWriteLockSlide);
@@ -196,20 +201,18 @@ public class JCAFrame extends JFrame {
         wholePane.setDividerSize(2);
 
         ComponentAdapter adapter = new ComponentAdapter() {
-            private final int location = controlPanel.getPreferredSize().width + 6;
-
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
                 animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
-                wholePane.setDividerLocation(location);
+                wholePane.setDividerLocation(getMenuDividerLocation());
             }
 
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
                 animationAndSnippet.setDividerLocation(animationPaneToSnippetDividerRatio);
-                wholePane.setDividerLocation(location);
+                wholePane.setDividerLocation(getMenuDividerLocation());
                 Slide slide = threadContext.getSlide();
                 if(slide instanceof IntroSlide) {
                     ((IntroSlide) slide).resetImage();
@@ -235,6 +238,7 @@ public class JCAFrame extends JFrame {
 
     private void addButton(String label, Slide slide) {
         JButton button = new JButton(label);
+        button.setHorizontalAlignment(SwingConstants.CENTER);
         button.addActionListener(e -> {
             buttonPanel.removeAll();
             threadContext.registerSlide(slide);
@@ -246,5 +250,15 @@ public class JCAFrame extends JFrame {
 
     public JPanel getButtonPanel() {
         return buttonPanel;
+    }
+
+    private int getMenuDividerLocation() {
+        int minLocation = controlPanel.getPreferredSize().width + 6;
+        int widestButton = Arrays.stream(menuPanel.getComponents())
+                .filter(component -> component instanceof JButton)
+                .mapToInt(c -> c.getPreferredSize().width)
+                .max()
+                .orElse(minLocation);
+        return Math.max(minLocation, widestButton + 14);
     }
 }

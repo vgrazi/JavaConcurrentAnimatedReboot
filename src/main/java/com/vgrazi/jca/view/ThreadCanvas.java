@@ -63,6 +63,16 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private Color slideLabelColor;
     private Color bottomLabelColor;
     private String[] slideLabel = {"",""};
+    private boolean highlightBoxVisible;
+    private int highlightBoxX;
+    private int highlightBoxY;
+    private int highlightBoxWidth;
+    private int highlightBoxHeight;
+    private Color highlightBoxColor = Color.green;
+    private boolean highlightArrowVisible;
+    private boolean highlightArrowUseCustomStart;
+    private int highlightArrowStartX;
+    private int highlightArrowCenterY;
 
     @Value("${MONOLITH-COLOR}")
     public void setMonolithColor(String color) {
@@ -106,7 +116,30 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
         paintBottomLabel(graphics);
         List<Sprite> threads = threadContext.getAllSprites();
         threads.forEach(sprite -> render(sprite, graphics));
+        paintHighlightBox(graphics);
         graphics.dispose();
+    }
+
+    private void paintHighlightBox(Graphics2D graphics) {
+        if (highlightBoxVisible || highlightArrowVisible) {
+            Graphics2D graphics1 = (Graphics2D) graphics.create();
+            graphics1.setColor(highlightBoxColor);
+            graphics1.setStroke(new BasicStroke(3f));
+            if (highlightBoxVisible) {
+                graphics1.drawRect(highlightBoxX, highlightBoxY, highlightBoxWidth, highlightBoxHeight);
+            }
+            if (highlightArrowVisible) {
+                int yCenter = highlightArrowUseCustomStart ? highlightArrowCenterY : highlightBoxY + highlightBoxHeight / 2;
+                int arrowStartX = highlightArrowUseCustomStart ? highlightArrowStartX : highlightBoxX + highlightBoxWidth;
+                int arrowLength = 50;
+                int arrowEndX = arrowStartX + arrowLength;
+                graphics1.drawLine(arrowStartX, yCenter, arrowEndX, yCenter);
+                int arrowHead = 8;
+                graphics1.drawLine(arrowEndX, yCenter, arrowEndX - arrowHead, yCenter - arrowHead);
+                graphics1.drawLine(arrowEndX, yCenter, arrowEndX - arrowHead, yCenter + arrowHead);
+            }
+            graphics1.dispose();
+        }
     }
 
     private void render(Sprite sprite, Graphics2D graphics) {
@@ -198,5 +231,37 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
 
     public void setStandardMonolith() {
         setRightBorder(rightDefaultBorder);
+    }
+    public void showHighlightBox(int x, int y, int width, int height, Color color) {
+        showHighlightBox(x, y, width, height, color, false);
+    }
+
+    public void showHighlightBox(int x, int y, int width, int height, Color color, boolean withRightArrow) {
+        this.highlightBoxX = x;
+        this.highlightBoxY = y;
+        this.highlightBoxWidth = width;
+        this.highlightBoxHeight = height;
+        this.highlightBoxColor = color;
+        this.highlightArrowVisible = withRightArrow;
+        this.highlightArrowUseCustomStart = false;
+        this.highlightBoxVisible = true;
+        repaint();
+    }
+
+    public void showHighlightArrow(int startX, int centerY, Color color) {
+        this.highlightBoxColor = color;
+        this.highlightArrowVisible = true;
+        this.highlightArrowUseCustomStart = true;
+        this.highlightArrowStartX = startX;
+        this.highlightArrowCenterY = centerY;
+        this.highlightBoxVisible = false;
+        repaint();
+    }
+
+    public void clearHighlightBox() {
+        this.highlightBoxVisible = false;
+        this.highlightArrowVisible = false;
+        this.highlightArrowUseCustomStart = false;
+        repaint();
     }
 }

@@ -842,6 +842,7 @@ public class ThreadContext<S> implements InitializingBean {
 
     public JButton addButton(String text, Runnable runnable) {
         JButton button = new JButton(text);
+        button.setHorizontalAlignment(SwingConstants.CENTER);
         button.addActionListener(e -> SwingUtilities.invokeLater(runnable));
         frame.getButtonPanel().add(button);
         frame.getButtonPanel().revalidate();

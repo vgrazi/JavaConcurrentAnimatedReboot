@@ -52,21 +52,52 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
         renderInterruptedFlag(graphics);
     }
 
-    @Override
     protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
-        Graphics graphics1 = graphics.create();
+        Graphics2D graphics1 = (Graphics2D) graphics.create();
         graphics1.setFont(CARRIER_FONT);
-        int xpos = 0;
-        if(isInMonolith()) {
-            xpos = getXPosition() + getXOffset() - 8 - offset + capOffset;
-            yPos = yPos + 10;
-        }
-        else {
-            xpos = getXPosition() + getXOffset() - offset + capOffset + 5;
-            yPos += 18;
+        if (isInMonolith()) {
+            int renderOffset = -100;
+            int cxLeft = renderOffset + leftBound + getXOffset() + ellipseRadius;
+            int cxRight = renderOffset + rightBound + getXOffset() - ellipseRadius;
+            int cy = (topBound + bottomBound) / 2;
+            int radius = ellipseRadius;
+            int topY = topBound;
+            int bottomY = bottomBound;
 
+            double topLength = Math.max(1, cxRight - cxLeft);
+            double arcLength = Math.PI * radius;
+            double perimeter = topLength + arcLength + topLength + arcLength;
+
+            double speedPixelsPerSecond = 90.0;
+            double phaseOffset = (getID() * 37.0) % perimeter;
+            double distance = (System.nanoTime() / 1_000_000_000.0 * speedPixelsPerSecond + phaseOffset) % perimeter;
+
+            double x;
+            double y;
+            if (distance < topLength) {
+                x = cxLeft + distance;
+                y = topY;
+            } else if (distance < topLength + arcLength) {
+                double t = (distance - topLength) / arcLength;
+                double angle = -Math.PI / 2 + t * Math.PI;
+                x = cxRight + radius * Math.cos(angle);
+                y = cy + radius * Math.sin(angle);
+            } else if (distance < topLength + arcLength + topLength) {
+                double t = distance - topLength - arcLength;
+                x = cxRight - t;
+                y = bottomY;
+            } else {
+                double t = (distance - topLength - arcLength - topLength) / arcLength;
+                double angle = Math.PI / 2 + t * Math.PI;
+                x = cxLeft + radius * Math.cos(angle);
+                y = cy + radius * Math.sin(angle);
+            }
+            graphics1.drawString("v", (int) Math.round(x), (int) Math.round(y) + 8);
+        } else {
+            int xpos = getXPosition() + getXOffset() - offset + capOffset + 5;
+            graphics1.drawString("v", -100 + xpos, yPos + 18);
         }
-        graphics1.drawString("v", -100+xpos, yPos);
+
         graphics1.dispose();
     }
 

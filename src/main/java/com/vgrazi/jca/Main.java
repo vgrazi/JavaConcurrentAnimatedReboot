@@ -48,6 +48,9 @@ public class Main implements CommandLineRunner {
     @Autowired
     private ExecutorsSlide executorsSlide;
 
+    @Autowired
+    private StructuredConcurrencySlide structuredConcurrencySlide;
+
     @Override
     public void run(String... args) {
         new Thread(() -> {
@@ -91,6 +94,9 @@ public class Main implements CommandLineRunner {
                 break;
             case "executors":
                 threadContext.registerSlide(executorsSlide);
+                break;
+            case "structured-concurrency":
+                threadContext.registerSlide(structuredConcurrencySlide);
                 break;
             case "intro":
                 threadContext.registerSlide(introSlide);
