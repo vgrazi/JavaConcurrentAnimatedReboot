@@ -1,0 +1,21 @@
+  <1,2 comment>// Java 25 (preview) - JEP 505 Structured Concurrency
+  <1 default>try (var scope = StructuredTaskScope.open(
+  <1 default>       Joiner.&lt;String>allSuccessfulOrThrow())) {
+  <2 default>try (var scope = StructuredTaskScope.open(
+  <2 default>       Joiner.&lt;String>anySuccessfulResultOrThrow())) {
+
+  <3 default>    Subtask&lt;String> s1 = scope.fork(() -> fetchA());
+  <3 default>    Subtask&lt;String> s2 = scope.fork(() -> fetchB());
+
+  <4,5 keyword>    try {
+  <4 default>      List&lt;String> r = scope.join()      <4 comment>// ALL: wait for every child
+  <4 default>          .map(Subtask::get).toList();
+  <4 default>      process(r);                        <4 comment>// next step - only if all succeed
+  <5 default>      String winner = scope.join();      <5 comment>// ANY: first success wins
+  <5 default>      process(winner);                   <5 comment>// next step - losers cancelled
+  <6 keyword>    } catch <6 default>(FailedException e) {
+  <6 comment>      // a child failed -> siblings cancelled, next step skipped
+  <6 default>      handle(e.getCause());
+  <6 keyword>    }
+  <1,2 default>}
+

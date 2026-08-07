@@ -1,0 +1,20 @@
+<0 comment>// Constructor - pass in the pass count<br><0 keyword>final<0 default> CountDownLatch countDownLatch <br>  = <0 keyword>new<0 default> CountDownLatch(4);
+
+<1 comment>// Threads attempting to acquire
+// will block until the specified
+// number of releases is counted.<br><1 default>Thread acquireThread = <1 keyword>new <1 default>Thread() {
+    <1 keyword>public void<1 default> run() {
+        <1 keyword>try <1 default>{
+            countDownLatch.await();
+        } <1 keyword>catch<1 default>(InterruptedException e) { }
+
+<3 comment>// timed await is like await except that
+// it times out after the specified
+// timeout period.<br><3 keyword>try<3 default> {
+    countDownLatch.await(10L, TimeUnit.SECONDS));
+} <3 keyword>catch<3 default>(InterruptedException e) { }
+
+<2 default>Thread releaseThread = <2 keyword>new<2 default> Thread(){
+    <2 keyword>public void<2 default> run() {
+        countDownLatch.countDown();
+    }}

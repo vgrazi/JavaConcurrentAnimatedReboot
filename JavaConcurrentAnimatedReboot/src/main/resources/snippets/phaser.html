@@ -1,0 +1,19 @@
+<0 default>
+ Phaser phaser = <0 keyword>new <0 default>Phaser(<0 literal>4<0 default>) {
+    <0 default>@Override
+    <0,7 comment>// Perform when all parties arrive<0,7 default><br>    <0,7 keyword>protected boolean <0,7 default>onAdvance(<0,7 keyword>int <0,7 default>phase,
+                       <0,7 keyword>int <0,7 default>registeredParties) {
+    <0,7 comment>// return true if the Phaser should
+    <0,7 comment>// terminate on advance, else false<0,7 default><br>    <0,7 keyword>return false<0,7 default>;
+   }
+ <0 default>};
+ <4 keyword>int <4 default>phase = phaser.awaitAdvance(<4 keyword>int <4 default>phase);
+ <1 keyword>int <1 default>phase = phaser.arrive();
+ <3 keyword>int <3 default>phase = phaser.arriveAndAwaitAdvance();
+ <2 keyword>int <2 default>phase = phaser.arriveAndDeregister();
+ <5 keyword>int <5 default>phase = phaser.register();
+ <6 keyword>int <6 default>phase
+     = phaser.bulkRegister(<6 keyword>int <6 default>&lt;2=additional parties>);
+
+<8 keyword>int <8 default>phase
+     = phaser.getPhase();

@@ -1,0 +1,29 @@
+<0 keyword>TransferQueue is really a blocking queue,
+but it adds the transfer() method, which blocks if there are no takers
+
+<0 default>TransferQueue&lt;T> transferQueue
+    = <0 keyword>new <0 default>LinkedTransferQueue&lt;T>();
+
+<1 keyword>try <1 default>{
+    transferQueue.transfer(t);
+} <1 keyword>catch<1 default> (InterruptedException e) { }
+
+<3 keyword>try <3 default>{
+    <3 keyword>boolean<3 default> success = transferQueue.tryTransfer(t);
+} <3 keyword>catch<3 default> (InterruptedException e) { }
+
+<5 keyword>try <5 default>{
+    <5 keyword>boolean<5 default> success = transferQueue.tryTransfer(t,
+                            2, TimeUnit.SECONDS);
+} <5 keyword>catch<5 default> (InterruptedException e) { }
+
+<6 keyword>try <6 default>{
+    <6 keyword>boolean<6 default> success = transferQueue.put(t);
+} <6 keyword>catch<6 default> (InterruptedException e) { }
+
+<2 keyword>try <2 default>{
+    T t = transferQueue.take();
+} <2 keyword>catch<2 default> (InterruptedException e) { }
+
+<4 default>T t = transferQueue.poll();
+

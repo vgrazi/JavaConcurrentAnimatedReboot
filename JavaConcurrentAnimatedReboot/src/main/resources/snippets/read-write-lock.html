@@ -1,0 +1,31 @@
+ <0 keyword>final<0 default> ReadWriteLock readWriteLock =
+     <0 keyword>new<0 default> ReentrantReadWriteLock();
+     <0 comment>new ReentrantReadWriteLock(true);
+
+ <1 comment>// Acquire the read lock
+ <1 keyword>try <1 default> {
+     readWriteLock.readLock().lock();
+ <1 comment>// or
+ <1 default>    readWriteLock.readLock().tryLock(1L, TimeUnit.SECONDS);
+ }<1 keyword>catch<1 default>(InterruptedException e){}
+
+ <2 keyword>try <2 default> {
+    readWriteLock.writeLock().lock();
+ <2 comment>// or
+ <2 default>   readWriteLock.writeLock().tryLock(1L, TimeUnit.SECONDS);
+ }<2 keyword>catch<2 default>(InterruptedException e){}
+
+ <3 default>readWriteLock.readLock().unlock()
+ <3 comment>// or
+ <3 default>readWriteLock.writeLock().unlock()
+
+ <4 comment>// Downgrade write lock to a read lock
+ <4 keyword>try <4 default> {
+    readWriteLock.readLock().lock();
+    readWriteLock.writeLock().unlock();
+ }<4 keyword>catch<4 default>(InterruptedException e){}
+
+ <5 default>thread.interrupt();
+
+
+
