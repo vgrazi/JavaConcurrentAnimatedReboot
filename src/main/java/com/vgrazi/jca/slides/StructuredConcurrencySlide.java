@@ -41,11 +41,11 @@ public class StructuredConcurrencySlide extends Slide {
     public void run() {
         reset();
 
-        threadContext.addButton("scope.fork(subtask1", this::addForkAction);
+        threadContext.addButton("scope.fork(subtask)", this::addForkAction);
         joinButton = threadContext.addButton("scope.join()", () -> joinScopeAction(4));
         joinButton.setEnabled(true);
-        threadContext.addButton("subtask completes", () -> completeTaskAction(3));
-        threadContext.addButton("subtask fails", () -> failTaskAction(5));
+        threadContext.addButton("subtask completes", () -> completeTaskAction(2));
+        threadContext.addButton("subtask fails", () -> failTaskAction(3));
         threadContext.addButton("scope.shutdown()", () -> shutdownScopeAction(5));
         threadContext.addButton("Reset", this::reset);
 
@@ -58,6 +58,11 @@ public class StructuredConcurrencySlide extends Slide {
             highlightSnippet(11);
         } else if (taskId == 2) {
             highlightSnippet(12);
+        }
+
+        // Reset cancellation state if scope is empty to allow new subtasks after failure
+        if (scopeThreads.isEmpty()) {
+            scopeCancelled.set(false);
         }
 
         final ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("virtualRunnerThreadSprite");
@@ -110,7 +115,7 @@ public class StructuredConcurrencySlide extends Slide {
 
         completed.add(threadSprite);
         if (isScopeFinished()) {
-            threadCanvas.clearHighlightBox();
+            threadCanvas.fadeHighlightBox();
             if (joinButton != null) {
                 joinButton.setEnabled(true);
             }
@@ -133,7 +138,10 @@ public class StructuredConcurrencySlide extends Slide {
                 .filter(task -> task != threadSprite)
                 .filter(this::isActive)
                 .forEach(cancelled::add);
-        threadCanvas.clearHighlightBox();
+        threadCanvas.fadeHighlightBox();
+        if (joinButton != null) {
+            joinButton.setEnabled(true);
+        }
         setMessage("Failure cancels sibling subtasks", Color.pink);
     }
 
@@ -145,7 +153,7 @@ public class StructuredConcurrencySlide extends Slide {
         if (joinButton != null) {
             joinButton.setEnabled(false);
         }
-        highlightSnippet(7);
+        highlightSnippet(state);
         highlightAllSubtasks();
         if (!failed.isEmpty()) {
             setMessage("join() sees failure; scope throws", Color.pink);
@@ -163,7 +171,8 @@ public class StructuredConcurrencySlide extends Slide {
         highlightSnippet(state);
         scopeCancelled.set(true);
         scopeThreads.stream().filter(this::isActive).forEach(cancelled::add);
-        setMessage("scope cancelled", Color.white);
+        threadCanvas.fadeHighlightBox();
+        setMessage("Scope cancelled", Color.white);
     }
 
     private ThreadSprite<Boolean> getFirstActiveTask() {
@@ -184,7 +193,7 @@ public class StructuredConcurrencySlide extends Slide {
         threadCanvas.clearHighlightBox();
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("Structured Concurrency");
-        threadContext.setSlideLabel("Scope", 1);
+        threadContext.setSlideLabel("            Scope", 1);
         taskCounter.set(0);
         scopeThreads.clear();
         completed.clear();
@@ -195,7 +204,7 @@ public class StructuredConcurrencySlide extends Slide {
             joinButton.setEnabled(true);
         }
         setSnippetFile("structured-concurrency.html");
-        highlightSnippet(8);
+        highlightSnippet(0);
     }
 
     private void highlightAllSubtasks() {
@@ -203,7 +212,7 @@ public class StructuredConcurrencySlide extends Slide {
             return;
         }
         final int virtualRenderXOffset = -100;
-        final int verticalPadding = 25;
+        final int verticalPadding = 10;
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
@@ -211,10 +220,10 @@ public class StructuredConcurrencySlide extends Slide {
 
         for (ThreadSprite<Boolean> threadSprite : scopeThreads) {
             int renderedX = virtualRenderXOffset + threadSprite.getXPosition();
-            minX = Math.min(minX, renderedX - arrowLength - 20);
+            minX = Math.min(minX, renderedX - arrowLength - 16);
             maxX = Math.max(maxX, renderedX + 24);
-            minY = Math.min(minY, threadSprite.getYPosition() - verticalPadding);
-            maxY = Math.max(maxY, threadSprite.getYPosition() + verticalPadding);
+            minY = Math.min(minY, threadSprite.getYPosition() - 14 - verticalPadding);
+            maxY = Math.max(maxY, threadSprite.getYPosition() + 14 + verticalPadding);
         }
 
         int width = Math.max(40, maxX - minX);

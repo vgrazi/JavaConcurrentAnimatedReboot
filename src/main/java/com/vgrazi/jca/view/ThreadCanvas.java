@@ -73,6 +73,13 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private boolean highlightArrowUseCustomStart;
     private int highlightArrowStartX;
     private int highlightArrowCenterY;
+    private Color highlightArrowColor = Color.blue;
+    private boolean fading;
+    private float fadeAlpha;
+    private Timer fadeTimer;
+    private boolean animatingArrow;
+    private int arrowAnimationOffset;
+    private Timer arrowAnimationTimer;
 
     @Value("${MONOLITH-COLOR}")
     public void setMonolithColor(String color) {
@@ -123,14 +130,21 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     private void paintHighlightBox(Graphics2D graphics) {
         if (highlightBoxVisible || highlightArrowVisible) {
             Graphics2D graphics1 = (Graphics2D) graphics.create();
-            graphics1.setColor(highlightBoxColor);
             graphics1.setStroke(new BasicStroke(3f));
+            if (fading) {
+                graphics1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
+            }
             if (highlightBoxVisible) {
+                graphics1.setColor(highlightBoxColor);
                 graphics1.drawRect(highlightBoxX, highlightBoxY, highlightBoxWidth, highlightBoxHeight);
             }
             if (highlightArrowVisible) {
+                graphics1.setColor(highlightArrowColor);
                 int yCenter = highlightArrowUseCustomStart ? highlightArrowCenterY : highlightBoxY + highlightBoxHeight / 2;
                 int arrowStartX = highlightArrowUseCustomStart ? highlightArrowStartX : highlightBoxX + highlightBoxWidth;
+                if (animatingArrow) {
+                    arrowStartX += arrowAnimationOffset;
+                }
                 int arrowLength = 50;
                 int arrowEndX = arrowStartX + arrowLength;
                 graphics1.drawLine(arrowStartX, yCenter, arrowEndX, yCenter);
@@ -249,7 +263,7 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     }
 
     public void showHighlightArrow(int startX, int centerY, Color color) {
-        this.highlightBoxColor = color;
+        this.highlightArrowColor = color;
         this.highlightArrowVisible = true;
         this.highlightArrowUseCustomStart = true;
         this.highlightArrowStartX = startX;
@@ -259,9 +273,56 @@ public class ThreadCanvas extends JPanel implements InitializingBean {
     }
 
     public void clearHighlightBox() {
+        if (fadeTimer != null) {
+            fadeTimer.stop();
+            fadeTimer = null;
+        }
+        if (arrowAnimationTimer != null) {
+            arrowAnimationTimer.stop();
+            arrowAnimationTimer = null;
+        }
         this.highlightBoxVisible = false;
         this.highlightArrowVisible = false;
         this.highlightArrowUseCustomStart = false;
+        this.fading = false;
+        this.fadeAlpha = 1.0f;
+        this.animatingArrow = false;
+        this.arrowAnimationOffset = 0;
         repaint();
+    }
+
+    public void fadeHighlightBox() {
+        if (!highlightBoxVisible) {
+            return;
+        }
+        if (fadeTimer != null) {
+            fadeTimer.stop();
+        }
+        if (arrowAnimationTimer != null) {
+            arrowAnimationTimer.stop();
+        }
+        fading = true;
+        fadeAlpha = 1.0f;
+        animatingArrow = true;
+        arrowAnimationOffset = 0;
+        fadeTimer = new Timer(20, e -> {
+            fadeAlpha -= 0.05f;
+            if (fadeAlpha <= 0) {
+                fadeAlpha = 0;
+                clearHighlightBox();
+            } else {
+                repaint();
+            }
+        });
+        fadeTimer.start();
+        arrowAnimationTimer = new Timer(20, e -> {
+            arrowAnimationOffset += 3;
+            if (arrowAnimationOffset >= 100) {
+                arrowAnimationTimer.stop();
+            } else {
+                repaint();
+            }
+        });
+        arrowAnimationTimer.start();
     }
 }
