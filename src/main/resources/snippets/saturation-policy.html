@@ -1,0 +1,29 @@
+<0 comment>// Bounded pool + rejection policy<br>
+<0 keyword>ThreadPoolExecutor <0 default>executor = <0 keyword>new <0 default>ThreadPoolExecutor(
+        <0 literal>0<0 default>, <0 literal>4<0 default>, <0 literal>2<0 default>, TimeUnit.SECONDS,
+        <0 keyword>new <0 default>SynchronousQueue<>()
+<0 default>);
+
+<1 comment>// Submit a task<br>
+<1 default>executor.execute(task);
+
+<2 comment>// Policy 1: Abort (default)<br>
+<2 default>executor.setRejectedExecutionHandler(
+        <2 keyword>new <2 default>ThreadPoolExecutor.AbortPolicy()
+<2 default>);
+
+<3 comment>// Policy 2: CallerRuns<br>
+<3 default>executor.setRejectedExecutionHandler(
+        <3 keyword>new <3 default>ThreadPoolExecutor.CallerRunsPolicy()
+<3 default>);
+
+<4 comment>// Policy 3: Discard<br>
+<4 default>executor.setRejectedExecutionHandler(
+        <4 keyword>new <4 default>ThreadPoolExecutor.DiscardPolicy()
+<4 default>);
+
+<5 comment>// Policy 4: DiscardOldest<br>
+<5 default>executor.setRejectedExecutionHandler(
+        <5 keyword>new <5 default>ThreadPoolExecutor.DiscardOldestPolicy()
+<5 default>);
+
