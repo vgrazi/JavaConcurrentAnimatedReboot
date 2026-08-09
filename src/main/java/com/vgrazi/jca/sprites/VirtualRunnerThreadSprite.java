@@ -12,12 +12,18 @@ import java.util.Map;
 public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
     public final String character;
     private final int horizontalShift;
+    protected final boolean animateWithoutCarrier;
 
     public static final Font CARRIER_FONT = new Font("Arial", Font.PLAIN, 24);
 
     public VirtualRunnerThreadSprite(int horizontalShift, String character) {
+        this(horizontalShift, character, false);
+    }
+
+    public VirtualRunnerThreadSprite(int horizontalShift, String character, boolean animateWithoutCarrier) {
         this.horizontalShift = horizontalShift;
         this.character = character;
+        this.animateWithoutCarrier = animateWithoutCarrier;
     }
 
 //    String lastCarrier;
@@ -57,6 +63,7 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
         renderInterruptedFlag(graphics);
     }
 
+    @Override
     protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
         Graphics2D graphics1 = (Graphics2D) graphics.create();
         graphics1.setFont(CARRIER_FONT);
@@ -73,8 +80,9 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
 
             double x;
             double y;
-            if (hasCarrier) {
-                // Animate around the oval only when mounted on a carrier
+            if (hasCarrier || animateWithoutCarrier) {
+                // Animate around the oval when mounted on a carrier, or when a slide
+                // explicitly opts into render-only animation independent of carrier state.
                 double topLength = Math.max(1, cxRight - cxLeft);
                 double arcLength = Math.PI * radius;
                 double perimeter = topLength + arcLength + topLength + arcLength;

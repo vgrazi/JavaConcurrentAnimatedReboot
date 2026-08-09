@@ -119,12 +119,14 @@ public class StructuredConcurrencySlide extends Slide {
             if (isScopeFinished() && joinButton != null) {
                 joinButton.setEnabled(true);
             }
-            if (joinWaitingForCompletion && isScopeFinished()) {
-                // Once the last visible task completes while join() is waiting, fade out the join highlight.
-                highlightSnippet(7);
+            if (isScopeFinished()) {
+                // Once the last visible task completes, fade out the scope highlight.
+                if (joinWaitingForCompletion) {
+                    highlightSnippet(7);
+                    joinWaitingForCompletion = false;
+                    transitionedToPostJoinSnippet = true;
+                }
                 threadCanvas.fadeHighlightBox();
-                joinWaitingForCompletion = false;
-                transitionedToPostJoinSnippet = true;
             } else if (joinWaitingForCompletion) {
                 // Keep the join line highlighted until the final task completes.
                 highlightSnippet(4);
