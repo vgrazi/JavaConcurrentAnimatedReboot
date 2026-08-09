@@ -135,7 +135,7 @@ public class JCAFrame extends JFrame {
     private JLabel imageLabel;
 
     public JCAFrame() throws HeadlessException {
-        super("Java Concurrent Animated - Reboot! https://github.com/vgrazi/JavaConcurrentAnimatedReboot");
+        super("Java Concurrent Animated - Reboot!");
     }
 
     @Value("${BUTTON-PANEL-COLOR}")
@@ -145,6 +145,7 @@ public class JCAFrame extends JFrame {
 
     @PostConstruct
     public void afterPropertiesSet() throws IOException {
+        setTitle("Java Concurrent Animated - Reboot!");
         snippetCanvas.setBackground(Color.white);
         snippetCanvas.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
         snippetCanvas.setFontSize(18);

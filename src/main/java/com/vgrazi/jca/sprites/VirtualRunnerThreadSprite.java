@@ -69,33 +69,42 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
             int topY = topBound;
             int bottomY = bottomBound;
 
-            double topLength = Math.max(1, cxRight - cxLeft);
-            double arcLength = Math.PI * radius;
-            double perimeter = topLength + arcLength + topLength + arcLength;
-
-            double speedPixelsPerSecond = 90.0;
-            double phaseOffset = (getID() * 37.0) % perimeter;
-            double distance = (System.nanoTime() / 1_000_000_000.0 * speedPixelsPerSecond + phaseOffset) % perimeter;
+            boolean hasCarrier = !ThreadUtils.getCarrier(getThread()).isEmpty();
 
             double x;
             double y;
-            if (distance < topLength) {
-                x = cxLeft + distance;
-                y = topY;
-            } else if (distance < topLength + arcLength) {
-                double t = (distance - topLength) / arcLength;
-                double angle = -Math.PI / 2 + t * Math.PI;
-                x = cxRight + radius * Math.cos(angle);
-                y = cy + radius * Math.sin(angle);
-            } else if (distance < topLength + arcLength + topLength) {
-                double t = distance - topLength - arcLength;
-                x = cxRight - t;
-                y = bottomY;
+            if (hasCarrier) {
+                // Animate around the oval only when mounted on a carrier
+                double topLength = Math.max(1, cxRight - cxLeft);
+                double arcLength = Math.PI * radius;
+                double perimeter = topLength + arcLength + topLength + arcLength;
+
+                double speedPixelsPerSecond = 90.0;
+                double phaseOffset = (getID() * 37.0) % perimeter;
+                double distance = (System.nanoTime() / 1_000_000_000.0 * speedPixelsPerSecond + phaseOffset) % perimeter;
+
+                if (distance < topLength) {
+                    x = cxLeft + distance;
+                    y = topY;
+                } else if (distance < topLength + arcLength) {
+                    double t = (distance - topLength) / arcLength;
+                    double angle = -Math.PI / 2 + t * Math.PI;
+                    x = cxRight + radius * Math.cos(angle);
+                    y = cy + radius * Math.sin(angle);
+                } else if (distance < topLength + arcLength + topLength) {
+                    double t = distance - topLength - arcLength;
+                    x = cxRight - t;
+                    y = bottomY;
+                } else {
+                    double t = (distance - topLength - arcLength - topLength) / arcLength;
+                    double angle = Math.PI / 2 + t * Math.PI;
+                    x = cxLeft + radius * Math.cos(angle);
+                    y = cy + radius * Math.sin(angle);
+                }
             } else {
-                double t = (distance - topLength - arcLength - topLength) / arcLength;
-                double angle = Math.PI / 2 + t * Math.PI;
-                x = cxLeft + radius * Math.cos(angle);
-                y = cy + radius * Math.sin(angle);
+                // No carrier — park the character at the top-left of the oval, stationary
+                x = cxLeft;
+                y = topY;
             }
             graphics1.drawString(character, (int) Math.round(x) + horizontalShift, (int) Math.round(y) + 8);
         } else {

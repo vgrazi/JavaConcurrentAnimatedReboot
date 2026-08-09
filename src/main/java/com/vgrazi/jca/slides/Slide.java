@@ -168,6 +168,10 @@ public abstract class Slide {
         uiUtils.setImage(imageFile, imageLabel, scaling);
     }
 
+    protected JLabel getImageLabel() {
+        return imageLabel;
+    }
+
     /**
      * Sets the index and redraws the snippet. Index == -1 colors the entire snippet. Index == 0 colors the constructor, etc.
      * The "index" parameter represents the index in the html snippet associated with this slide.
