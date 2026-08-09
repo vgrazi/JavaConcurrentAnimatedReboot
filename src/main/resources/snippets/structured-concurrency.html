@@ -1,0 +1,16 @@
+<0 comment>// Structured concurrency (Java 25 preview API)<br>
+<0 keyword>try <0 default>(var scope = StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow())) {
+   <1,11,12 keyword>var <1,11,12 default>orderTask = scope.fork(() -> loadOrder());
+   <1,12 keyword>var <1,12 default>paymentTask = scope.fork(() -> loadPayment());
+
+   <4 default>scope.join();
+
+   <6,7 comment>// parent thread resumes here after join completes
+   <6,7 keyword>var <6,7 default>order = orderTask.get();
+   <6,7 keyword>var <6,7 default>payment = paymentTask.get();
+
+   <7 default>persistAuditRecord(order, payment);
+<5 default><br>}
+<3 keyword>catch <3 default>(Exception e) {
+    <3 default>...
+<3 default><br>}

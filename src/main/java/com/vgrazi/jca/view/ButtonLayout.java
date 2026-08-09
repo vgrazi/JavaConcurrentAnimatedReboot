@@ -17,7 +17,8 @@ public class ButtonLayout extends FlowLayout {
     @Override
     public void layoutContainer(Container target) {
         int y = 2;
-        int width = Arrays.stream(target.getComponents()).mapToInt(comp -> comp.getPreferredSize().width).max().orElse(20);
+        int widthPadding = 25;
+        int width = Arrays.stream(target.getComponents()).mapToInt(comp -> comp.getPreferredSize().width).max().orElse(20) + widthPadding;
         for (Component component : target.getComponents()) {
             if(component instanceof ControlPanel) {
                 layoutControlPanel((ControlPanel)component, target, width);
