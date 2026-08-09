@@ -1,5 +1,6 @@
 <0 comment>// Structured concurrency (Java 25 preview API)<br>
-<0 keyword>try <0 default>(var scope = StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow())) {
+<0 keyword>try <0 default>(var scope =
+      StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow())) {
    <1,11,12 keyword>var <1,11,12 default>orderTask = scope.fork(() -> loadOrder());
    <1,12 keyword>var <1,12 default>paymentTask = scope.fork(() -> loadPayment());
 
