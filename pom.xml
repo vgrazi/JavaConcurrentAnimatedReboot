@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vgrazi.jca</groupId>
@@ -15,8 +15,8 @@
     <description>java-concurrent-animated-reboot</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <!-- Library versions -->
         <junit.version>5.11.3</junit.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -84,8 +84,9 @@
                 <configuration>
                     <compilerVersion>${maven.compiler.source}</compilerVersion>
                     <release>${maven.compiler.target}</release>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>25</source>
+                    <target>25</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,8 +1,6 @@
 package com.vgrazi.jca.sprites;
 
 import com.vgrazi.jca.util.ThreadUtils;
-import com.vgrazi.jca.util.UIUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
 import java.util.Map;
@@ -12,8 +10,15 @@ import java.util.Map;
  * instead of as a thread
  */
 public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
+    public final String character;
+    private final int horizontalShift;
 
     public static final Font CARRIER_FONT = new Font("Arial", Font.PLAIN, 24);
+
+    public VirtualRunnerThreadSprite(int horizontalShift, String character) {
+        this.horizontalShift = horizontalShift;
+        this.character = character;
+    }
 
 //    String lastCarrier;
     @Override
@@ -92,10 +97,10 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
                 x = cxLeft + radius * Math.cos(angle);
                 y = cy + radius * Math.sin(angle);
             }
-            graphics1.drawString("v", (int) Math.round(x), (int) Math.round(y) + 8);
+            graphics1.drawString(character, (int) Math.round(x) + horizontalShift, (int) Math.round(y) + 8);
         } else {
             int xpos = getXPosition() + getXOffset() - offset + capOffset + 5;
-            graphics1.drawString("v", -100 + xpos, yPos + 18);
+            graphics1.drawString(character, -100 + xpos + horizontalShift, yPos + 18);
         }
 
         graphics1.dispose();

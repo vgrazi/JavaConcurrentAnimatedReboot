@@ -176,7 +176,6 @@ public class JCAFrame extends JFrame {
 
         addButton("Synchronized", synchronizedSlide);
         addButton("Virtual Threads", virtualThreadsSlide);
-        addButton("Structured Concurrency", structuredConcurrencySlide);
         addButton("ReentrantLock", reentrantLockSlide);
         addButton("Semaphore", semaphoreSlide);
         addButton("ReadWriteLock", readWriteLockSlide);
@@ -189,6 +188,7 @@ public class JCAFrame extends JFrame {
         addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
         addButton("CompletableFuture", completableFutureSlide);
+        addButton("Structured Concurrency", structuredConcurrencySlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
         addButton("Credits", basicSlide);

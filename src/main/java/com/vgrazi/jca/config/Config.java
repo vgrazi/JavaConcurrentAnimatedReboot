@@ -53,7 +53,13 @@ public class Config {
     @Bean
     @Scope("prototype")
     VirtualRunnerThreadSprite virtualRunnerThreadSprite() {
-        return new VirtualRunnerThreadSprite();
+        return new VirtualRunnerThreadSprite(-10, "v");
+    }
+
+    @Bean
+    @Scope("prototype")
+    VirtualRunnerThreadSprite structuredConcurrencyRunnerThreadSprite() {
+        return new VirtualRunnerThreadSprite(-10, "o");
     }
 
     @Bean

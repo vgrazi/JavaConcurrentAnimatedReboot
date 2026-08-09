@@ -1,21 +1,16 @@
-<0 comment>// Structured concurrency (conceptual)<br>
-<0 keyword>try <0 default>(var scope = <br><0 keyword>   new <0 default>StructuredTaskScope.ShutdownOnFailure()) {
-   <1,11 keyword>var <1,11 default>orderTask = scope.fork(() -> loadOrder());
+<0 comment>// Structured concurrency (Java 25 preview API)<br>
+<0 keyword>try <0 default>(var scope = StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow())) {
+   <1,11,12 keyword>var <1,11,12 default>orderTask = scope.fork(() -> loadOrder());
    <1,12 keyword>var <1,12 default>paymentTask = scope.fork(() -> loadPayment());
 
    <4 default>scope.join();
-   <4 default>scope.throwIfFailed();
 
+   <6,7 comment>// parent thread resumes here after join completes
    <6,7 keyword>var <6,7 default>order = orderTask.get();
    <6,7 keyword>var <6,7 default>payment = paymentTask.get();
 
-   <6,7 comment>// parent thread resumes here after join completes
    <7 default>persistAuditRecord(order, payment);
 <5 default><br>}
 <3 keyword>catch <3 default>(Exception e) {
-    <3 comment>// subtask failed -> exception path
-    <3 default>scope.shutdown();
-    <3 keyword>throw <3 default>e;
+    <3 default>...
 <3 default><br>}
-
-<3 comment>// If one subtask fails, <br>// the scope cancels siblings and throws
