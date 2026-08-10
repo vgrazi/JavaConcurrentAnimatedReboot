@@ -23,6 +23,12 @@ public class VirtualRunnerThreadSprite<S> extends OrbitalRunnerThreadSprite<S> {
         this.character = character;
     }
 
+    public VirtualRunnerThreadSprite(int horizontalShift, String character) {
+        this.horizontalShift = horizontalShift;
+        this.character = character;
+    }
+
+//    String lastCarrier;
     @Override
     protected Color getOvalColor() {
         return getThreadContext().getColor(this);
@@ -43,7 +49,6 @@ public class VirtualRunnerThreadSprite<S> extends OrbitalRunnerThreadSprite<S> {
         }
     }
 
-    @Override
     protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
         Graphics2D graphics1 = (Graphics2D) graphics.create();
         graphics1.setFont(CARRIER_FONT);
