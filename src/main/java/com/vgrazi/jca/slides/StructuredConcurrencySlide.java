@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.StructuredTaskScope.Joiner;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +33,8 @@ public class StructuredConcurrencySlide extends Slide {
     @Value("${arrow-length}")
     private int arrowLength;
 
-    private StructuredTaskScope<String, Void> structuredTaskScope;
+    private volatile StructuredTaskScope<String, Void> structuredTaskScope;
+    private ExecutorService scopeOwnerExecutor;
     private final List<ThreadSprite<Boolean>> scopeThreads = new CopyOnWriteArrayList<>();
     private final Set<ThreadSprite<Boolean>> completed = ConcurrentHashMap.newKeySet();
     private final Set<ThreadSprite<Boolean>> failed = ConcurrentHashMap.newKeySet();
@@ -48,7 +52,7 @@ public class StructuredConcurrencySlide extends Slide {
         joinButton.setEnabled(true);
         threadContext.addButton("subtask completes", () -> completeTaskAction(2));
         threadContext.addButton("subtask fails", () -> failTaskAction(3));
-        threadContext.addButton("scope.shutdown()", () -> shutdownScopeAction(5));
+        threadContext.addButton("scope.close()", () -> shutdownScopeAction(5));
         threadContext.addButton("Reset", this::reset);
 
         threadContext.setVisible();
@@ -62,11 +66,6 @@ public class StructuredConcurrencySlide extends Slide {
             highlightSnippet(12);
         }
 
-        // Create new scope if needed
-        if (structuredTaskScope == null || scopeThreads.isEmpty()) {
-            structuredTaskScope = StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow());
-        }
-
         final ThreadSprite<Boolean> threadSprite = (ThreadSprite<Boolean>) applicationContext.getBean("structuredConcurrencyRunnerThreadSprite");
         threadSprite.setXPosition(leftBorder + arrowLength);
         threadSprite.setLabel("task-" + taskId);
@@ -74,17 +73,26 @@ public class StructuredConcurrencySlide extends Slide {
         // Store the task ID in the sprite for use in the subtask
         final String taskLabel = "task-" + taskId;
         
-        // Fork the subtask using the real scope
-        structuredTaskScope.fork(() -> {
-            // Simulate work with sleep
-            try {
-                Thread.sleep(5000); // Long sleep to allow user interaction
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InterruptedException(taskLabel + " cancelled");
-            }
-            return taskLabel + "-result";
-        });
+        try {
+            submitToScopeOwner(() -> {
+                if (structuredTaskScope == null) {
+                    structuredTaskScope = StructuredTaskScope.open(Joiner.awaitAllSuccessfulOrThrow());
+                }
+                // Fork the subtask using the real scope on the owner thread.
+                structuredTaskScope.fork(() -> {
+                    try {
+                        Thread.sleep(5000); // Long sleep to allow user interaction
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new InterruptedException(taskLabel + " cancelled");
+                    }
+                    return taskLabel + "-result";
+                });
+            });
+        } catch (RejectedExecutionException e) {
+            setMessage("Scope is not available", Color.pink);
+            return;
+        }
 
         // Start a separate thread to visualize the subtask execution
         threadSprite.attachAndStartRunnable(() -> {
@@ -154,6 +162,16 @@ public class StructuredConcurrencySlide extends Slide {
             scopeThreads.remove(sprite);
             threadContext.stopThread(sprite);
         });
+        if (structuredTaskScope != null) {
+            submitToScopeOwner(() -> {
+                try {
+                    structuredTaskScope.close();
+                } catch (Exception ignored) {
+                } finally {
+                    structuredTaskScope = null;
+                }
+            });
+        }
         joinWaitingForCompletion = false;
         threadCanvas.fadeHighlightBox();
         if (joinButton != null) {
@@ -183,9 +201,19 @@ public class StructuredConcurrencySlide extends Slide {
             return;
         }
 
-        // Call join on the real scope in a separate thread to avoid blocking UI
-        Thread joinThread = new Thread(() -> {
+        // join() must run on the scope owner thread
+        submitToScopeOwner(() -> {
             try {
+                if (structuredTaskScope == null) {
+                    SwingUtilities.invokeLater(() -> {
+                        joinWaitingForCompletion = false;
+                        if (joinButton != null) {
+                            joinButton.setEnabled(true);
+                        }
+                        setMessage("No scope to join", Color.white);
+                    });
+                    return;
+                }
                 structuredTaskScope.join();
                 SwingUtilities.invokeLater(() -> {
                     // Mark all active sprites as completed after successful join
@@ -213,28 +241,39 @@ public class StructuredConcurrencySlide extends Slide {
                 });
             }
         });
-        joinThread.start();
         setMessage("join() waiting for subtasks...", Color.white);
     }
 
     private void shutdownScopeAction(int state) {
         highlightSnippet(state);
         joinWaitingForCompletion = false;
+        final List<ThreadSprite<Boolean>> activeTasks = scopeThreads.stream().filter(this::isActive).toList();
         if (structuredTaskScope != null) {
-            // In Java 25, close() cancels the scope and waits for threads to finish
-            // Run in background thread to avoid blocking UI
-            Thread closeThread = new Thread(() -> {
+            // close() must run on the scope owner thread
+            submitToScopeOwner(() -> {
                 try {
                     structuredTaskScope.close();
+                    structuredTaskScope = null;
+                    SwingUtilities.invokeLater(() -> stopCancelledTasks(activeTasks));
                 } catch (Exception e) {
-                    // Ignore exceptions during close
+                    structuredTaskScope = null;
+                    SwingUtilities.invokeLater(() -> stopCancelledTasks(activeTasks));
                 }
             });
-            closeThread.start();
+        } else {
+            stopCancelledTasks(activeTasks);
         }
-        scopeThreads.stream().filter(this::isActive).forEach(cancelled::add);
         threadCanvas.fadeHighlightBox();
         setMessage("Scope cancelled", Color.white);
+    }
+
+    private void stopCancelledTasks(List<ThreadSprite<Boolean>> activeTasks) {
+        activeTasks.forEach(sprite -> {
+            sprite.setMessage("cancelled");
+            cancelled.add(sprite);
+            scopeThreads.remove(sprite);
+            threadContext.stopThread(sprite);
+        });
     }
 
     private ThreadSprite<Boolean> getFirstActiveTask() {
@@ -252,6 +291,10 @@ public class StructuredConcurrencySlide extends Slide {
     @Override
     public void reset() {
         super.reset();
+        if (scopeOwnerExecutor != null) {
+            scopeOwnerExecutor.shutdownNow();
+            scopeOwnerExecutor = null;
+        }
         threadCanvas.clearHighlightBox();
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("Structured Concurrency");
@@ -291,5 +334,27 @@ public class StructuredConcurrencySlide extends Slide {
         int width = Math.max(40, maxX - minX);
         int height = Math.max(24, maxY - minY);
         threadCanvas.showHighlightBox(minX, minY, width, height, Color.green, true);
+    }
+
+    private void submitToScopeOwner(Runnable runnable) {
+        ExecutorService executor = scopeOwnerExecutor;
+        if (executor == null || executor.isShutdown()) {
+            scopeOwnerExecutor = createScopeOwnerExecutor();
+            executor = scopeOwnerExecutor;
+        }
+        try {
+            executor.submit(runnable);
+        } catch (RejectedExecutionException e) {
+            scopeOwnerExecutor = createScopeOwnerExecutor();
+            scopeOwnerExecutor.submit(runnable);
+        }
+    }
+
+    private ExecutorService createScopeOwnerExecutor() {
+        return Executors.newSingleThreadExecutor(r -> {
+            Thread thread = new Thread(r, "structured-scope-owner");
+            thread.setDaemon(true);
+            return thread;
+        });
     }
 }

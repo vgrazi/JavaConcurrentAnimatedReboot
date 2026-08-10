@@ -29,6 +29,11 @@ Each slide: what it solves, when to reach for it, the trade-off, and a *Tidbit* 
 - `allSuccessfulOrThrow` waits for every child and fails fast; `anySuccessfulResultOrThrow` takes the first success and cancels the losers.
 - Trade‑off: still a **preview** API (JEP 505, Java 25) and deliberately scoped — it's an orchestration tool, not a replacement for a long‑lived `CompletableFuture`.
 - **Tidbit:** It turns a leaked‑thread problem into a compile‑and‑runtime guarantee: when the `try`‑block exits, there are provably **no children still running** — no orphans, no swallowed exceptions. (See the dedicated deck for the button‑by‑button walkthrough.)
+- `scope.close()` cancels running forked subtasks (they are interrupted/cancelled), and `close()` waits for them to finish.
+- If the owner thread forked tasks but did not call `join()` first, `close()` throws `java.lang.IllegalStateException: Owner did not join after forking`.
+- If `close()` is called from a different thread than the owner, it throws `java.lang.WrongThreadException: Current thread not owner`.
+- For running tasks specifically: blocking tasks (`sleep`, waits, interruptible blocking I/O) typically exit via `InterruptedException`.
+- Non-blocking spin loops only stop if they explicitly check interruption/cancellation conditions.
 
 ## ReentrantLock
 - Explicit locking with everything `synchronized` lacks: `tryLock()`, timed and **interruptible** acquisition, multiple `Condition`s, and an optional fairness policy.
