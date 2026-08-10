@@ -94,9 +94,7 @@ public class ExecutorsSlide extends Slide {
     }
 
     public void reset() {
-        if (executor != null) {
-            executor.shutdownNow();
-        }
+        cleanup();
         super.reset();
         threadContext.setSlideLabel("Executors");
         threadContext.setBottomLabel("Pooled\nThreads");
@@ -112,5 +110,14 @@ public class ExecutorsSlide extends Slide {
             threadContext.addSprite(sprite);
             return thread;
         });
+    }
+
+    @Override
+    public void cleanup() {
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
+        super.cleanup();
     }
 }

@@ -14,7 +14,7 @@ public class CompletionServiceSlide extends Slide {
 
     private Random random = new Random();
 
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private ExecutorService executor;
     private CompletionService<ThreadSprite> completionService;
     private ExecutorService pool;
 
@@ -95,11 +95,26 @@ public class CompletionServiceSlide extends Slide {
 
     @Override
     public void reset() {
+        cleanup();
         super.reset();
+        executor = Executors.newCachedThreadPool();
         threadContext.setSlideLabel("CompletionService");
         pool = Executors.newFixedThreadPool(4);
         completionService = new ExecutorCompletionService<>(pool);
         setSnippetFile("completion-service.html");
     }
 
+    @Override
+    public void cleanup() {
+        if (executor != null) {
+            executor.shutdownNow();
+        }
+        if (pool != null) {
+            pool.shutdownNow();
+        }
+        completionService = null;
+        executor = null;
+        pool = null;
+        super.cleanup();
+    }
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class CyclicBarrierSlide extends Slide {
@@ -18,7 +19,7 @@ public class CyclicBarrierSlide extends Slide {
 
     private CyclicBarrier cyclicBarrier;
     private ThreadSprite firstThread;
-    private int count;
+    private final AtomicInteger count = new AtomicInteger();
     public void run() {
         reset();
         threadContext.addButton("await()", () -> createAwaitSprite("await", 1, false));
@@ -49,7 +50,7 @@ public class CyclicBarrierSlide extends Slide {
                 else {
                     sprite.setXPosition(firstThread.getXPosition()-20);
                 }
-                count++;
+                count.getAndIncrement();
                 if (timed) {
                     cyclicBarrier.await(2, TimeUnit.SECONDS);
                 }
@@ -58,8 +59,8 @@ public class CyclicBarrierSlide extends Slide {
                 }
 
                 threadContext.stopThread(sprite);
-                count--;
-                if(count == 0) {
+                count.getAndDecrement();
+                if(count.get() == 0) {
                     firstThread = null;
                 }
             } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
@@ -92,6 +93,6 @@ public class CyclicBarrierSlide extends Slide {
     private void initializeInstanceFields() {
         firstThread = null;
         messages.setText("");
-        count = 0;
+        count.set(0);
     }
 }

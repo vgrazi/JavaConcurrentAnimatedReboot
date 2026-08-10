@@ -66,11 +66,9 @@ public class ReactorSlide extends Slide {
     }
 
     public void reset() {
-        if (executor != null) {
-            executor.shutdownNow();
-        }
+        cleanup();
         super.reset();
-        threadContext.setSlideLabel("Executors");
+        threadContext.setSlideLabel("Reactor");
         threadContext.setBottomLabel("Pooled\nThreads");
         setSnippetFile("completion-service.html");
 
@@ -83,5 +81,14 @@ public class ReactorSlide extends Slide {
             threadContext.addSprite(sprite);
             return thread;
         });
+    }
+
+    @Override
+    public void cleanup() {
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
+        super.cleanup();
     }
 }

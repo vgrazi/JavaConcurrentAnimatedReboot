@@ -69,12 +69,20 @@ public abstract class Slide {
     @Value("${HTML_DISABLED_COLOR}")
     private String htmlDisabledColor;
     private String snippetText;
-    private static float snippetFontSize;
+    @Value("${snippet-font-size:18}")
+    private float snippetFontSize;
     private String snippetFile;
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public abstract void run();
+
+    /**
+     * Called before switching away from this slide.
+     * Subclasses can override to release resources owned by the slide.
+     */
+    public void cleanup() {
+    }
 
     protected void setMessage(String message) {
         setMessage(message, Color.white);
@@ -238,16 +246,12 @@ public abstract class Slide {
     @Value("${snippet-font}")
     private void setSnippetFont(String fontString) {
         this.snippetFont = parseFont(fontString);
-        if(snippetFontSize == 0) {
-            snippetFontSize = 18;
-        }
         if(snippetFontSize != snippetFont.getSize()) {
             setSnippetFontSize(snippetFontSize);
         }
     }
 
     public void setSnippetFontSize(float size) {
-        this.snippetFontSize = size;
         snippetFont = snippetFont.deriveFont(size);
         highlightSnippet(state);
     }

@@ -180,11 +180,7 @@ public class SaturationPolicySlide extends Slide {
     }
 
     public void reset() {
-        callerRunsActive.set(false);
-        callerRunsRunnableSprite = null;
-        if (executor != null) {
-            executor.shutdownNow();
-        }
+        cleanup();
         super.reset();
         setSnippetFile("saturation-policy.html");
         threadContext.setSlideLabel("Saturation Policy");
@@ -202,5 +198,17 @@ public class SaturationPolicySlide extends Slide {
                     return thread;
                 }
         );
+    }
+
+    @Override
+    public void cleanup() {
+        callerRunsActive.set(false);
+        callerRunsRunnableSprite = null;
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
+        workQueue = null;
+        super.cleanup();
     }
 }

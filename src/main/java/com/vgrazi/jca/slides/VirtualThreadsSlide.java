@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
@@ -22,11 +23,11 @@ public class VirtualThreadsSlide extends Slide {
     private int arrowLength;
 
     private int sleepMS = 2500;
-    private final List<ThreadSprite> sleeping = new ArrayList<>();
-    private final List<ThreadSprite> waiting = new ArrayList<>();
-    private final List<ThreadSprite> yield = new ArrayList<>();
-    private final List<ThreadSprite> exit = new ArrayList<>();
-    private final List<String> carriers = new ArrayList<>();
+    private final List<ThreadSprite> sleeping = new CopyOnWriteArrayList<>();
+    private final List<ThreadSprite> waiting = new CopyOnWriteArrayList<>();
+    private final List<ThreadSprite> yield = new CopyOnWriteArrayList<>();
+    private final List<ThreadSprite> exit = new CopyOnWriteArrayList<>();
+    private final List<String> carriers = new CopyOnWriteArrayList<>();
 
     /**
      * The first thread we create will be contained in the future

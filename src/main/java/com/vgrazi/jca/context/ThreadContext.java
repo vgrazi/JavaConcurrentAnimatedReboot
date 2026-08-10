@@ -272,14 +272,23 @@ public class ThreadContext<S> implements InitializingBean {
     }
 
     /**
-     * Reset the previous slide, if any, and register and run the supplied one
+     * Registers and runs the supplied slide.
+     * If switching to a different slide instance, invokes cleanup() on the outgoing slide.
+     * If re-registering the same slide instance, invokes reset() to restart it.
      */
     public void registerSlide(Slide slide) {
         if(this.slide != null) {
-            this.slide.reset();
+            if (this.slide != slide) {
+                this.slide.cleanup();
+            } else {
+                // Re-registering the same slide behaves like a restart.
+                this.slide.reset();
+            }
         }
         this.slide = slide;
         this.slide.run();
+        // Keep frame visibility centralized so startup does not rely on each slide.
+        setVisible();
     }
 
     public void reset() {

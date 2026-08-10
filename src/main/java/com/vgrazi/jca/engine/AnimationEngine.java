@@ -6,9 +6,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnimationEngine {
 
+    Thread thread;
+    boolean running = true;
     public void render(ThreadCanvas canvas) {
-        Thread thread = new Thread(() -> {
-            while (true) {
+        if (thread != null) {
+            running = false;
+            thread.interrupt();
+        }
+        running = true;
+        thread = new Thread(() -> {
+            while (running) {
                 canvas.repaint(canvas.getBounds());
                 try {
                     Thread.sleep(10);
@@ -18,6 +25,7 @@ public class AnimationEngine {
             }
 
         });
+        thread.setDaemon(true);
         thread.start();
     }
 }

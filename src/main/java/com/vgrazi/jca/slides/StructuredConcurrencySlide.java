@@ -15,9 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.StructuredTaskScope.Joiner;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("preview")
@@ -290,11 +292,8 @@ public class StructuredConcurrencySlide extends Slide {
 
     @Override
     public void reset() {
+        cleanup();
         super.reset();
-        if (scopeOwnerExecutor != null) {
-            scopeOwnerExecutor.shutdownNow();
-            scopeOwnerExecutor = null;
-        }
         threadCanvas.clearHighlightBox();
         threadCanvas.hideMonolith(true);
         threadContext.setSlideLabel("Structured Concurrency");
@@ -310,6 +309,43 @@ public class StructuredConcurrencySlide extends Slide {
         }
         setSnippetFile("structured-concurrency.html");
         highlightSnippet(0);
+    }
+
+    @Override
+    public void cleanup() {
+        joinWaitingForCompletion = false;
+        scopeThreads.stream().filter(this::isActive).forEach(sprite -> {
+            cancelled.add(sprite);
+            scopeThreads.remove(sprite);
+            threadContext.stopThread(sprite);
+        });
+
+        ExecutorService owner = scopeOwnerExecutor;
+        if (structuredTaskScope != null && owner != null && !owner.isShutdown()) {
+            try {
+                Future<?> closeFuture = owner.submit(() -> {
+                    try {
+                        structuredTaskScope.close();
+                    } catch (Exception ignored) {
+                    } finally {
+                        structuredTaskScope = null;
+                    }
+                });
+                closeFuture.get(1, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception ignored) {
+                structuredTaskScope = null;
+            }
+        } else {
+            structuredTaskScope = null;
+        }
+
+        if (scopeOwnerExecutor != null) {
+            scopeOwnerExecutor.shutdownNow();
+            scopeOwnerExecutor = null;
+        }
+        super.cleanup();
     }
 
     private void highlightAllSubtasks() {

@@ -81,7 +81,12 @@ public class ThreadSprite<S> extends Sprite<S> implements InitializingBean {
     @Override
     public void renderMessage(Graphics2D graphics) {
         if (thread != null && getThreadContext().isDisplayThreadNames()) {
+            // Temporarily render the thread name, then restore any existing message.
+            String originalMessage = getMessage();
             setMessage(thread.getName());
+            super.renderMessage(graphics);
+            setMessage(originalMessage);
+            return;
         }
         super.renderMessage(graphics);
     }

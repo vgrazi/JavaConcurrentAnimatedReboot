@@ -19,7 +19,7 @@ public class IntroSlide extends Slide {
 
     @Autowired
     private JPanel cardPanel;
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService executor;
 
     private Timer animationTimer;
     private BufferedImage meshImage;
@@ -30,14 +30,35 @@ public class IntroSlide extends Slide {
         reset();
         threadContext.addButton("reset()", this::reset);
         threadContext.setVisible();
+        ensureExecutor();
         executor.schedule(this::reset, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void reset() {
         super.reset();
+        ensureExecutor();
         resetImage();
         ((CardLayout) cardPanel.getLayout()).next(cardPanel);
+    }
+
+    @Override
+    public void cleanup() {
+        if (animationTimer != null) {
+            animationTimer.stop();
+            animationTimer = null;
+        }
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
+        super.cleanup();
+    }
+
+    private void ensureExecutor() {
+        if (executor == null || executor.isShutdown()) {
+            executor = Executors.newScheduledThreadPool(1);
+        }
     }
 
     public void resetImage() {
