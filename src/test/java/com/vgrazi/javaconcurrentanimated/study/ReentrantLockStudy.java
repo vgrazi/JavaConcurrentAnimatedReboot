@@ -6,7 +6,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Fail.fail;
+
 
 public class ReentrantLockStudy{
     @Test

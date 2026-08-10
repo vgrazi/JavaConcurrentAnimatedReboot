@@ -58,8 +58,8 @@ public class Config {
 
     @Bean
     @Scope("prototype")
-    VirtualRunnerThreadSprite structuredConcurrencyRunnerThreadSprite() {
-        return new VirtualRunnerThreadSprite(-10, "o");
+    StructuredConcurrencyThreadSprite structuredConcurrencyRunnerThreadSprite() {
+        return new StructuredConcurrencyThreadSprite();
     }
 
     @Bean

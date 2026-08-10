@@ -145,7 +145,7 @@ public class JCAFrame extends JFrame {
 
     @PostConstruct
     public void afterPropertiesSet() throws IOException {
-        setTitle("Java Concurrent Animated - Reboot!");
+        setTitle("Java Concurrent Animated!");
         snippetCanvas.setBackground(Color.white);
         snippetCanvas.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
         snippetCanvas.setFontSize(18);

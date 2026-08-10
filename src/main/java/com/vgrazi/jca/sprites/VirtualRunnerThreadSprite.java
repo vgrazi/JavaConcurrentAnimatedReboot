@@ -6,14 +6,22 @@ import java.awt.*;
 import java.util.Map;
 
 /**
- * This is a regular thread sprite, except that when it is running (inside the monolith), it renders as a round rectangle
- * instead of as a thread
+ * Virtual thread sprite that renders a character orbiting around an oval track inside the monolith.
+ * Extends OrbitalRunnerThreadSprite to share common orbital animation logic.
  */
-public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
+public class VirtualRunnerThreadSprite<S> extends OrbitalRunnerThreadSprite<S> {
     public final String character;
     private final int horizontalShift;
 
-    public static final Font CARRIER_FONT = new Font("Arial", Font.PLAIN, 24);
+    public VirtualRunnerThreadSprite(int horizontalShift, String character) {
+        this(horizontalShift, character, false);
+    }
+
+    public VirtualRunnerThreadSprite(int horizontalShift, String character, boolean animateWithoutCarrier) {
+        super(animateWithoutCarrier);
+        this.horizontalShift = horizontalShift;
+        this.character = character;
+    }
 
     public VirtualRunnerThreadSprite(int horizontalShift, String character) {
         this.horizontalShift = horizontalShift;
@@ -22,91 +30,31 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
 
 //    String lastCarrier;
     @Override
-    public void render(Graphics2D graphics) {
-// Render a bounding box around where the rounded circle should be.
-//        Graphics2D graphicsDebug = (Graphics2D) graphics.create();
-//        graphicsDebug.setStroke(new BasicStroke(1));
-//        graphicsDebug.setColor(Color.yellow);
-//        graphicsDebug.drawRect(leftBound, topBound, width, runnerEllipseHeight);
+    protected Color getOvalColor() {
+        return getThreadContext().getColor(this);
+    }
 
-        Color color = getThreadContext().getColor(this);
-//        Color color = getColorByThreadState();
-        graphics.setColor(color);
+    @Override
+    public void render(Graphics2D graphics) {
+        // Call parent to render the oval and other common elements
+        super.render(graphics);
+        // Note: renderCarrier is handled in drawHead for VirtualRunnerThreadSprite
         if(isInMonolith()){
-            graphics.drawArc(-100+leftBound + getXOffset(), topBound, ellipseRadius * 2, ellipseRadius * 2, 90, 180);
-            graphics.drawArc(-100+rightBound + getXOffset()- ellipseRadius * 2, topBound, ellipseRadius * 2, ellipseRadius * 2, 270, 180);
-            graphics.drawLine(-100+lineStart + getXOffset(), topBound, -100 + lineEnd + getXOffset(), topBound);
-            graphics.drawLine(-100+lineStart + getXOffset(), bottomBound, -100 + lineEnd + getXOffset(), bottomBound);
             String carrier = ThreadUtils.getCarrier(this.getThread());
             if(carrier != null) {
                 renderCarrier(graphics, rightBound, yPosition+height/2-5);
-                Graphics graphics1 = graphics.create();
-                graphics1.setFont(new Font("Arial", Font.PLAIN, 24));
-//                graphics.drawString(carrier, lineEnd + getXOffset()+15, bottomBound );
             }
-        }else{// && relativePosition != RelativePosition.At) {
-            // render the runner thread before it enters the monolith
-            int xPosition = getXPosition();
-            int yPosition = getYPosition();
-            graphics.drawLine(-100+xPosition - arrowLength + getXOffset(), yPosition, xPosition + getXOffset(), yPosition);
-            renderCarrier(graphics, -100+xPosition, yPosition);
+        } else {
+            renderCarrier(graphics, -100+getXPosition(), getYPosition());
         }
-
-        renderMessage(graphics);
-        drawThreadCap(graphics);
-        renderInterruptedFlag(graphics);
     }
 
     protected void drawHead(Graphics2D graphics, int capOffset, int offset, int yPos) {
         Graphics2D graphics1 = (Graphics2D) graphics.create();
         graphics1.setFont(CARRIER_FONT);
         if (isInMonolith()) {
-            int renderOffset = -100;
-            int cxLeft = renderOffset + leftBound + getXOffset() + ellipseRadius;
-            int cxRight = renderOffset + rightBound + getXOffset() - ellipseRadius;
-            int cy = (topBound + bottomBound) / 2;
-            int radius = ellipseRadius;
-            int topY = topBound;
-            int bottomY = bottomBound;
-
-            boolean hasCarrier = !ThreadUtils.getCarrier(getThread()).isEmpty();
-
-            double x;
-            double y;
-            if (hasCarrier) {
-                // Animate around the oval only when mounted on a carrier
-                double topLength = Math.max(1, cxRight - cxLeft);
-                double arcLength = Math.PI * radius;
-                double perimeter = topLength + arcLength + topLength + arcLength;
-
-                double speedPixelsPerSecond = 90.0;
-                double phaseOffset = (getID() * 37.0) % perimeter;
-                double distance = (System.nanoTime() / 1_000_000_000.0 * speedPixelsPerSecond + phaseOffset) % perimeter;
-
-                if (distance < topLength) {
-                    x = cxLeft + distance;
-                    y = topY;
-                } else if (distance < topLength + arcLength) {
-                    double t = (distance - topLength) / arcLength;
-                    double angle = -Math.PI / 2 + t * Math.PI;
-                    x = cxRight + radius * Math.cos(angle);
-                    y = cy + radius * Math.sin(angle);
-                } else if (distance < topLength + arcLength + topLength) {
-                    double t = distance - topLength - arcLength;
-                    x = cxRight - t;
-                    y = bottomY;
-                } else {
-                    double t = (distance - topLength - arcLength - topLength) / arcLength;
-                    double angle = Math.PI / 2 + t * Math.PI;
-                    x = cxLeft + radius * Math.cos(angle);
-                    y = cy + radius * Math.sin(angle);
-                }
-            } else {
-                // No carrier — park the character at the top-left of the oval, stationary
-                x = cxLeft;
-                y = topY;
-            }
-            graphics1.drawString(character, (int) Math.round(x) + horizontalShift, (int) Math.round(y) + 8);
+            OrbitalPosition pos = calculateOrbitalPosition();
+            graphics1.drawString(character, (int) Math.round(pos.x) + horizontalShift, (int) Math.round(pos.y) + 8);
         } else {
             int xpos = getXPosition() + getXOffset() - offset + capOffset + 5;
             graphics1.drawString(character, -100 + xpos + horizontalShift, yPos + 18);
@@ -117,21 +65,18 @@ public class VirtualRunnerThreadSprite<S> extends RunnerThreadSprite<S> {
 
     private void renderCarrier(Graphics2D graphics, int xPosition, int yPosition) {
         Map.Entry<String, String> entry = ThreadUtils.getVirtualToCarrierMapping(getThread());
-//        String virtual = entry.getKey();
         String carrier = entry.getValue();
 
-//            carrier = carrier.replaceAll("ForkJoinPool-\\d+-", "");
-      if(carrier.contains("ForkJoinPool")) {
+        if(carrier.contains("ForkJoinPool")) {
             Graphics graphics1 = graphics.create();
             Color carrierColor = getThreadContext().getCarrierColor(carrier, this);
             graphics1.setColor(carrierColor);
             int xPos = -100 + (isInMonolith() ? xPosition - arrowLength - 10 : xPosition - arrowLength - 30);
             graphics1.fill3DRect(xPos, yPosition + 3, arrowLength + 20, 12, true);
-//            carrier = carrier.replaceAll("ForkJoinPool-\\d+-", "");
-           graphics1.setFont(CARRIER_FONT);
-           graphics1.drawString(carrier, lineEnd + getXOffset() + 25-100, yPosition + 3 + 12 + 2);
+            graphics1.setFont(CARRIER_FONT);
+            graphics1.drawString(carrier, lineEnd + getXOffset() + 25-100, yPosition + 3 + 12 + 2);
 
-           graphics1.dispose();
+            graphics1.dispose();
         }
     }
 

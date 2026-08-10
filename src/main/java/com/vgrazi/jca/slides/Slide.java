@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -200,6 +201,8 @@ public abstract class Slide {
     protected String getSnippet() {
         String snippetText = this.snippetText == null?"":this.snippetText;
         int fontSize = snippetFont.getSize();
+        URL resourceRoot = getClass().getClassLoader().getResource("");
+        String baseHref = resourceRoot == null ? "" : "<base href=\"" + resourceRoot + "\">\n";
         return "<html><head><style type=\"text/css\"> \n" +
                 "pre{font-size:" + fontSize + ";}\n" +
                 ".default { font-weight: bold}\n" +
@@ -209,6 +212,7 @@ public abstract class Slide {
                 ".comment { color: rgb(150,150,150);}\n" +
                 ".unselected { color: rgb(128,128,128); }\n" +
                 "</style> \n" +
+                baseHref +
                 "</head>\n" +
                 "<BODY BGCOLOR=\"#ffffff\" vertical-align='top'><p>\n" +
                 "<pre>" + snippetText +
