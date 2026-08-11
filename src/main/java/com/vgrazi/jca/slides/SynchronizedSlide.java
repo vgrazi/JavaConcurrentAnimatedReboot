@@ -51,6 +51,15 @@ public class SynchronizedSlide extends Slide {
                 highlightSnippet(3);
             }
         });
+        threadContext.addButton("wait(timeout)", () -> {
+            ThreadSprite runningSprite = threadContext.getRunningThread();
+
+            if (runningSprite != null) {
+                runningSprite.setAction("timedWaiting");
+                log("Calling wait(timeout) on Runnable", runningSprite);
+                highlightSnippet(3);
+            }
+        });
         threadContext.addButton("sleep()", () -> {
             ThreadSprite runningSprite = threadContext.getRunningThread();
 
@@ -155,6 +164,10 @@ public class SynchronizedSlide extends Slide {
                                 break;
                             case "waiting":
                                 mutex.wait();
+                                sprite.setAction("default");
+                                break;
+                            case "timedWaiting":
+                                mutex.wait(5000);
                                 sprite.setAction("default");
                                 break;
                             case "notifying":

@@ -16,7 +16,9 @@ Each slide: what it solves, when to reach for it, the trade-off, and a *Tidbit* 
 - Trade‑off: the lock scope is coarse and the API is rigid — hold it a moment too long and you serialize work that didn't need serializing.
 - **Concrete example:** A singleton `InMemoryRateLimiter` updates `Map<String, Integer>` request counts inside a `synchronized` method so two threads cannot increment the same key at once.
 - **Tidbit:** A thread **BLOCKED** waiting to enter a `synchronized` block **cannot be stopped** — `interrupt()` just sets a flag, there's no timeout and no way out until it gets the monitor. That's the exact limitation `ReentrantLock`/`ReadWriteLock` fix with interruptible and timed acquisition. (Note: `Object.wait()` *is* interruptible — it's monitor **entry** that isn't.)
-- **Tidbit:** As of **JDK 24 (JEP 491)**, `synchronized` no longer *pins* a virtual thread to its carrier — the decade‑old "don't use synchronized with Loom" advice is now largely obsolete.
+- **Tidbit:** As of **JDK 24 (JEP 491)**, `synchronized` no longer *pins* a virtual thread to its carrier — the decade‑old "don't use synchronized with Loom" advice is now largely obsolete. When a timed waiting thread awakens due to timeout expiration, it returns normally from `wait(timeout)` without throwing an exception.
+
+InterruptedException is only thrown if the thread is interrupted while waiting (before the timeout expires).
 
 ## Virtual Threads
 - Decouple *task count* from *platform‑thread count*: millions of cheap threads, scheduled onto a small carrier pool.
