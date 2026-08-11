@@ -26,18 +26,6 @@ Each slide: what it solves, when to reach for it, the trade-off, and a *Tidbit* 
 - **Concrete example:** A REST endpoint fans out to `customer`, `orders`, and `recommendations` services by starting three virtual threads per request and blocking on each HTTP call directly.
 - **Tidbit:** Finalized in **Java 21 (JEP 444)**. Rule of thumb — **never pool them**; create one per task. And don't cache expensive objects in `ThreadLocal`, since now there are millions of threads.
 
-## Structured Concurrency
-- Fork subtasks inside a `StructuredTaskScope`; the scope *owns* them and can't be closed until they all finish — concurrency that mirrors your code's block structure.
-- `allSuccessfulOrThrow` waits for every child and fails fast; `anySuccessfulResultOrThrow` takes the first success and cancels the losers.
-- Trade‑off: still a **preview** API (JEP 505, Java 25) and deliberately scoped — it's an orchestration tool, not a replacement for a long‑lived `CompletableFuture`.
-- **Concrete example:** `checkout()` forks `reserveInventory()`, `authorizePayment()`, and `quoteShipping()` inside one scope and returns only when all succeed; if payment fails, the other two are cancelled automatically.
-- **Tidbit:** It turns a leaked‑thread problem into a compile‑and‑runtime guarantee: when the `try`‑block exits, there are provably **no children still running** — no orphans, no swallowed exceptions. (See the dedicated deck for the button‑by‑button walkthrough.)
-- `scope.close()` cancels running forked subtasks (they are interrupted/cancelled), and `close()` waits for them to finish.
-- If the owner thread forked tasks but did not call `join()` first, `close()` throws `java.lang.IllegalStateException: Owner did not join after forking`.
-- If `close()` is called from a different thread than the owner, it throws `java.lang.WrongThreadException: Current thread not owner`.
-- For running tasks specifically: blocking tasks (`sleep`, waits, interruptible blocking I/O) typically exit via `InterruptedException`.
-- Non-blocking spin loops only stop if they explicitly check interruption/cancellation conditions.
-
 ## ReentrantLock
 - Explicit locking with everything `synchronized` lacks: `tryLock()`, timed and **interruptible** acquisition, multiple `Condition`s, and an optional fairness policy.
 - Reach for it when a thread must be able to *give up* — e.g. a UI action that fails fast instead of hanging on a busy lock.
@@ -78,9 +66,9 @@ Each slide: what it solves, when to reach for it, the trade-off, and a *Tidbit* 
 - The four built‑ins: `AbortPolicy` (default, throws), `CallerRunsPolicy`, `DiscardPolicy`, `DiscardOldestPolicy`.
 - `AbortPolicy`: fail fast with `RejectedExecutionException` — loud and explicit.
 - `CallerRunsPolicy`: the submitting thread runs the task — natural throttling via producer slowdown.
+  `CallerRunsPolicy` is the quiet hero: it makes a bursty producer run the task on its own thread, so it *slows itself down* instead of drowning the pool.
 - `DiscardPolicy`: silently drop the new task — only safe for best-effort work.
 - `DiscardOldestPolicy`: evict the oldest queued task, retry the new one — favors fresh work over stale.
-- `CallerRunsPolicy` is the quiet hero: it makes a bursty producer run the task on its own thread, so it *slows itself down* instead of drowning the pool.
 - **Concrete example:** A telemetry pipeline uses a bounded queue + `CallerRunsPolicy` so when workers are saturated, the producer thread is forced to process events and naturally slows ingestion.
 - **Tidbit:** This is where reliability under load is usually won or lost — and you can plug in your own `RejectedExecutionHandler` (e.g. shed load to a fallback, or log‑and‑drop with a metric).
 
@@ -126,6 +114,18 @@ Each slide: what it solves, when to reach for it, the trade-off, and a *Tidbit* 
 - Trade‑off: watch **which executor** runs your callbacks and how exceptions flow.
 - **Concrete example:** Product page rendering runs `priceFuture`, `inventoryFuture`, and `reviewsFuture` concurrently, then `thenCombine` merges results into one response DTO.
 - **Tidbit:** `*Async` methods with no executor run on `ForkJoinPool.commonPool()` — **but** if the machine reports only one CPU, the common pool has parallelism 0 and each task quietly gets its **own new thread**. Also, exceptions are wrapped in `CompletionException`, so `join()` and `get()` report failures differently.
+
+## Structured Concurrency
+- Fork subtasks inside a `StructuredTaskScope`; the scope *owns* them and can't be closed until they all finish — concurrency that mirrors your code's block structure.
+- `allSuccessfulOrThrow` waits for every child and fails fast; `anySuccessfulResultOrThrow` takes the first success and cancels the losers.
+- Trade‑off: still a **preview** API (JEP 505, Java 25) and deliberately scoped — it's an orchestration tool, not a replacement for a long‑lived `CompletableFuture`.
+- **Concrete example:** `checkout()` forks `reserveInventory()`, `authorizePayment()`, and `quoteShipping()` inside one scope and returns only when all succeed; if payment fails, the other two are cancelled automatically.
+- **Tidbit:** It turns a leaked‑thread problem into a compile‑and‑runtime guarantee: when the `try`‑block exits, there are provably **no children still running** — no orphans, no swallowed exceptions. (See the dedicated deck for the button‑by‑button walkthrough.)
+- `scope.close()` cancels running forked subtasks (they are interrupted/cancelled), and `close()` waits for them to finish.
+- If the owner thread forked tasks but did not call `join()` first, `close()` throws `java.lang.IllegalStateException: Owner did not join after forking`.
+- If `close()` is called from a different thread than the owner, it throws `java.lang.WrongThreadException: Current thread not owner`.
+- For running tasks specifically: blocking tasks (`sleep`, waits, interruptible blocking I/O) typically exit via `InterruptedException`.
+- Non-blocking spin loops only stop if they explicitly check interruption/cancellation conditions.
 
 ## CompletionService
 
