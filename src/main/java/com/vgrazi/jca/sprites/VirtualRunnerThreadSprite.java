@@ -12,6 +12,7 @@ import java.util.Map;
 public class VirtualRunnerThreadSprite<S> extends OrbitalRunnerThreadSprite<S> {
     public final String character;
     private final int horizontalShift;
+    private static final int VIRTUAL_THREAD_NAME_Y_SHIFT = 15;
 
     public VirtualRunnerThreadSprite(int horizontalShift, String character) {
         this(horizontalShift, character, false);
@@ -56,6 +57,11 @@ public class VirtualRunnerThreadSprite<S> extends OrbitalRunnerThreadSprite<S> {
         }
 
         graphics1.dispose();
+    }
+
+    @Override
+    protected int getMessageYPosition() {
+        return super.getMessageYPosition() + VIRTUAL_THREAD_NAME_Y_SHIFT;
     }
 
     private void renderCarrier(Graphics2D graphics, int xPosition, int yPosition) {

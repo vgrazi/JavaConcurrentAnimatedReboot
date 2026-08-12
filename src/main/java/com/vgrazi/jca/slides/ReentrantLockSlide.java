@@ -69,23 +69,24 @@ public class ReentrantLockSlide extends Slide {
             threadContext.addSprite(sprite);
             highlightSnippet(1);
         });
-        boolean[] virtualRunning = new boolean[] {true};
-        threadContext.addButton("virtual thread ", () -> {
+        threadContext.addButton("virtual: lock.lock()", () -> {
             highlightSnippet(1);
-            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("virtualRunnerThreadSprite");
-            // set the holder to true for running
+            // Use the standard runner sprite (correct for the lock-slide layout).
+            // The thread itself is virtual (false = virtual).
+            ThreadSprite<Boolean> sprite = (ThreadSprite) applicationContext.getBean("runnerThreadSprite");
             sprite.setHolder(true);
             sprite.attachAndStartRunnable(() -> {
-                while(virtualRunning[0]){
-
+                try {
+                    lock.lock();
+                    whileLock(sprite);
+                } catch (InterruptedException e) {
+                    interruptSprite(sprite, e);
+                } finally {
+                    lock.unlock();
                 }
-                virtualRunning[0]=true;
             }, false);
             threadContext.addSprite(sprite);
             highlightSnippet(1);
-        });
-        threadContext.addButton("end virtual", ()->{
-            virtualRunning[0] = false;
         });
 
         threadContext.addButton("lock.lockInterrubtibly()", () -> {

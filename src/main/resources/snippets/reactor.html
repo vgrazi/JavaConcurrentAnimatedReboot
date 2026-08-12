@@ -1,0 +1,23 @@
+  <1 default>Flux<String> flux = Flux.just(
+  <1 default>  "one", "two", "three")
+  <1 default>  .map(String::toUpperCase);
+  
+  <2 default>Mono<String> mono = Mono.just("value")
+  <2 default>  .map(String::toUpperCase);
+  
+  <3 default>flux.subscribe(
+  <3 default>  value -> System.out.println(value),
+  <3 default>  error -> error.printStackTrace());
+  
+  <4 default>Flux.interval(Duration.ofMillis(100))
+  <4 default>  .subscribeOn(Schedulers.parallel())
+  <4 default>  .take(5);
+  
+  <5 default>flux.publishOn(Schedulers.elastic())
+  <5 default>  .map(this::process);
+  
+  <6 default>Flux.merge(flux1, flux2)
+  <6 default>  .subscribe(System.out::println);
+  
+  <7 default>Flux.zip(flux1, flux2)
+  <7 default>  .subscribe(tuple -> System.out.println(tuple));

@@ -169,12 +169,16 @@ public abstract class Sprite<T> {
             graphics.setColor(Color.white);
             graphics.setFont(messageFont);
             if(!isInMonolith()) {
-                graphics.drawString(message, getXPosition() + xOffset - arrowLength + xOffset, getYPosition() - 8);
+                graphics.drawString(message, getXPosition() + xOffset - arrowLength + xOffset, getMessageYPosition());
             }
             else {
-                graphics.drawString(message, monolithLeftBorder, getYPosition() - 8);
+                graphics.drawString(message, monolithLeftBorder, getMessageYPosition());
             }
         }
+    }
+
+    protected int getMessageYPosition() {
+        return getYPosition() - 8;
     }
 
     /**

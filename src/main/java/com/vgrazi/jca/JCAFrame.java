@@ -74,6 +74,9 @@ public class JCAFrame extends JFrame {
     private CompletableFutureSlide completableFutureSlide;
 
     @Autowired
+    private ReactorSlide reactorSlide;
+
+    @Autowired
     private ReadWriteLockSlide readWriteLockSlide;
 
     @Autowired
@@ -176,22 +179,23 @@ public class JCAFrame extends JFrame {
         menuPanel.setLayout(new ButtonLayout(vgap));
 
         addButton("Synchronized", synchronizedSlide);
-        addButton("Virtual Threads", virtualThreadsSlide);
         addButton("ReentrantLock", reentrantLockSlide);
-        addButton("Semaphore", semaphoreSlide);
         addButton("ReadWriteLock", readWriteLockSlide);
+        addButton("Virtual Threads", virtualThreadsSlide);
+        addButton("Semaphore", semaphoreSlide);
         addButton("StampedLock", stampedLockSlide);
-        addButton("Executors", executorsSlide);
-        addButton("Saturation Policy", saturationPolicySlide);
         addButton("CyclicBarrier", cyclicBarrierSlide);
         addButton("CountDownLatch", countdownLatchSlide);
         addButton("Phaser", phaserSlide);
+        addButton("Executors", executorsSlide);
+        addButton("Saturation Policy", saturationPolicySlide);
         addButton("BlockingQueue", blockingQueueSlide);
         addButton("TransferQueue", transferQueueSlide);
-        addButton("CompletableFuture", completableFutureSlide);
         addButton("Structured Concurrency", structuredConcurrencySlide);
+        addButton("CompletableFuture", completableFutureSlide);
         addButton("CompletionService", completionServiceSlide);
         addButton("AtomicInteger", atomicIntegerSlide);
+//        addButton("Project Reactor", reactorSlide);
         addButton("Credits", basicSlide);
         addButton("Titles", introSlide);
 

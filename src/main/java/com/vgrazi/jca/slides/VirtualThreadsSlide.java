@@ -130,6 +130,7 @@ public class VirtualThreadsSlide extends Slide {
         super.reset();
         highlightSnippet(0);
         threadCanvas.hideMonolith(true);
+        threadContext.setDisplayThreadNames(true);
         threadContext.setSlideLabel("Virtual Threads                  ");
         threadContext.setSlideLabel("            Carrier", 1);
         threadCount.set(0);
