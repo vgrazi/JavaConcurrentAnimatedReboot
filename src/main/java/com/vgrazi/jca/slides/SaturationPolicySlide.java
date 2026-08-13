@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,9 +26,12 @@ public class SaturationPolicySlide extends Slide {
     private ApplicationContext applicationContext;
 
     private ThreadPoolExecutor executor;
-    private SynchronousQueue<Runnable> workQueue;
+    private BlockingQueue<Runnable> workQueue;
     private final AtomicBoolean callerRunsActive = new AtomicBoolean(false);
     private volatile RunnableSprite callerRunsRunnableSprite;
+    private final ConcurrentLinkedDeque<TaskSubmission> queuedSubmissions = new ConcurrentLinkedDeque<>();
+    private final ConcurrentHashMap<Runnable, TaskSubmission> queuedByTask = new ConcurrentHashMap<>();
+    private volatile PolicyMode policyMode = PolicyMode.ABORT;
 
     public SaturationPolicySlide(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -49,27 +54,47 @@ public class SaturationPolicySlide extends Slide {
 
         threadContext.addButton("AbortPolicy", () -> {
             reset();
+            policyMode = PolicyMode.ABORT;
             executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
             highlightSnippet(2);
             setMessage("Policy: AbortPolicy  –  fill pool then execute", Color.red);
         });
         threadContext.addButton("CallerRunsPolicy", () -> {
             reset();
+            policyMode = PolicyMode.CALLER_RUNS;
             executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
             highlightSnippet(3);
             setMessage("Policy: CallerRunsPolicy  –  fill pool then execute", Color.yellow);
         });
         threadContext.addButton("DiscardPolicy", () -> {
             reset();
+            policyMode = PolicyMode.DISCARD;
             executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
             highlightSnippet(4);
             setMessage("Policy: DiscardPolicy  –  fill pool then execute", Color.orange);
         });
         threadContext.addButton("DiscardOldestPolicy", () -> {
             reset();
-            // Safe wrapper: discards the task without re-submitting to avoid
-            // infinite recursion that DiscardOldestPolicy causes with SynchronousQueue.
-            executor.setRejectedExecutionHandler((r, e) -> e.getQueue().poll());
+            policyMode = PolicyMode.DISCARD_OLDEST;
+            switchToDiscardOldestExecutor();
+            executor.setRejectedExecutionHandler((r, e) -> {
+                Runnable dropped = e.getQueue().poll();
+                TaskSubmission oldestQueued = dropped == null ? null : queuedByTask.remove(dropped);
+                if (oldestQueued != null) {
+                    queuedSubmissions.remove(oldestQueued);
+                    oldestQueued.discarded.set(true);
+                    SwingUtilities.invokeLater(() -> {
+                        setMessage("DiscardOldestPolicy: oldest queued task discarded", Color.orange);
+                        oldestQueued.sprite.setRetreating();
+                        threadContext.stopThread(oldestQueued.sprite);
+                    });
+                }
+                try {
+                    e.execute(r);
+                } catch (RejectedExecutionException ignored) {
+                    // Rare race (shutdown/re-saturation): drop the incoming task.
+                }
+            });
             highlightSnippet(5);
             setMessage("Policy: DiscardOldestPolicy  –  fill pool then execute", Color.orange);
         });
@@ -98,8 +123,12 @@ public class SaturationPolicySlide extends Slide {
 
         // 0=not started, 1=pool thread, 2=caller thread (CallerRunsPolicy)
         AtomicInteger taskState = new AtomicInteger(0);
+        TaskSubmission submission = new TaskSubmission(runnableSprite);
+        final Runnable[] taskRef = new Runnable[1];
 
         Runnable task = () -> {
+            queuedSubmissions.remove(submission);
+            queuedByTask.remove(taskRef[0]);
             PooledThreadSprite<String> sprite =
                     (PooledThreadSprite) threadContext.getThreadSprite(Thread.currentThread());
 
@@ -142,6 +171,12 @@ public class SaturationPolicySlide extends Slide {
         Thread submitter = new Thread(() -> {
             try {
                 executor.execute(task);
+                if (policyMode == PolicyMode.DISCARD_OLDEST && executor.getQueue().contains(task)) {
+                    // Track only tasks that are actually enqueued.
+                    submission.task = task;
+                    queuedByTask.put(task, submission);
+                    queuedSubmissions.offerLast(submission);
+                }
             } catch (RejectedExecutionException e) {
                 // ── AbortPolicy ─────────────────────────────────────────────────────
                 SwingUtilities.invokeLater(() -> {
@@ -165,7 +200,7 @@ public class SaturationPolicySlide extends Slide {
                 Thread.currentThread().interrupt();
             }
 
-            if (taskState.get() == 0) {
+            if (policyMode == PolicyMode.DISCARD && taskState.get() == 0) {
                 // ── DiscardPolicy / DiscardOldestPolicy: task silently dropped ────
                 SwingUtilities.invokeLater(() -> {
                     setMessage("Task was silently discarded!", Color.orange);
@@ -175,6 +210,7 @@ public class SaturationPolicySlide extends Slide {
             }
             // taskState == 1: pool thread is handling it – nothing more to do here.
         }, "saturation-submitter");
+        taskRef[0] = task;
         submitter.setDaemon(true);
         submitter.start();
     }
@@ -184,8 +220,37 @@ public class SaturationPolicySlide extends Slide {
         super.reset();
         setSnippetFile("saturation-policy.html");
         threadContext.setSlideLabel("Saturation Policy");
-        workQueue = new SynchronousQueue<>();
-        executor = new ThreadPoolExecutor(0, 4, 2, TimeUnit.SECONDS,
+        policyMode = PolicyMode.ABORT;
+        createExecutor(false);
+    }
+
+    @Override
+    public void cleanup() {
+        callerRunsActive.set(false);
+        callerRunsRunnableSprite = null;
+        queuedSubmissions.clear();
+        queuedByTask.clear();
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
+        workQueue = null;
+        super.cleanup();
+    }
+
+    private void switchToDiscardOldestExecutor() {
+        if (executor != null) {
+            executor.shutdownNow();
+        }
+        queuedSubmissions.clear();
+        queuedByTask.clear();
+        createExecutor(true);
+    }
+
+    private void createExecutor(boolean boundedQueue) {
+        workQueue = boundedQueue ? new ArrayBlockingQueue<>(1) : new SynchronousQueue<>();
+        int corePoolSize = boundedQueue ? 4 : 0;
+        executor = new ThreadPoolExecutor(corePoolSize, 4, 2, TimeUnit.SECONDS,
                 workQueue,
                 r -> {
                     PooledThreadSprite<String> sprite =
@@ -200,15 +265,20 @@ public class SaturationPolicySlide extends Slide {
         );
     }
 
-    @Override
-    public void cleanup() {
-        callerRunsActive.set(false);
-        callerRunsRunnableSprite = null;
-        if (executor != null) {
-            executor.shutdownNow();
-            executor = null;
+    private enum PolicyMode {
+        ABORT,
+        CALLER_RUNS,
+        DISCARD,
+        DISCARD_OLDEST
+    }
+
+    private static class TaskSubmission {
+        final RunnableSprite sprite;
+        final AtomicBoolean discarded = new AtomicBoolean(false);
+        volatile Runnable task;
+
+        private TaskSubmission(RunnableSprite sprite) {
+            this.sprite = sprite;
         }
-        workQueue = null;
-        super.cleanup();
     }
 }
